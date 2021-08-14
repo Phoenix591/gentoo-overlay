@@ -1,0 +1,2 @@
+#not done packaging yet, it looks like a beast. maybe work on it later..
+dev-python/mycroft-core

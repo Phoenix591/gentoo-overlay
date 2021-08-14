@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>Phoenix591@notmyemail.hi</email>
+    <description>Contact me if needed on Reddit or the Gentoo forums</description>
+  </maintainer>
+  <longdescription>
+  Libucontext is a library which provides the ucontext.h C API.
+  Unlike other implementations, it faithfully follows the kernel process ABI when doing context swaps.
+  Notably, when combined with gcompat, 
+  it provides a fully compatible implementation of the ucontext functions that are ABI compatible with glibc.
+  </longdescription>
+</pkgmetadata>

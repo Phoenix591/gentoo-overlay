@@ -1,0 +1,36 @@
+--- /usr/portage/media-libs/mesa/mesa-21.2.0.ebuild	2021-08-06 22:57:50.000000000 -0500
++++ mesa-21.2.0.ebuild	2021-08-07 00:38:14.311682718 -0500
+@@ -27,7 +27,7 @@
+ "
+ 
+ RADEON_CARDS="r100 r200 r300 r600 radeon radeonsi"
+-VIDEO_CARDS="${RADEON_CARDS} freedreno i915 i965 intel iris lima nouveau panfrost v3d vc4 virgl vivante vmware"
++VIDEO_CARDS="${RADEON_CARDS} d3d12 freedreno i915 i965 intel iris lima nouveau panfrost v3d vc4 virgl vivante vmware"
+ for card in ${VIDEO_CARDS}; do
+ 	IUSE_VIDEO_CARDS+=" video_cards_${card}"
+ done
+@@ -45,6 +45,7 @@
+ 	vulkan? ( video_cards_radeonsi? ( llvm ) )
+ 	vulkan-overlay? ( vulkan )
+ 	wayland? ( egl gbm )
++	video_cards_d3d12?	( gallium )
+ 	video_cards_freedreno?  ( gallium )
+ 	video_cards_intel?  ( classic )
+ 	video_cards_i915?   ( || ( classic gallium ) )
+@@ -218,6 +219,7 @@
+ 	opencl? (
+ 		>=sys-devel/gcc-4.6
+ 	)
++	video_cards_d3d12? ( media-libs/directx-headers )
+ 	sys-devel/bison
+ 	sys-devel/flex
+ 	virtual/pkgconfig
+@@ -446,7 +448,7 @@
+ 		   use video_cards_vivante; then
+ 			gallium_enable -- kmsro
+ 		fi
+-
++		gallium_enable video_cards_d3d12 d3d12
+ 		gallium_enable -- swrast
+ 		gallium_enable video_cards_lima lima
+ 		gallium_enable video_cards_panfrost panfrost
