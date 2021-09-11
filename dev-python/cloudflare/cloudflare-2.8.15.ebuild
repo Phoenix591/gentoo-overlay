@@ -17,7 +17,7 @@ IUSE=""
 RESTRICT="mirror" #overlay, not goign to be mirrored
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
-	dev-python/beautifulsoup[${PYTHON_USEDEP}]
+	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/future[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
