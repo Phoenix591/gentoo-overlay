@@ -222,7 +222,7 @@ src_install() {
 	insinto /var/bind/pri
 	newins "${FILESDIR}"/localhost.zone-r3 localhost.zone
 
-	newinitd "${FILESDIR}"/named.init-r13 named
+	newinitd "${FILESDIR}"/named.init-r14 named
 	newconfd "${FILESDIR}"/named.confd-r7 named
 
 	newenvd "${FILESDIR}"/10bind.env 10bind

@@ -12,7 +12,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{7..9} )
+PYTHON_COMPAT=( python3_{6..9} )
 
 inherit python-r1 autotools toolchain-funcs flag-o-matic  db-use systemd tmpfiles
 
@@ -33,7 +33,9 @@ SRC_URI="https://downloads.isc.org/isc/bind9/${PV}/${P}.tar.xz
 
 LICENSE="Apache-2.0 BSD BSD-2 GPL-2 HPND ISC MPL-2.0"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
+#KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS=""
+RESTRICT="mirror"
 # -berkdb by default re bug 602682
 IUSE="-berkdb +caps +dlz dnstap doc dnsrps fixed-rrset geoip geoip2 gssapi
 json ldap lmdb mysql odbc postgres python selinux static-libs
@@ -56,7 +58,7 @@ REQUIRED_USE="
 DEPEND="
 	acct-group/named
 	acct-user/named
-	berkdb? ( sys-libs/db:= )
+	net-libs/nghttp2:=
 	dev-libs/openssl:=[-bindist]
 	mysql? ( dev-db/mysql-connector-c:0= )
 	odbc? ( >=dev-db/unixODBC-2.2.6 )
@@ -80,7 +82,8 @@ DEPEND="
 
 RDEPEND="${DEPEND}
 	selinux? ( sec-policy/selinux-bind )
-	sys-process/psmisc"
+	sys-process/psmisc
+	!net-dns/bind-tools"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -95,8 +98,8 @@ PATCHES=(
 src_prepare() {
 	default
 
-	# should be installed by bind-tools
-	sed -i -r -e "s:(nsupdate|dig|delv) ::g" bin/Makefile.in || die
+	# should be installed by bind-tools. this wasnt actually disabling them anyway...
+#	sed -i -r -e "s:(nsupdate|dig|delv) ::g" bin/Makefile.in || die
 
 	# Disable tests for now, bug 406399
 	sed -i '/^SUBDIRS/s:tests::' bin/Makefile.in lib/Makefile.in || die
@@ -129,7 +132,6 @@ bind_configure() {
 		$(use_enable dnsrps)
 		$(use_enable dnstap)
 		$(use_enable fixed-rrset)
-		# $(use_enable static-libs static)
 		$(use_with berkdb dlz-bdb)
 		$(use_with dlz dlopen)
 		$(use_with dlz dlz-filesystem)
@@ -179,6 +181,7 @@ python_configure() {
 
 src_compile() {
 	default
+	emake -C doc/man/ man $(usev doc)
 	use python && python_foreach_impl python_compile
 }
 
@@ -190,11 +193,10 @@ python_compile() {
 
 src_install() {
 	default
-
 	# don't create /var/run
-	rmdir "${ED}"/var/run || die
+#	rmdir "${ED}"/var/run || die
 
-	dodoc CHANGES README
+	dodoc CHANGES README.md
 
 	if use doc; then
 		docinto misc
@@ -203,7 +205,6 @@ src_install() {
 		# might a 'html' useflag make sense?
 		docinto html
 		dodoc -r doc/arm/
-
 		docinto contrib
 		dodoc contrib/scripts/{nanny.pl,named-bootconf.sh}
 
@@ -223,21 +224,28 @@ src_install() {
 	insinto /var/bind/pri
 	newins "${FILESDIR}"/localhost.zone-r3 localhost.zone
 
-	newinitd "${FILESDIR}"/named.init-r13 named
+	newinitd "${FILESDIR}"/named.init-r14 named
 	newconfd "${FILESDIR}"/named.confd-r7 named
 
 	newenvd "${FILESDIR}"/10bind.env 10bind
 
+
+
+	doman doc/man/*.{1,5,8}
+
+
+
+	# unifying bind with bind-tools, they share lots
 	# Let's get rid of those tools and their manpages since they're provided by bind-tools
-	rm -f "${ED}"/usr/share/man/man1/{dig,host,nslookup,delv,nsupdate}.1* || die
-	rm -f "${ED}"/usr/share/man/man8/nsupdate.8* || die
-	rm -f "${ED}"/usr/bin/{dig,host,nslookup,nsupdate} || die
-	rm -f "${ED}"/usr/sbin/{dig,host,nslookup,nsupdate} || die
-	for tool in dsfromkey importkey keyfromlabel keygen \
-	revoke settime signzone verify; do
-		rm -f "${ED}"/usr/{,s}bin/dnssec-"${tool}" || die
-		rm -f "${ED}"/usr/share/man/man8/dnssec-"${tool}".8* || die
-	done
+#	rm -f "${ED}"/usr/share/man/man1/{dig,host,nslookup,delv,nsupdate}.1* || die
+#	rm -f "${ED}"/usr/share/man/man8/nsupdate.8* || die
+#	rm -f "${ED}"/usr/bin/{dig,host,nslookup,nsupdate,delv} || die
+#	rm -f "${ED}"/usr/sbin/{dig,host,nslookup,nsupdate} || die
+#	for tool in dsfromkey importkey keyfromlabel keygen \
+#	revoke settime signzone verify; do
+#		rm -f "${ED}"/usr/{,s}bin/dnssec-"${tool}" || die
+#		rm -f "${ED}"/usr/share/man/man8/dnssec-"${tool}".8* || die
+#	done
 
 	# bug 405251, library archives aren't properly handled by --enable/disable-static
 	if ! use static-libs; then
@@ -279,7 +287,7 @@ python_install() {
 }
 
 pkg_postinst() {
-	tmpfiles_process "${FILESDIR}"/named.conf
+	tmpfiles_process named.conf || eerror "Failed to install named.conf"
 
 	if [ ! -f '/etc/bind/rndc.key' && ! -f '/etc/bind/rndc.conf' ]; then
 		if use urandom; then
