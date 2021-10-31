@@ -2,16 +2,17 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-PYTHON_COMPAT=(python{3_8,3_9})
+PYTHON_COMPAT=(python3_{8..10})
 BASEP=certbot
 if [[ ${PV} == 9999* ]]; then
 	EGIT_REPO_URI="https://github.com/certbot/certbot.git"
 	inherit git-r3
 	S=${WORKDIR}/${P}/${PN}
 else
-	SRC_URI="https://github.com/certbot/certbot/archive/v${PV}.tar.gz -> ${BASEP}-${PV}.tar.gz"
+	SRC_URI="https://github.com/${BASEP}/${BASEP}/archive/v${PV}.tar.gz -> ${BASEP}-${PV}.tar.gz"
+#	SRC_URI="https://github.com/certbot/certbot/archive/v${PV}.tar.gz -> ${BASEP}-${PV}.tar.gz"
 	KEYWORDS="~amd64 ~arm64 ~x86"
-	S=${WORKDIR}/certbot-${PV}/${PN}
+	S=${WORKDIR}/${BASEP}-${PV}/${PN}
 fi
 DISTUTILS_USE_SETUPTOOLS=rdepend
 inherit distutils-r1
