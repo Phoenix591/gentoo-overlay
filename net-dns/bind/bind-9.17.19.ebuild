@@ -20,11 +20,7 @@ MY_PV="${PV/_p/-P}"
 MY_PV="${MY_PV/_rc/rc}"
 MY_P="${PN}-${MY_PV}"
 
-SDB_LDAP_VER="1.1.0-fc14"
-
 RRL_PV="${MY_PV}"
-
-# SDB-LDAP: http://bind9-ldap.bayour.com/
 
 DESCRIPTION="Berkeley Internet Name Domain - Name Server"
 HOMEPAGE="https://www.isc.org/software/bind"
@@ -37,34 +33,25 @@ SLOT="0"
 KEYWORDS=""
 RESTRICT="mirror"
 # -berkdb by default re bug 602682
-IUSE="-berkdb +caps +dlz dnstap doc dnsrps fixed-rrset geoip geoip2 gssapi
-json ldap lmdb mysql odbc postgres python selinux static-libs
+IUSE="+caps dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
+json lmdb  python selinux static-libs
 urandom xml +zlib"
-# sdb-ldap - patch broken
 # no PKCS11 currently as it requires OpenSSL to be patched, also see bug 409687
 
 # Upstream dropped the old geoip library, but the BIND configuration for using
 # GeoIP remained the same.
 REQUIRED_USE="
-	postgres? ( dlz )
-	berkdb? ( dlz )
-	mysql? ( dlz )
-	odbc? ( dlz )
-	ldap? ( dlz )
-	dnsrps? ( dlz )
 	python? ( ${PYTHON_REQUIRED_USE} )
 "
+#	dnsrps? ( dlz )
 
 DEPEND="
 	acct-group/named
 	acct-user/named
 	net-libs/nghttp2:=
 	dev-libs/openssl:=[-bindist(-)]
-	mysql? ( dev-db/mysql-connector-c:0= )
-	odbc? ( >=dev-db/unixODBC-2.2.6 )
-	ldap? ( net-nds/openldap )
-	postgres? ( dev-db/postgresql:= )
 	caps? ( >=sys-libs/libcap-2.1.0 )
+	jemalloc? ( >=dev-libs/jemalloc-5.2.1:= )
 	xml? ( dev-libs/libxml2 )
 	geoip? ( dev-libs/libmaxminddb )
 	geoip2? ( dev-libs/libmaxminddb )
@@ -87,9 +74,9 @@ RDEPEND="${DEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=(
-	"${FILESDIR}/ldap-library-path-on-multilib-machines.patch"
-)
+#PATCHES=(
+#	"${FILESDIR}/ldap-library-path-on-multilib-machines.patch"
+#)
 
 # bug 479092, requires networking
 # bug 710840, cmocka fails LDFLAGS='-Wl,-O1'
@@ -129,19 +116,12 @@ bind_configure() {
 		--with-openssl="${EPREFIX}"/usr
 		--without-cmocka
 		$(use_enable caps linux-caps)
-		$(use_enable dnsrps)
+#		$(use_enable dnsrps)
 		$(use_enable dnstap)
 		$(use_enable fixed-rrset)
-		$(use_with berkdb dlz-bdb)
-		$(use_with dlz dlopen)
-		$(use_with dlz dlz-filesystem)
-		$(use_with dlz dlz-stub)
 		$(use_with gssapi)
+		$(use_with jemalloc)
 		$(use_with json json-c)
-		$(use_with ldap dlz-ldap)
-		$(use_with mysql dlz-mysql)
-		$(use_with odbc dlz-odbc)
-		$(use_with postgres dlz-postgres)
 		$(use_with lmdb)
 		$(use_with xml libxml2)
 		$(use_with zlib)
@@ -162,9 +142,6 @@ bind_configure() {
 
 	# bug #158664
 #	gcc-specs-ssp && replace-flags -O[23s] -O
-
-	# To include db.h from proper path
-	use berkdb && append-flags "-I$(db_includedir)"
 
 	export BUILD_CC=$(tc-getBUILD_CC)
 	econf "${myeconfargs[@]}"
@@ -206,7 +183,7 @@ src_install() {
 		docinto html
 		dodoc -r doc/arm/
 		docinto contrib
-		dodoc contrib/scripts/{nanny.pl,named-bootconf.sh}
+		dodoc contrib/scripts/nanny.pl
 
 		# some handy-dandy dynamic dns examples
 		pushd "${ED}"/usr/share/doc/${PF} 1>/dev/null || die
@@ -302,12 +279,6 @@ pkg_postinst() {
 	einfo
 	einfo "You can edit /etc/conf.d/named to customize named settings"
 	einfo
-	use mysql || use postgres || use ldap && {
-		elog "If your named depends on MySQL/PostgreSQL or LDAP,"
-		elog "uncomment the specified rc_named_* lines in your"
-		elog "/etc/conf.d/named config to ensure they'll start before bind"
-		einfo
-	}
 	einfo "If you'd like to run bind in a chroot AND this is a new"
 	einfo "install OR your bind doesn't already run in a chroot:"
 	einfo "1) Uncomment and set the CHROOT variable in /etc/conf.d/named."
