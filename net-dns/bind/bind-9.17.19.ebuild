@@ -59,7 +59,7 @@ DEPEND="
 	acct-group/named
 	acct-user/named
 	net-libs/nghttp2:=
-	dev-libs/openssl:=[-bindist]
+	dev-libs/openssl:=[-bindist(-)]
 	mysql? ( dev-db/mysql-connector-c:0= )
 	odbc? ( >=dev-db/unixODBC-2.2.6 )
 	ldap? ( net-nds/openldap )
@@ -98,8 +98,8 @@ PATCHES=(
 src_prepare() {
 	default
 
-	# should be installed by bind-tools
-	sed -i -r -e "s:(nsupdate|dig|delv) ::g" bin/Makefile.in || die
+	# should be installed by bind-tools. this wasnt actually disabling them anyway...
+#	sed -i -r -e "s:(nsupdate|dig|delv) ::g" bin/Makefile.in || die
 
 	# Disable tests for now, bug 406399
 	sed -i '/^SUBDIRS/s:tests::' bin/Makefile.in lib/Makefile.in || die
@@ -113,7 +113,7 @@ src_prepare() {
 }
 
 src_configure() {
-	bind_configure
+	bind_configure --without-python
 	use python && python_foreach_impl python_configure
 }
 
@@ -123,6 +123,7 @@ bind_configure() {
 		--prefix="${EPREFIX}"/usr
 		--sysconfdir=/etc/bind
 		--localstatedir=/var
+		--with-libtool
 		--enable-full-report
 		--without-readline
 		--with-openssl="${EPREFIX}"/usr
@@ -131,6 +132,7 @@ bind_configure() {
 		$(use_enable dnsrps)
 		$(use_enable dnstap)
 		$(use_enable fixed-rrset)
+		$(use_with berkdb dlz-bdb)
 		$(use_with dlz dlopen)
 		$(use_with dlz dlz-filesystem)
 		$(use_with dlz dlz-stub)
@@ -222,18 +224,14 @@ src_install() {
 	insinto /var/bind/pri
 	newins "${FILESDIR}"/localhost.zone-r3 localhost.zone
 
-	newinitd "${FILESDIR}"/named.init-r13 named
+	newinitd "${FILESDIR}"/named.init-r14 named
 	newconfd "${FILESDIR}"/named.confd-r7 named
 
 	newenvd "${FILESDIR}"/10bind.env 10bind
 
-
-
 	doman doc/man/*.{1,5,8}
 
-
-
-	# unifying bind with bind-tools, they share lots
+	# reunifying bind with bind-tools, they share bind's internal libraries which are big
 	# Let's get rid of those tools and their manpages since they're provided by bind-tools
 #	rm -f "${ED}"/usr/share/man/man1/{dig,host,nslookup,delv,nsupdate}.1* || die
 #	rm -f "${ED}"/usr/share/man/man8/nsupdate.8* || die
@@ -285,7 +283,7 @@ python_install() {
 }
 
 pkg_postinst() {
-	tmpfiles_process "${FILESDIR}"/named.conf
+	tmpfiles_process named.conf || eerror "Failed to install named.conf"
 
 	if [ ! -f '/etc/bind/rndc.key' && ! -f '/etc/bind/rndc.conf' ]; then
 		if use urandom; then
@@ -393,4 +391,3 @@ pkg_config() {
 	elog "You may need to add the following line to your syslog-ng.conf:"
 	elog "source jail { unix-stream(\"${CHROOT}/dev/log\"); };"
 }
-
