@@ -41,6 +41,8 @@ RDEPEND="${DEPEND}
 		>=dev-python/numpy-1.19.2[${PYTHON_MULTI_USEDEP}]
 		>=dev-python/packaging-16.8[${PYTHON_MULTI_USEDEP}]
 		dev-python/python-dateutil[${PYTHON_MULTI_USEDEP}]
+		>=dev-python/python-jose-3.0.1[${PYTHON_MULTI_USEDEP}]
+		>=dev-python/requests-cache-0.8.1[${PYTHON_MULTI_USEDEP}]
 		>=dev-python/requests-2.0.0[${PYTHON_MULTI_USEDEP}]
 		>=dev-python/roman-2.0.0[${PYTHON_MULTI_USEDEP}]
 		>=dev-python/matplotlib-3.2.2[wxwidgets,${PYTHON_MULTI_USEDEP}]
