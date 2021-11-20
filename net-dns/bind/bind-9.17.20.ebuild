@@ -12,9 +12,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{6..9} )
-
-inherit python-r1 autotools toolchain-funcs flag-o-matic  db-use systemd tmpfiles
+inherit autotools toolchain-funcs flag-o-matic systemd tmpfiles
 
 MY_PV="${PV/_p/-P}"
 MY_PV="${MY_PV/_rc/rc}"
@@ -34,16 +32,12 @@ KEYWORDS=""
 RESTRICT="mirror"
 # -berkdb by default re bug 602682
 IUSE="+caps dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
-json lmdb  python selinux static-libs
+json lmdb selinux static-libs
 urandom xml +zlib"
 # no PKCS11 currently as it requires OpenSSL to be patched, also see bug 409687
 
 # Upstream dropped the old geoip library, but the BIND configuration for using
 # GeoIP remained the same.
-REQUIRED_USE="
-	python? ( ${PYTHON_REQUIRED_USE} )
-"
-#	dnsrps? ( dlz )
 
 DEPEND="
 	acct-group/named
@@ -60,10 +54,6 @@ DEPEND="
 	lmdb? ( dev-db/lmdb )
 	zlib? ( sys-libs/zlib )
 	dnstap? ( dev-libs/fstrm dev-libs/protobuf-c )
-	python? (
-		${PYTHON_DEPS}
-		dev-python/ply[${PYTHON_USEDEP}]
-	)
 	dev-libs/libuv:=
 "
 
@@ -80,7 +70,8 @@ S="${WORKDIR}/${MY_P}"
 
 # bug 479092, requires networking
 # bug 710840, cmocka fails LDFLAGS='-Wl,-O1'
-#RESTRICT="test"
+# tests require network, and not JUST network, they require specific ip addresses
+RESTRICT="test"
 
 src_prepare() {
 	default
@@ -89,28 +80,21 @@ src_prepare() {
 #	sed -i -r -e "s:(nsupdate|dig|delv) ::g" bin/Makefile.in || die
 
 	# Disable tests for now, bug 406399
-	sed -i '/^SUBDIRS/s:tests::' bin/Makefile.in lib/Makefile.in || die
+#	sed -i '/^SUBDIRS/s:tests::' bin/Makefile.in lib/Makefile.in || die
 
 	# bug #220361
-	rm aclocal.m4 || die
-	rm -rf libtool.m4/ || die
+#	rm aclocal.m4 || die
+#	rm -rf libtool.m4/ || die
 	eautoreconf
 
-	use python && python_copy_sources
 }
 
 src_configure() {
-	bind_configure --without-python
-	use python && python_foreach_impl python_configure
-}
-
-bind_configure() {
 	local myeconfargs=(
 		AR="$(type -P $(tc-getAR))"
 		--prefix="${EPREFIX}"/usr
 		--sysconfdir=/etc/bind
 		--localstatedir=/var
-		--with-libtool
 		--enable-full-report
 		--without-readline
 		--with-openssl="${EPREFIX}"/usr
@@ -148,24 +132,12 @@ bind_configure() {
 
 	# bug #151839
 	echo '#undef SO_BSDCOMPAT' >> config.h
-}
 
-python_configure() {
-	pushd "${BUILD_DIR}" >/dev/null || die
-	bind_configure --with-python
-	popd >/dev/null || die
 }
 
 src_compile() {
 	default
 	emake -C doc/man/ man $(usev doc)
-	use python && python_foreach_impl python_compile
-}
-
-python_compile() {
-	pushd "${BUILD_DIR}"/bin/python >/dev/null || die
-	emake
-	popd >/dev/null || die
 }
 
 src_install() {
@@ -228,8 +200,6 @@ src_install() {
 	# bug 405251
 	find "${ED}" -type f -name '*.la' -delete || die
 
-	use python && python_foreach_impl python_install
-
 	# bug 450406
 	dosym named.cache /var/bind/root.cache
 
@@ -248,15 +218,6 @@ src_install() {
 	dotmpfiles "${FILESDIR}"/named.conf
 	exeinto /usr/libexec
 	doexe "${FILESDIR}/generate-rndc-key.sh"
-}
-
-python_install() {
-	pushd "${BUILD_DIR}"/bin/python >/dev/null || die
-	emake DESTDIR="${D}" install
-	python_scriptinto /usr/sbin
-	python_doscript dnssec-{checkds,coverage}
-	python_optimize
-	popd >/dev/null || die
 }
 
 pkg_postinst() {
