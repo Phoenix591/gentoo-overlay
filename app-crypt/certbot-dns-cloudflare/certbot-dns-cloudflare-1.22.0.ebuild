@@ -11,7 +11,7 @@ if [[ ${PV} == 9999* ]]; then
 else
 	SRC_URI="https://github.com/${BASEP}/${BASEP}/archive/v${PV}.tar.gz -> ${BASEP}-${PV}.tar.gz"
 #	SRC_URI="https://github.com/certbot/certbot/archive/v${PV}.tar.gz -> ${BASEP}-${PV}.tar.gz"
-	KEYWORDS="~amd64 ~arm64 ~x86"
+	KEYWORDS="~amd64"
 	S=${WORKDIR}/${BASEP}-${PV}/${PN}
 fi
 DISTUTILS_USE_SETUPTOOLS=rdepend
@@ -33,3 +33,4 @@ RDEPEND="${CDEPEND}
 	dev-python/dns-lexicon[${PYTHON_USEDEP}]
 	dev-python/cloudflare[${PYTHON_USEDEP}]"
 DEPEND="${CDEPEND}"
+distutils_enable_tests pytest
