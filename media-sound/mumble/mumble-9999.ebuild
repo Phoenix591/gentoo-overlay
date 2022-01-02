@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -26,7 +26,7 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech test zeroconf"
+IUSE="+alsa +dbus debug g15 jack lto portaudio pulseaudio nls +rnnoise speech test zeroconf"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -81,6 +81,7 @@ src_configure() {
 		-Ddbus="$(usex dbus)"
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
+		-Dlto="$(usex lto)"
 		-Doverlay="ON"
 		-Dportaudio="$(usex portaudio)"
 		-Dpulseaudio="$(usex pulseaudio)"
