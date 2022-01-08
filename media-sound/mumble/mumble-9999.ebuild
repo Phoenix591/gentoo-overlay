@@ -26,7 +26,7 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack lto portaudio pulseaudio nls +rnnoise speech test zeroconf"
+IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech test zeroconf"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -66,6 +66,8 @@ BDEPEND="
 "
 
 src_prepare() {
+	#Respect CFLAGS, don't auto-enable
+	sed -i '/lto/d' CMakeLists.txt src/CMakeLists.txt src/mumble/CMakeLists.txt
 	# required because of xdg.eclass also providing src_prepare
 	cmake_src_prepare
 }
@@ -81,7 +83,6 @@ src_configure() {
 		-Ddbus="$(usex dbus)"
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
-		-Dlto="$(usex lto)"
 		-Doverlay="ON"
 		-Dportaudio="$(usex portaudio)"
 		-Dpulseaudio="$(usex pulseaudio)"
@@ -91,12 +92,8 @@ src_configure() {
 		-Dtranslations="$(usex nls)"
 		-Dupdate="OFF"
 		-Dzeroconf="$(usex zeroconf)"
+		-Dwarnings-as-errors="OFF"
 	)
-	if [[ "${PV}" == 9999 ]] ; then
-		mycmakeargs+=(
-			-DRELEASE_ID="Git-$(git rev-parse --short refs/git-r3/HEAD || die 'Unable to determine git revision' )"
-		)
-	fi
 
 	cmake_src_configure
 }
