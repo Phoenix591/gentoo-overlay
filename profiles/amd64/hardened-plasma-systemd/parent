@@ -1,0 +1,4 @@
+gentoo:default/linux/amd64/17.1
+gentoo:targets/desktop/plasma
+gentoo:targets/systemd
+gentoo:default/linux/amd64/17.1/hardened
