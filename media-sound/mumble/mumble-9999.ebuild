@@ -26,8 +26,9 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech test zeroconf"
+IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise +system-rnnoise speech test zeroconf"
 RESTRICT="!test? ( test )"
+REQUIRED_USE="system-rnnoise? ( rnnoise ) "
 
 RDEPEND="
 	dev-qt/qtcore:5
@@ -53,6 +54,7 @@ RDEPEND="
 	>=dev-libs/openssl-1.0.0b:0=
 	portaudio? ( media-libs/portaudio )
 	pulseaudio? ( media-sound/pulseaudio )
+	system-rnnoise? ( >=media-libs/rnnoise-0.4.1_p20210122 )
 	speech? ( >=app-accessibility/speech-dispatcher-0.8.0 )
 	zeroconf? ( net-dns/avahi[mdnsresponder-compat] )
 "
@@ -76,7 +78,7 @@ src_configure() {
 
 	local mycmakeargs=(
 		-Dalsa="$(usex alsa)"
-		-DBUILD_TESTING="$(usex test)"
+		-Dtests="$(usex test)"
 		-Dbundled-celt="ON"
 		-Dbundled-opus="OFF"
 		-Dbundled-speex="OFF"
@@ -84,11 +86,13 @@ src_configure() {
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
 		-Doverlay="ON"
+		-Donline-tests="OFF"
 		-Dportaudio="$(usex portaudio)"
 		-Dpulseaudio="$(usex pulseaudio)"
 		-Drnnoise="$(usex rnnoise)"
 		-Dserver="OFF"
 		-Dspeechd="$(usex speech)"
+		-Dbundled-rnnoise=$(usex !system-rnnoise)
 		-Dtranslations="$(usex nls)"
 		-Dupdate="OFF"
 		-Dzeroconf="$(usex zeroconf)"
