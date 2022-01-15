@@ -68,6 +68,7 @@ DEPEND="${RDEPEND}
 "
 BDEPEND="
 	dev-qt/linguist-tools:5
+	test? ( dev-qt/qttest:5 )
 	virtual/pkgconfig
 "
 
