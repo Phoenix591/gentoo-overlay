@@ -8,6 +8,7 @@ inherit cmake xdg
 DESCRIPTION="Mumble is an open source, low-latency, high quality voice chat software"
 HOMEPAGE="https://wiki.mumble.info"
 EGIT_REPO_URI="https://github.com/mumble-voip/mumble.git"
+EGIT_SUBMODULES=( '*' -3rdparty/mach-override-src -3rdparty/minhook -opus -speex -3rdparty/speexdsp )
 
 if [[ "${PV}" == 9999 ]] ; then
 	inherit git-r3
@@ -21,18 +22,16 @@ else
 	else
 		MY_PV="${PV/_/-}"
 		MY_P="${PN}-${MY_PV}"
-		SRC_URI="https://github.com/mumble-voip/mumble/releases/download/${MY_PV}/${MY_P}.tar.gz
-			https://dl.mumble.info/${MY_P}.tar.gz"
-		S="${WORKDIR}/${P/_*}"
+		SRC_URI="https://dl.mumble.info/stable/${MY_P}.tar.gz"
+		S="${WORKDIR}/${P}.src"
 	fi
-		KEYWORDS="~amd64 ~arm64 ~x86"
+		KEYWORDS="~amd64 ~x86"
 fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise +system-rnnoise speech test zeroconf"
+IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech +system-rnnoise test zeroconf"
 RESTRICT="!test? ( test )"
-REQUIRED_USE="system-rnnoise? ( rnnoise ) "
 
 RDEPEND="
 	dev-qt/qtcore:5
@@ -58,19 +57,34 @@ RDEPEND="
 	>=dev-libs/openssl-1.0.0b:0=
 	portaudio? ( media-libs/portaudio )
 	pulseaudio? ( media-sound/pulseaudio )
-	system-rnnoise? ( >=media-libs/rnnoise-0.4.1_p20210122 )
 	speech? ( >=app-accessibility/speech-dispatcher-0.8.0 )
+	system-rnnoise? ( >=media-libs/rnnoise-0.4.1_p20210122 )
 	zeroconf? ( net-dns/avahi[mdnsresponder-compat] )
 "
+
 DEPEND="${RDEPEND}
 	>=dev-libs/boost-1.41.0
 	x11-base/xorg-proto
 "
+
 BDEPEND="
 	dev-qt/linguist-tools:5
 	test? ( dev-qt/qttest:5 )
 	virtual/pkgconfig
 "
+
+src_unpack() {
+	if [ "${_GIT_R3}" -eq 1 ]; then
+		if use system-rnnoise; then
+			EGIT_SUBMODULES+=(  -3rdparty/rnnoise-src )
+		fi
+		if use elibc_mingw; then
+			EGIT_SUBMODULES+=( 3rdparty/minhook )
+		fi
+		git-r3_src_unpack
+	fi
+	default_src_unpack
+}
 
 src_prepare() {
 	#Respect CFLAGS, don't auto-enable
@@ -103,7 +117,9 @@ src_configure() {
 		-Dzeroconf="$(usex zeroconf)"
 		-Dwarnings-as-errors="OFF"
 	)
-
+	if [ -z "${_GIT_R3}" ]; then
+		mycmakeargs+=( -DBUILD_NUMBER=$(ver_cut 3) )
+	fi
 	cmake_src_configure
 }
 
