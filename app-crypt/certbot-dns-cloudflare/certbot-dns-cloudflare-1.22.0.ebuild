@@ -1,8 +1,9 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 PYTHON_COMPAT=(python3_{8..10})
+DISTUTILS_USE_PEP517="setuptools"
 BASEP=certbot
 if [[ ${PV} == 9999* ]]; then
 	EGIT_REPO_URI="https://github.com/certbot/certbot.git"
@@ -14,7 +15,6 @@ else
 	KEYWORDS="~amd64"
 	S=${WORKDIR}/${BASEP}-${PV}/${PN}
 fi
-DISTUTILS_USE_SETUPTOOLS=rdepend
 inherit distutils-r1
 
 DESCRIPTION="Cloudflare DNS Authenticator plugin for Certbot (Let's Encrypt Client)"
