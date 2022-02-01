@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -38,7 +38,7 @@ PATCHES=(
 	# Don't install includes that collide.
 	"${FILESDIR}/${PN}-include.patch"
 	# See https://github.com/raspberrypi/userland/pull/655
-	"${FILESDIR}/${PN}-libfdt-static.patch"
+#	"${FILESDIR}/${PN}-libfdt-static.patch"
 	# See https://github.com/raspberrypi/userland/pull/659
 	"${FILESDIR}/${PN}-pkgconf-arm64.patch"
 )
@@ -54,7 +54,7 @@ src_prepare() {
 		"${S}/interface/khronos/CMakeLists.txt" || die "Failed sedding interface/khronos/CMakeLists.txt"
 	sed -i \
 		-e 's:DESTINATION man/:DESTINATION share/man/:' \
-		${S}/host_applications/linux/apps/*/CMakeLists.txt || die "Failed fixing man page install location"
+		"${S}/host_applications/linux/apps/*/CMakeLists.txt" || die "Failed fixing man page install location"
 }
 
 src_configure() {
@@ -70,5 +70,6 @@ src_configure() {
 
 src_install() {
 	cmake_src_install
+	dolib.so "${WORKDIR}/${P}/build/lib/libfdt.so"
 	udev_dorules "${FILESDIR}/92-local-vchiq-permissions.rules"
 }
