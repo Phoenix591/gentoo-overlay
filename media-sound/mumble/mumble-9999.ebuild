@@ -30,7 +30,7 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech +system-rnnoise test zeroconf"
+IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech +system-rnnoise +system-json test zeroconf"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -59,6 +59,7 @@ RDEPEND="
 	pulseaudio? ( media-sound/pulseaudio )
 	speech? ( >=app-accessibility/speech-dispatcher-0.8.0 )
 	system-rnnoise? ( >=media-libs/rnnoise-0.4.1_p20210122 )
+	system-json? ( >=dev-cpp/nlohmann_json-3.9.1 )
 	zeroconf? ( net-dns/avahi[mdnsresponder-compat] )
 "
 
@@ -77,6 +78,9 @@ src_unpack() {
 	if [ "${_GIT_R3}" -eq 1 ]; then
 		if use system-rnnoise; then
 			EGIT_SUBMODULES+=(  -3rdparty/rnnoise-src )
+		fi
+		if use system-json; then
+			EGIT_SUBMODULES+=(  -3rdparty/nlohmann_json )
 		fi
 		if use elibc_mingw; then
 			EGIT_SUBMODULES+=( 3rdparty/minhook )
@@ -98,20 +102,20 @@ src_configure() {
 	local mycmakeargs=(
 		-Dalsa="$(usex alsa)"
 		-Dtests="$(usex test)"
-		-Dbundled-celt="ON"
+#		-Dbundled-celt="ON" will be removed soon
 		-Dbundled-opus="OFF"
 		-Dbundled-speex="OFF"
 		-Ddbus="$(usex dbus)"
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
 		-Doverlay="ON"
-		-Donline-tests="OFF"
 		-Dportaudio="$(usex portaudio)"
 		-Dpulseaudio="$(usex pulseaudio)"
 		-Drnnoise="$(usex rnnoise)"
 		-Dserver="OFF"
 		-Dspeechd="$(usex speech)"
 		-Dbundled-rnnoise=$(usex !system-rnnoise)
+		-Dbundled-json=$(usex !system-json)
 		-Dtranslations="$(usex nls)"
 		-Dupdate="OFF"
 		-Dzeroconf="$(usex zeroconf)"
@@ -123,6 +127,10 @@ src_configure() {
 	cmake_src_configure
 }
 
+src_test() {
+	local myctestargs+=(-Donline-tests="OFF")
+	cmake_src_test
+}
 src_install() {
 	cmake_src_install
 
