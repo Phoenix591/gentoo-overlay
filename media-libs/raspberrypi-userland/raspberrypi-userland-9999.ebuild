@@ -52,9 +52,10 @@ src_prepare() {
 		-e 's:^install(TARGETS EGL GLESv2 OpenVG WFC:install(TARGETS:' \
 		-e '/^install(TARGETS EGL_static GLESv2_static/d' \
 		"${S}/interface/khronos/CMakeLists.txt" || die "Failed sedding interface/khronos/CMakeLists.txt"
+
 	sed -i \
 		-e 's:DESTINATION man/:DESTINATION share/man/:' \
-		"${S}/host_applications/linux/apps/*/CMakeLists.txt" || die "Failed fixing man page install location"
+		"${S}"/host_applications/linux/apps/*/CMakeLists.txt || die "Failed fixing man page install location"
 }
 
 src_configure() {

@@ -31,7 +31,8 @@ RDEPEND="${PYTHON_DEPS}
 	|| (
 		>=media-libs/raspberrypi-userland-0_pre20201022
 		>=media-libs/raspberrypi-userland-bin-1.20201022
-	)"
+	)
+	dev-libs/openssl"
 
 src_prepare() {
 	default
@@ -44,7 +45,7 @@ src_install() {
 	python_scriptinto /usr/sbin
 	python_foreach_impl python_newscript rpi-eeprom-config rpi-eeprom-config
 
-	dosbin rpi-eeprom-update
+	dosbin rpi-eeprom-update rpi-eeprom-digest
 	keepdir /var/lib/raspberrypi/bootloader/backup
 
 	for dir in critical stable beta; do
