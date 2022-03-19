@@ -12,7 +12,7 @@
 
 EAPI=7
 
-inherit autotools toolchain-funcs flag-o-matic systemd tmpfiles
+inherit autotools toolchain-funcs systemd tmpfiles
 
 MY_PV="${PV/_p/-P}"
 MY_PV="${MY_PV/_rc/rc}"
