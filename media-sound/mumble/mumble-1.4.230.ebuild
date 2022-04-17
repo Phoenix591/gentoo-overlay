@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit cmake xdg
+inherit cmake xdg multilib
 
 DESCRIPTION="Mumble is an open source, low-latency, high quality voice chat software"
 HOMEPAGE="https://wiki.mumble.info"
@@ -30,7 +30,7 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio nls +rnnoise speech +system-rnnoise test zeroconf"
+IUSE="+alsa +dbus debug g15 jack +multilib portaudio pulseaudio nls +rnnoise speech +system-rnnoise test zeroconf"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -42,7 +42,7 @@ RDEPEND="
 	dev-qt/qtwidgets:5
 	dev-qt/qtxml:5
 	>=dev-libs/protobuf-2.2.0:=
-	>=dev-libs/poco-1.9.0:=
+	>=dev-libs/poco-1.9.0:=[xml,zip]
 	>=media-libs/libsndfile-1.0.20[-minimal]
 	>=media-libs/opus-1.3.1
 	>=media-libs/speex-1.2.0
@@ -107,6 +107,7 @@ src_configure() {
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
 		-Doverlay="ON"
+		-Doverlay-xcompile="$(usex multilib)"
 		-Dportaudio="$(usex portaudio)"
 		-Dpulseaudio="$(usex pulseaudio)"
 		-Drnnoise="$(usex rnnoise)"
@@ -127,11 +128,11 @@ src_configure() {
 src_install() {
 	cmake_src_install
 
-	if use amd64 ; then
+	if use amd64 && use multilib; then
 		# The 32bit overlay library gets automatically built and installed on x86_64 platforms.
 		# Install it into the correct 32bit lib dir.
 		local libdir_64="/usr/$(get_libdir)/mumble"
-		local libdir_32="/usr/$(get_abi_var LIBDIR x86)/mumble"
+		local libdir_32="/usr/$(get_abi_LIBDIR x86)/mumble"
 		dodir ${libdir_32}
 		mv "${ED}"/${libdir_64}/libmumbleoverlay.x86.so* \
 			"${ED}"/${libdir_32}/ || die
