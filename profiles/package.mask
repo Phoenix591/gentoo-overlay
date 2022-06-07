@@ -1,2 +1,7 @@
 #not done packaging yet, it looks like a beast. maybe work on it later..
 dev-python/mycroft-core
+
+#some runtime issues with goverlay
+#and I don't personally use it, removal around June 14
+games-util/goverlay
+dev-libs/qt5pas
