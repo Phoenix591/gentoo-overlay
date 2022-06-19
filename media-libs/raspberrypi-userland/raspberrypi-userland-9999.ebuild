@@ -74,3 +74,9 @@ src_install() {
 	dolib.so "${WORKDIR}/${P}/build/lib/libfdt.so"
 	udev_dorules "${FILESDIR}/92-local-vchiq-permissions.rules"
 }
+pkg_postinst() {
+	udev_reload
+}
+pkg_postrm() {
+	udev_reload
+}
