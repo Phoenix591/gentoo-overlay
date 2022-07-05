@@ -1,0 +1,23 @@
+[Unit]
+Description=Start foundationdb
+After=network.target
+Requires=network.target
+
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+PIDFILE=/var/run/fdbmonitor.pid
+PermissionsStartOnly = true
+NoNewPrivileges       = true;
+ProtectHome           = true;
+ProtectKernelTunables = true;
+ProtectControlGroups  = true;
+PrivateTmp            = true;
+PrivateDevices        = true;
+User=foundationdb
+Group=foundationdb
+#ExecStartPre+=touch /var/run/fdbmonitor.pid
+#ExecStartPre+=chown foundationdb:foundationdb /var/run/fdbmonitor.pid
+ExecStart=/usr/LIBDIR/fdbmonitor --conffile /etc/foundationdb/foundationdb.conf --lockfile /var/run/fdbmonitor.pid --daemonize
