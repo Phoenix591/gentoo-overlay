@@ -24,6 +24,7 @@ fi
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 RESTRICT="mirror bindist"
+
 DEPEND="
 	$(python_gen_cond_dep '
 		>=dev-python/cryptography-2.3[${PYTHON_USEDEP}]
@@ -41,12 +42,13 @@ RDEPEND="${DEPEND}
 		>=dev-python/packaging-16.8[${PYTHON_USEDEP}]
 		dev-python/python-dateutil[${PYTHON_USEDEP}]
 		>=dev-python/python-jose-3.0.1[${PYTHON_USEDEP}]
-		>=dev-python/requests-cache-0.8.1[${PYTHON_USEDEP}]
 		>=dev-python/requests-2.0.0[${PYTHON_USEDEP}]
+		>=dev-python/requests-cache-0.8.1[${PYTHON_USEDEP}]
 		>=dev-python/roman-2.0.0[${PYTHON_USEDEP}]
 		>=dev-python/matplotlib-3.2.2[wxwidgets,${PYTHON_USEDEP}]
 	')"
 BDEPEND="app-arch/zip"
+
 PATCHES=(
 	# fix import path in the main script for systemwide installation
 	"${FILESDIR}/${PN}-2.9.3-import-pyfa.patch"
