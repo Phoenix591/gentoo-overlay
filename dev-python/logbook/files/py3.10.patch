@@ -1,0 +1,42 @@
+From 2acc282c0bac815e1ce04b4d45816cbf2af5ab24 Mon Sep 17 00:00:00 2001
+From: Martin Nowak <code@dawg.eu>
+Date: Fri, 31 Dec 2021 18:49:15 +0100
+Subject: [PATCH] fix usage of 3.10-deprecated currentThread/getName
+
+- current_thread available since 2.7 and 3.5
+- currentThread deprecated with 3.10
+---
+ logbook/concurrency.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/logbook/concurrency.py b/logbook/concurrency.py
+index cd0fcb69..84f484bd 100644
+--- a/logbook/concurrency.py
++++ b/logbook/concurrency.py
+@@ -44,7 +44,7 @@ def is_gevent_enabled():
+     from gevent.threading import __threading__
+ 
+     def thread_get_name():
+-        return __threading__.currentThread().getName()
++        return __threading__.current_thread().name
+ 
+     class GreenletRLock(object):
+         def __init__(self):
+@@ -129,7 +129,7 @@ def _is_owned(self):
+             return self._owner == (thread_get_ident(), greenlet_get_ident())
+ else:
+     from threading import (
+-        Lock as ThreadLock, RLock as ThreadRLock, currentThread)
++        Lock as ThreadLock, RLock as ThreadRLock, current_thread)
+     try:
+         from thread import (
+             get_ident as thread_get_ident, _local as thread_local)
+@@ -138,7 +138,7 @@ def _is_owned(self):
+             get_ident as thread_get_ident, _local as thread_local)
+ 
+     def thread_get_name():
+-        return currentThread().getName()
++        return current_thread().name
+ 
+     greenlet_get_ident = thread_get_ident
+ 
