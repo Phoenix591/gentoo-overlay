@@ -3,7 +3,7 @@
 
 EAPI="8"
 
-PYTHON_COMPAT=( python3_{8..9} )
+PYTHON_COMPAT=( python3_{8..10} )
 PYTHON_REQ_USE="sqlite"
 
 inherit desktop edos2unix python-single-r1 xdg
@@ -14,6 +14,7 @@ HOMEPAGE="https://github.com/pyfa-org/Pyfa"
 LICENSE="GPL-3+ all-rights-reserved"
 SLOT="0"
 if [[ ${PV} = 9999 ]]; then
+	EGIT_BRANCH="dep_facelift"
 	EGIT_REPO_URI="https://github.com/pyfa-org/Pyfa.git"
 	inherit git-r3
 else
@@ -28,7 +29,7 @@ RESTRICT="mirror bindist"
 DEPEND="
 	$(python_gen_cond_dep '
 		>=dev-python/cryptography-2.3[${PYTHON_USEDEP}]
-		>=dev-python/logbook-1.0.0[${PYTHON_USEDEP}]
+		>=dev-python/logbook-1.5.3-r1[${PYTHON_USEDEP}]
 		>=dev-python/pyyaml-5.1[${PYTHON_USEDEP}]
 		>=dev-python/sqlalchemy-1.3.23[${PYTHON_USEDEP}]
 		>=dev-python/wxpython-4.0.6[webkit,${PYTHON_USEDEP}]
