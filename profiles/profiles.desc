@@ -1,3 +1,4 @@
 amd64 amd64/hardened-plasma-and-gnome-with-systemd dev
 amd64 amd64/hardened-systemd dev
 amd64 amd64/hardened-plasma-systemd dev
+arm64 arm64/hardened-systemd-merged-usr exp
