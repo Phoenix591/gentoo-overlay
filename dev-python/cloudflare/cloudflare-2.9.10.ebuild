@@ -39,8 +39,3 @@ python_prepare_all() {
 python_test() {
 epytest tests/test1.py
 }
-src_install() {
-	distutils-r1_src_install
-	rm -R "${ED}/usr/man"
-	newman cli4/cli4.man cli4.1
-}
