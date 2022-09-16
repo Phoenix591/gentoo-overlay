@@ -22,6 +22,7 @@ RDEPEND="
 	dev-python/dnspython
 	dev-python/requests
 	dev-python/pyyaml
+	dev-python/validators
 "
 
 src_install() {
@@ -33,11 +34,6 @@ src_install() {
 
 	dodir /opt/bin
 	dosym ../bind-adblock/update-zonefile.py /opt/bin/update-zonefile.py
+	newenvd - 99bind-adblock <<< "CONFIG_PROTECT=\"/opt/bind-adblock/config.yml\""
 }
 
-pkg_postinst() {
-	echo
-	ewarn "update-zonefile.py has been moved into /opt/bin."
-	ewarn "Please update your cron job accordingly."
-	echo
-}
