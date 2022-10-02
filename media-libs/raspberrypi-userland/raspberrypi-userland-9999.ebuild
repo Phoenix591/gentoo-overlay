@@ -17,7 +17,7 @@ else
 	# * Go to https://github.com/raspberrypi/userland/commits/master and find the full hash
 	GIT_COMMIT="e432bc3400401064e2d8affa5d1454aac2cf4a00"
 	SRC_URI="https://github.com/raspberrypi/userland/archive/${GIT_COMMIT}.tar.gz -> ${P}.tar.gz"
-	KEYWORDS="~arm ~arm64"
+	KEYWORDS="-* ~arm ~arm64"
 	S="${WORKDIR}/userland-${GIT_COMMIT}"
 fi
 
@@ -42,6 +42,14 @@ PATCHES=(
 	# See https://github.com/raspberrypi/userland/pull/659
 	"${FILESDIR}/${PN}-pkgconf-arm64.patch"
 )
+
+pkg_pretend() {
+
+	if ! ( use arm || use arm64 || [ -n "${I_KNOW_THIS_IS_FOR_THE_PI}" ]); then
+		eerror "If you are trying to cross-compile things arn't set right and its trying to build for your host"
+		die "${PN} is for the Raspberry pi: arm/arm64 only"
+	fi
+}
 
 src_prepare() {
 	cmake_src_prepare
