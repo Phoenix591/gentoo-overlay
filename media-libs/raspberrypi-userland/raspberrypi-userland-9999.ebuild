@@ -49,6 +49,10 @@ pkg_pretend() {
 		eerror "If you are trying to cross-compile things arn't set right and its trying to build for your host"
 		die "${PN} is for the Raspberry pi: arm/arm64 only"
 	fi
+	if [ -n "${I_KNOW_THIS_IS_FOR_THE_PI}" ]; then
+		ewarn "This is for the arm/arm64 pi only, if you set this on something not arm and it breaks you get to keep the pieces"
+		ewarn "Wrappers such as aarch64-unknown-linux-gnu-emerge set things so that this isn't needed and should sucessfully cross compile this"
+	fi
 }
 
 src_prepare() {
