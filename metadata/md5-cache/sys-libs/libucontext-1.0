@@ -1,4 +1,4 @@
-BDEPEND=dev-util/meson dev-util/ninja >=dev-util/meson-0.54.0 >=dev-util/ninja-1.8.2 dev-util/meson-format-array
+BDEPEND=dev-util/meson dev-util/ninja >=dev-util/meson-0.62.2 >=dev-util/ninja-1.8.2 dev-util/meson-format-array
 DEFINED_PHASES=compile configure install prepare test
 DESCRIPTION=libucontext is a library which provides the ucontext.h C API
 EAPI=7
@@ -9,5 +9,5 @@ LICENSE=ISC
 RESTRICT=mirror
 SLOT=0
 SRC_URI=https://github.com/kaniini/libucontext/archive/libucontext-1.0.tar.gz
-_eclasses_=multiprocessing	cac3169468f893670dac3e7cb940e045	ninja-utils	132cbb376048d079b5a012f5467c4e7f	toolchain-funcs	24921b57d6561d87cbef4916a296ada4	multilib	d410501a125f99ffb560b0c523cd3d1e	python-utils-r1	d273d56dc725880edbeb1f6389faf5f1	meson	00d6fba6e500964c50ba74d1d1fc2e6c
+_eclasses_=multiprocessing	b4e253ab22cef7b1085e9b67c7a3b730	ninja-utils	58ec4e54962bf45d065fb95030701514	eapi8-dosym	cd7d420bb5be5ee079f27239ce76b8f5	toolchain-funcs	1542e649be915f43f6908a9e93909961	multilib	5ca4e49abed8e3a2f7b56920eadee157	python-utils-r1	b9fc5e97e886514e5132f50465185401	meson	1994a5aef5d4f5798b92f64d6f9a6003
 _md5_=dcf6b965e3e2b6771c87e906d9421485
