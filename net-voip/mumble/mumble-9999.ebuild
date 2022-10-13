@@ -8,7 +8,8 @@ inherit cmake xdg multilib
 DESCRIPTION="Mumble is an open source, low-latency, high quality voice chat software"
 HOMEPAGE="https://wiki.mumble.info"
 EGIT_REPO_URI="https://github.com/mumble-voip/mumble.git"
-EGIT_SUBMODULES=( '*' -3rdparty/mach-override-src -3rdparty/minhook -opus -speex -3rdparty/speexdsp )
+#speex and opus submodules readded only until license autogen fixed to use system/disable
+#EGIT_SUBMODULES=( '*' -3rdparty/mach-override-src -3rdparty/minhook  )
 
 if [[ "${PV}" == 9999 ]] ; then
 	inherit git-r3
@@ -75,24 +76,24 @@ BDEPEND="
 	virtual/pkgconfig
 "
 
-src_unpack() {
-	if [ "${_GIT_R3}" -eq 1 ]; then
-		if use system-ms-gsl; then
-			EGIT_SUBMODULES+=(  -3rdparty/gsl )
-		fi
-		if use system-rnnoise; then
-			EGIT_SUBMODULES+=(  -3rdparty/rnnoise-src )
-		fi
-		if use system-json; then
-			EGIT_SUBMODULES+=(  -3rdparty/nlohmann_json )
-		fi
-		if use elibc_mingw; then
-			EGIT_SUBMODULES+=( 3rdparty/minhook )
-		fi
-		git-r3_src_unpack
-	fi
-	default_src_unpack
-}
+#src_unpack() {
+#	if [ "${_GIT_R3}" -eq 1 ]; then
+#		if use system-ms-gsl; then
+#			EGIT_SUBMODULES+=(  -3rdparty/gsl )
+#		fi
+#		if use system-rnnoise; then
+#			EGIT_SUBMODULES+=(  -3rdparty/rnnoise-src )
+#		fi
+#		if use system-json; then
+#			EGIT_SUBMODULES+=(  -3rdparty/nlohmann_json )
+#		fi
+#		if use elibc_mingw; then
+#			EGIT_SUBMODULES+=( 3rdparty/minhook )
+#		fi
+#		git-r3_src_unpack
+#	fi
+#	default_src_unpack
+#}
 
 src_prepare() {
 	#Respect CFLAGS, don't auto-enable
@@ -126,6 +127,8 @@ src_configure() {
 		-Dupdate="OFF"
 		-Dzeroconf="$(usex zeroconf)"
 		-Dwarnings-as-errors="OFF"
+		-DMUMBLE_INSTALL_MANDIR:PATH="share/man1"
+		-DMUMBLE_INSTALL_DOCDIR:PATH="share/doc/${P}"
 	)
 	if [ -z "${_GIT_R3}" ]; then
 		mycmakeargs+=( -DBUILD_NUMBER=$(ver_cut 3) )
