@@ -1,25 +1,25 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-inherit eutils flag-o-matic linux-info linux-mod user udev
+inherit  flag-o-matic linux-info linux-mod  udev
 
 DESCRIPTION="VMware kernel modules"
 HOMEPAGE="https://github.com/mkubecek/vmware-host-modules"
 
-MY_KERNEL_VERSION="5.14"
-SRC_URI="workstation? ( https://github.com/mkubecek/vmware-host-modules/archive/w${PV}-k${MY_KERNEL_VERSION}.zip -> ${P}-w-${MY_KERNEL_VERSION}.zip )
-	player? ( https://github.com/mkubecek/vmware-host-modules/archive/p${PV}-k${MY_KERNEL_VERSION}.zip -> ${P}-p-${MY_KERNEL_VERSION}.zip )"
+#MY_KERNEL_VERSION="-k5.16"
+SRC_URI="workstation? ( https://github.com/mkubecek/vmware-host-modules/archive/refs/tags/w${PV}${MY_KERNEL_VERSION}.tar.gz -> ${P}-w-${MY_KERNEL_VERSION}.tar.gz )
+	player? ( https://github.com/mkubecek/vmware-host-modules/archive//refs/tags/p${PV}${MY_KERNEL_VERSION}.tar.gz -> ${P}-p-${MY_KERNEL_VERSION}.tar.gz )"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE="+workstation player"
 REQUIRED_USE="^^ ( workstation player )"
-RDEPEND=""
+RDEPEND="acct-group/vmware"
 DEPEND=""
-
+PDEPEND=""
 RESTRICT="mirror"
 S="${WORKDIR}/vmware-host-modules-${PV}-k${MY_KERNEL_VERSION}"
 
@@ -40,15 +40,23 @@ pkg_setup() {
 	linux-info_pkg_setup
 	linux-mod_pkg_setup
 
-	VMWARE_GROUP=${VMWARE_GROUP:-vmware}
+	if linux_chkconfig_present CC_IS_CLANG; then
+		ewarn "Warning: building ${PN} with a clang-built kernel is experimental"
+		BUILD_PARAMS+=' CC=${CHOST}-clang'
+		if linux_chkconfig_present LD_IS_LLD; then
+			BUILD_PARAMS+=' LD=ld.lld'
+			if linux_chkconfig_present LTO_CLANG_THIN; then
+				# kernel enables cache by default leading to sandbox violations
+				BUILD_PARAMS+=' ldflags-y=--thinlto-cache-dir= LDFLAGS_MODULE=--thinlto-cache-dir='
+			fi
+		fi
+	fi
 
 	VMWARE_MODULE_LIST="vmmon vmnet"
 
 	VMWARE_MOD_DIR="${PN}-${PVR}"
 
 	BUILD_TARGETS="auto-build KERNEL_DIR=${KERNEL_DIR} KBUILD_OUTPUT=${KV_OUT_DIR}"
-
-	enewgroup "${VMWARE_GROUP}"
 
 	filter-flags -mfpmath=sse -mavx -mpclmul -maes
 	append-cflags -mno-sse  # Found a problem similar to bug #492964
