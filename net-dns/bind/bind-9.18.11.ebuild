@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Re dlz/mysql and threads, needs to be verified..
@@ -12,7 +12,9 @@
 
 EAPI=7
 
-inherit autotools toolchain-funcs systemd tmpfiles
+PYTHON_COMPAT=( python3_{10..11} )
+
+inherit autotools toolchain-funcs systemd tmpfiles python-any-r1
 
 MY_PV="${PV/_p/-P}"
 MY_PV="${MY_PV/_rc/rc}"
@@ -32,7 +34,7 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 RESTRICT="mirror"
 # -berkdb by default re bug 602682
 IUSE="+caps dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
-json lmdb selinux static-libs
+json lmdb selinux static-libs test
 urandom xml +zlib"
 # no PKCS11 currently as it requires OpenSSL to be patched, also see bug 409687
 
@@ -56,12 +58,33 @@ DEPEND="
 	dnstap? ( dev-libs/fstrm dev-libs/protobuf-c )
 	dev-libs/libuv:=
 "
-
+#		net-analyzer/sslyze # optional test dep, available in pentoo overlay
+BDEPEND=" test? (
+		dev-util/cmocka
+		dev-perl/Net-DNS
+		dev-perl/IO-Socket-INET6
+		net-libs/gnutls[tools]
+		dev-libs/softhsm
+		$(python_gen_any_dep '
+			dev-python/dnspython[${PYTHON_USEDEP}]
+			dev-python/pluggy[${PYTHON_USEDEP}]
+			dev-python/pytest[${PYTHON_USEDEP}]')
+		)
+		"
 RDEPEND="${DEPEND}
 	selinux? ( sec-policy/selinux-bind )
 	sys-process/psmisc
 	!net-dns/bind-tools"
 
+python_check_deps() {
+	python_has_version -b "dev-python/dnspython[${PYTHON_USEDEP}]" &&
+	python_has_version -b "dev-python/pluggy[${PYTHON_USEDEP}]" &&
+	python_has_version -b "dev-python/pytest[${PYTHON_USEDEP}]"
+}
+
+pkg_setup() {
+	use test && python-any-r1_pkg_setup
+}
 S="${WORKDIR}/${MY_P}"
 
 #PATCHES=(
@@ -107,6 +130,7 @@ src_configure() {
 		$(use_with jemalloc)
 		$(use_with json json-c)
 		$(use_with lmdb)
+		$(use_with test cmocka)
 		$(use_with xml libxml2)
 		$(use_with zlib)
 		"${@}"
