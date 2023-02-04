@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit flag-o-matic systemd toolchain-funcs udev usr-ldscript multilib-minimal
+inherit flag-o-matic systemd toolchain-funcs udev multilib-minimal
 MYPN="e2fsprogs"
 MYP="${MYPN}-${PV}"
 S="${WORKDIR}/${MYP}"
@@ -75,10 +75,10 @@ multilib_src_configure() {
 	)
 
 	# we use blkid/uuid from util-linux now
-	if use kernel_linux ; then
+#	if use kernel_linux ; then
 		export ac_cv_lib_{uuid_uuid_generate,blkid_blkid_get_cache}=yes
 		myeconfargs+=( --disable-lib{blkid,uuid} )
-	fi
+#	fi
 
 	ac_cv_path_LDCONFIG=: \
 		ECONF_SOURCE="${S}" \
