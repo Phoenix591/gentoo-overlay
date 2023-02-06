@@ -1,0 +1,29 @@
+# Copyright 1999-2021 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+EAPI=8
+
+PYTHON_COMPAT=( python3_{10,11} )
+DISTUTILS_USE_PEP517=setuptools
+
+inherit distutils-r1
+
+DESCRIPTION="an application for extracting, repackaging, and en/decrypting PS3 ISOs"
+HOMEPAGE="https://notabug.org/necklace/libray
+	https://pypi.org/project/libray/"
+SRC_URI="https://notabug.org/necklace/libray/archive/${PV}.tar.gz -> ${P}.tar.gz"
+
+LICENSE="GPL-3"
+SLOT="0"
+KEYWORDS="~amd64"
+IUSE=""
+S="${WORKDIR}/${PN}"
+BDEPEND=""
+RDEPEND="
+	dev-python/tqdm[${PYTHON_USEDEP}]
+	dev-python/pycryptodome[${PYTHON_USEDEP}]
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
+	dev-python/html5lib[${PYTHON_USEDEP}]
+	"
+RESTRICT=test #todo (adding test deps and enabling)
