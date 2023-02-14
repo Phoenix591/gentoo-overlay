@@ -31,11 +31,12 @@ fi
 
 LICENSE="BSD MIT"
 SLOT="0"
-IUSE="+alsa +dbus debug g15 jack portaudio pulseaudio +multilib nls +rnnoise speech system-ms-gsl +system-rnnoise +system-json test zeroconf"
+IUSE="+alsa debug g15 jack portaudio pulseaudio +multilib nls +rnnoise speech system-ms-gsl +system-rnnoise +system-json test zeroconf"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
 	dev-qt/qtcore:5
+	dev-qt/qtdbus:5
 	dev-qt/qtgui:5
 	dev-qt/qtnetwork:5[ssl]
 	dev-qt/qtsql:5[sqlite]
@@ -52,7 +53,6 @@ RDEPEND="
 	x11-libs/libX11
 	x11-libs/libXi
 	alsa? ( media-libs/alsa-lib )
-	dbus? ( dev-qt/qtdbus:5 )
 	g15? ( app-misc/g15daemon )
 	jack? ( virtual/jack )
 	>=dev-libs/openssl-1.0.0b:0=
@@ -109,8 +109,6 @@ src_configure() {
 		-Dtests="$(usex test)"
 #		-Dbundled-celt="ON" will be removed soon
 		-Dbundled-opus="OFF"
-		-Dbundled-speex="OFF"
-		-Ddbus="$(usex dbus)"
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
 		-Doverlay="ON"
