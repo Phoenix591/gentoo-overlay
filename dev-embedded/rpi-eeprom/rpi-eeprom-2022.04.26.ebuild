@@ -1,9 +1,9 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( python3_{8,9,10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit python-r1 systemd
 
@@ -38,6 +38,7 @@ src_prepare() {
 	default
 	sed -i \
 		-e 's:/etc/default/rpi-eeprom-update:/etc/conf.d/rpi-eeprom-update:' \
+		-e 's:IGNORE_DPKG_CHECKSUMS=${LOCAL_MODE}:IGNORE_DPKG_CHECKSUMS=1:' \
 		rpi-eeprom-update || die "Failed sed on rpi-eeprom-update"
 }
 
