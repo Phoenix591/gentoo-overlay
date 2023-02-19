@@ -4,7 +4,7 @@
 EAPI=7
 
 DISTUTILS_USE_PEP517="setuptools"
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 inherit distutils-r1 systemd
 
 DESCRIPTION="Utility to generate country-specific network ranges"
