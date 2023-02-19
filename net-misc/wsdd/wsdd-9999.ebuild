@@ -19,12 +19,16 @@ fi
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="samba"
+IUSE="samba systemd"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 DEPEND=""
 # Samba is technically not a requirement of wsdd, but depend on it if the use flags is set.
-RDEPEND="${PYTHON_DEPS} acct-group/${PN} acct-user/${PN} samba? ( net-fs/samba )"
+# with systemd it uses the dynamic user feature to allocate/release user.
+RDEPEND="( ${PYTHON_DEPS}
+	!systemd? ( acct-group/${PN} acct-user/${PN} )
+	samba? ( net-fs/samba )
+	)"
 BDEPEND=""
 
 src_install() {
@@ -37,15 +41,21 @@ src_install() {
 
 	sed -i -e "s/daemon:daemon/${PN}:${PN}/" etc/openrc/init.d/wsdd || die
 
-	doinitd etc/openrc/init.d/wsdd
-	doconfd etc/openrc/conf.d/wsdd
+	if ! use systemd; then
+		doinitd etc/openrc/init.d/wsdd
+		doconfd etc/openrc/conf.d/wsdd
+	fi
 
 	# install systemd unit file with dependency on samba service if use flag is set
 	if use samba; then
-		sed -i -e 's/;Wants=smb.service/Wants=samba.service/' etc/systemd/wsdd.service || die
+		sed -i -e 's/;BindsTo=smb.service/BindsTo=smbd.service/' etc/systemd/wsdd.service || die
 	fi
-	systemd_dounit etc/systemd/wsdd.service
 
+	if use systemd; then
+		insinto /etc/default
+		newins etc/systemd/wsdd.defaults wsdd
+		systemd_dounit etc/systemd/wsdd.service
+	fi
 	dodoc README.md
 	doman man/wsdd.8
 }
