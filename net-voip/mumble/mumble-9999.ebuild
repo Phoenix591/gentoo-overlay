@@ -108,7 +108,6 @@ src_configure() {
 		-Dalsa="$(usex alsa)"
 		-Dtests="$(usex test)"
 #		-Dbundled-celt="ON" will be removed soon
-		-Dbundled-opus="OFF"
 		-Dg15="$(usex g15)"
 		-Djackaudio="$(usex jack)"
 		-Doverlay="ON"
