@@ -53,6 +53,7 @@ DEPEND=">=dev-libs/flatbuffers-2.0.6
 	media-libs/openal
 	media-video/ffmpeg
 	net-misc/curl
+	net-libs/miniupnpc
 	sys-libs/ncurses
 	sys-libs/zlib
 	media-libs/libjpeg-turbo
@@ -77,6 +78,7 @@ PATCHES=(
 	"${FILESDIR}/${PN}-0007-allow-use-of-system-spirv-and-glslang.patch"
 	"${FILESDIR}/${PN}-0008-system-cubeb.patch"
 	"${FILESDIR}/${PN}-0009-ittapi-remove-git-co.patch"
+	"${FILESDIR}/${PN}-0010-unbundle-miniupnpc.patch"
 )
 #	"${FILESDIR}/${PN}-0003-add-missing-include-fix-branch-names.patch"
 
@@ -142,6 +144,7 @@ src_configure() {
 		-DUSE_SYSTEM_LIBPNG=ON
 		-DUSE_SYSTEM_LIBUSB=ON
 		-DUSE_SYSTEM_PUGIXML=ON
+		-DUSE_SYSTEM_MINIUPNPC=ON
 		-DUSE_SYSTEM_SPIRV_HEADERS_TOOLS=ON
 		-DUSE_SYSTEM_WOLFSSL=false
 		-DUSE_SYSTEM_XXHASH=ON
