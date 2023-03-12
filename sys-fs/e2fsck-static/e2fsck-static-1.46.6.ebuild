@@ -23,6 +23,7 @@ DEPEND="${RDEPEND}"
 BDEPEND="virtual/pkgconfig
 	sys-apps/texinfo
 	~sys-fs/e2fsprogs-${PV}
+	sys-apps/util-linux[static-libs]
 	nls? ( sys-devel/gettext )"
 
 PATCHES=(

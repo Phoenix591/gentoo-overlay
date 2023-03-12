@@ -16,14 +16,15 @@ KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~
 IUSE="lto nls +threads"
 
 RDEPEND="nls? ( virtual/libintl )
-	>=sys-apps/util-linux-2.16 "
+	>=sys-apps/util-linux-2.16"
 DEPEND="${RDEPEND}"
 #e2fsprogs has odd issues with bundling its internal libraries or not, depending on the full e2fsprogs
 #to ensure the libraries are  consistent
 BDEPEND="virtual/pkgconfig
 	sys-apps/texinfo
 	~sys-fs/e2fsprogs-${PV}
-	nls? ( sys-devel/gettext )"
+	nls? ( sys-devel/gettext )
+	sys-apps/util-linux[static-libs]"
 
 PATCHES=(
 	"${FILESDIR}"/${MYPN}-1.42.13-fix-build-cflags.patch #516854
