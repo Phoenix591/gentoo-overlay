@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Re dlz/mysql and threads, needs to be verified..
@@ -56,7 +56,7 @@ DEPEND="
 	lmdb? ( dev-db/lmdb )
 	zlib? ( sys-libs/zlib )
 	dnstap? ( dev-libs/fstrm dev-libs/protobuf-c )
-	dev-libs/libuv:=
+	>=dev-libs/libuv-1.40.0:=
 "
 #		net-analyzer/sslyze # optional test dep, available in pentoo overlay
 BDEPEND=" test? (
@@ -84,6 +84,7 @@ python_check_deps() {
 
 pkg_setup() {
 	use test && python-any-r1_pkg_setup
+	true
 }
 S="${WORKDIR}/${MY_P}"
 
