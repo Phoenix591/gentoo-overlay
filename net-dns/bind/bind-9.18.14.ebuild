@@ -56,7 +56,7 @@ DEPEND="
 	lmdb? ( dev-db/lmdb )
 	zlib? ( sys-libs/zlib )
 	dnstap? ( dev-libs/fstrm dev-libs/protobuf-c )
-	dev-libs/libuv:=
+	>=dev-libs/libuv-1.40.0:=
 "
 #		net-analyzer/sslyze # optional test dep, available in pentoo overlay
 BDEPEND=" test? (
