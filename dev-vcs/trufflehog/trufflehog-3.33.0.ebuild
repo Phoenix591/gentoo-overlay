@@ -1,4 +1,4 @@
-# Copyright 2023 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -9,8 +9,8 @@ DESCRIPTION="Find credentials all over the place"
 
 HOMEPAGE="https://github.com/trufflesecurity/trufflehog"
 
-SRC_URI="https://github.com/trufflesecurity/trufflehog/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
-	https://drive.google.com/uc?export=download&id=1D_6uoRLvWqahqSVFZkVycJeUWd5_mSHd -> ${P}-vendor.tar.xz"
+SRC_URI="https://github.com/trufflesecurity/trufflehog/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="${SRC_URI} https://drive.google.com/uc?export=download&id=12g8uF3Amt6E1i5zV_EJJOJYEM5LTfBbh -> ${P}-vendor.zip"
 
 #Generate vendor tarball
 #$go mod vendor
@@ -25,6 +25,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm64"
 
 IUSE=""
+BDEPEND="app-arch/unzip" # switched vendor tarball to zip for less gdrive issues
 
 src_compile(){
 	ego build
