@@ -10,7 +10,7 @@ DESCRIPTION="Find credentials all over the place"
 HOMEPAGE="https://github.com/trufflesecurity/trufflehog"
 
 SRC_URI="https://github.com/trufflesecurity/trufflehog/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
-	https://github.com/Phoenix591/trufflehog/releases/download/${PV}/${P}-vendor.tar.gz"
+	https://github.com/Phoenix591/trufflehog/releases/download/${PV}/${P}-vendor.tar.xz"
 
 #Generate vendor tarball
 #$go mod vendor
