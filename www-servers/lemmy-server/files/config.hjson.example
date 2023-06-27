@@ -1,0 +1,16 @@
+{
+  database: {
+    # put your db-passwd
+    password: "db-passwd"
+  }
+  # replace with your domain
+  hostname: example.com
+  bind: "127.0.0.1"
+  federation: {
+    enabled: true
+  }
+  # remove this block if you don't require image hosting
+  pictrs: {
+    url: "http://localhost:8080/"
+  }
+}

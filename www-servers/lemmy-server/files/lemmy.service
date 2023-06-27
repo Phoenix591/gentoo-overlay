@@ -1,0 +1,20 @@
+[Unit]
+Description=Lemmy - A link aggregator for the fediverse
+After=network.target postgresql-15.service
+Requires=postgresql-15.service
+[Service]
+User=lemmy
+ExecStart=/usr/bin/lemmy_server
+Environment=LEMMY_CONFIG_LOCATION=/etc/lemmy/lemmy.hjson
+# remove these two lines if you don't need pict-rs
+Environment=PICTRS_PATH=/var/lib/pictrs
+Environment=PICTRS_ADDR=127.0.0.1:8080
+Restart=on-failure
+# Hardening
+ProtectSystem=yes
+PrivateTmp=true
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
