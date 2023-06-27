@@ -658,7 +658,7 @@ src_install() {
 	systemd_dounit "${FILESDIR}/lemmy.service"
 }
 pkg_preinst() {
-	if has_version "${PN}"; then
+	if has_version "${CATEGORY}/${PN}"; then
 		export EXISTING_INSTALL=1
 	fi
 }
