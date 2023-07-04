@@ -3,5 +3,6 @@
 <pkgmetadata>
   <use>
     <flag name="pict-rs">Enables the embedding of pict-rs for image hosting</flag>
+    <flag name="embed-pictrs">Enables the embedding of pict-rs for image hosting</flag>
   </use>
 </pkgmetadata>
