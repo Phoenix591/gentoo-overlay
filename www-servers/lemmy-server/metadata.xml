@@ -4,5 +4,8 @@
   <use>
     <flag name="pict-rs">Enables the embedding of pict-rs for image hosting</flag>
     <flag name="embed-pictrs">Enables the embedding of pict-rs for image hosting</flag>
+    <flag name="prometheus-metrics">Serve metrics to a <pkg>app-metrics/prometheus</pkg> server</flag>
+    <flag name="json-log">Format the log in json</flag>
+    <flag name"console>Enable the opentelemetry console</flag>
   </use>
 </pkgmetadata>
