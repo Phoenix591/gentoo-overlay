@@ -662,6 +662,7 @@ DEPEND="media-libs/gexiv2
 	dev-db/postgresql:15=
 	dev-libs/openssl:=
 "
+
 RDEPEND="${DEPEND}
 media-gfx/imagemagick
 media-video/ffmpeg
@@ -669,9 +670,9 @@ perl-gcpan/Image-ExifTool
 acct-user/lemmy
 acct-group/lemmy
 "
+
 BDEPEND="virtual/pkgconfig
 	virtual/rust[rustfmt]"
-
 
 # rust does not use *FLAGS from make.conf, silence portage warning
 # update with proper path to binaries this crate installs, omit leading /

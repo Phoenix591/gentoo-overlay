@@ -22,6 +22,7 @@ CRATES="
 	actix-tls@3.0.3
 	actix-utils@3.0.1
 	actix-web-codegen@4.2.0
+	actix-web-prom@0.6.0
 	actix-web@4.3.1
 	addr2line@0.19.0
 	adler@1.0.2
@@ -37,6 +38,8 @@ CRATES="
 	arrayvec@0.5.2
 	assert-json-diff@2.0.2
 	ast_node@0.8.8
+	async-io@1.13.0
+	async-lock@2.7.0
 	async-stream-impl@0.3.3
 	async-stream@0.3.3
 	async-trait@0.1.68
@@ -64,11 +67,15 @@ CRATES="
 	brotli-decompressor@2.3.4
 	brotli@3.3.4
 	bumpalo@3.11.1
+	bytecount@0.6.3
 	bytemuck@1.12.1
 	byteorder@1.4.3
 	bytes@1.4.0
 	bytestring@1.1.0
+	camino@1.1.4
 	captcha@0.0.9
+	cargo-platform@0.1.2
+	cargo_metadata@0.14.2
 	cc@1.0.73
 	cesu8@1.1.0
 	cfg-if@1.0.0
@@ -83,6 +90,7 @@ CRATES="
 	color-spantrace@0.2.0
 	color_quant@1.1.0
 	combine@4.6.6
+	concurrent-queue@2.2.0
 	config@0.13.3
 	console-api@0.5.0
 	console-subscriber@0.1.9
@@ -95,7 +103,7 @@ CRATES="
 	core-foundation@0.9.3
 	cpufeatures@0.2.5
 	crc32fast@1.3.2
-	crossbeam-channel@0.5.6
+	crossbeam-channel@0.5.8
 	crossbeam-epoch@0.9.13
 	crossbeam-utils@0.8.12
 	crypto-common@0.1.6
@@ -158,6 +166,9 @@ CRATES="
 	enum_kind@0.2.2
 	errno-dragonfly@0.1.2
 	errno@0.2.8
+	errno@0.3.1
+	error-chain@0.12.4
+	event-listener@2.5.3
 	eyre@0.6.8
 	fallible-iterator@0.2.0
 	fallible_collections@0.4.5
@@ -177,6 +188,7 @@ CRATES="
 	futures-core@0.3.28
 	futures-executor@0.3.28
 	futures-io@0.3.28
+	futures-lite@1.13.0
 	futures-macro@0.3.28
 	futures-sink@0.3.28
 	futures-task@0.3.28
@@ -187,6 +199,7 @@ CRATES="
 	getrandom@0.1.16
 	getrandom@0.2.8
 	gimli@0.27.0
+	glob@0.3.1
 	h2@0.3.14
 	half@1.8.2
 	hashbrown@0.12.3
@@ -195,6 +208,7 @@ CRATES="
 	heck@0.4.0
 	hermit-abi@0.1.19
 	hermit-abi@0.2.6
+	hermit-abi@0.3.2
 	hex@0.4.3
 	hmac@0.12.1
 	hostname@0.3.1
@@ -206,9 +220,7 @@ CRATES="
 	html5ever@0.26.0
 	http-body@0.4.5
 	http-range-header@0.3.0
-	http-signature-normalization-actix@0.6.2
 	http-signature-normalization-reqwest@0.8.0
-	http-signature-normalization@0.6.0
 	http-signature-normalization@0.7.0
 	http@0.2.9
 	httparse@1.8.0
@@ -227,7 +239,7 @@ CRATES="
 	indexmap@1.9.1
 	inout@0.1.3
 	instant@0.1.12
-	io-lifetimes@1.0.3
+	io-lifetimes@1.0.11
 	ipnet@2.5.0
 	is-macro@0.2.2
 	is-terminal@0.4.2
@@ -256,13 +268,15 @@ CRATES="
 	linked-hash-map@0.5.6
 	linkify@0.9.0
 	linux-raw-sys@0.1.4
+	linux-raw-sys@0.3.8
 	local-channel@0.1.3
 	local-waker@0.1.3
 	lock_api@0.4.9
 	lodepng@3.7.2
 	log@0.4.17
 	mac@0.1.1
-	markdown-it@0.5.0
+	mach2@0.4.1
+	markdown-it@0.5.1
 	markup5ever@0.10.1
 	markup5ever@0.11.0
 	markup5ever_rcdom@0.1.0
@@ -284,6 +298,7 @@ CRATES="
 	miniz_oxide@0.5.4
 	miniz_oxide@0.6.2
 	mio@0.8.4
+	moka@0.11.2
 	multimap@0.8.3
 	native-tls@0.2.10
 	never@0.1.0
@@ -315,6 +330,7 @@ CRATES="
 	os_str_bytes@6.4.1
 	overload@0.1.1
 	owo-colors@3.5.0
+	parking@2.1.0
 	parking_lot@0.11.2
 	parking_lot@0.12.1
 	parking_lot_core@0.8.6
@@ -347,6 +363,7 @@ CRATES="
 	plist@1.4.3
 	pmutil@0.5.3
 	png@0.17.6
+	polling@2.8.0
 	postgres-protocol@0.6.5
 	postgres-types@0.2.4
 	ppv-lite86@0.2.16
@@ -355,6 +372,8 @@ CRATES="
 	proc-macro-error-attr@1.0.4
 	proc-macro-error@1.0.4
 	proc-macro2@1.0.59
+	procfs@0.14.2
+	prometheus@0.13.3
 	prost-build@0.9.0
 	prost-derive@0.11.0
 	prost-derive@0.9.0
@@ -362,7 +381,10 @@ CRATES="
 	prost-types@0.9.0
 	prost@0.11.0
 	prost@0.9.0
+	protobuf@2.28.0
 	psm@0.1.21
+	pulldown-cmark@0.9.3
+	quanta@0.11.1
 	quick-xml@0.27.1
 	quick-xml@0.28.2
 	quote@1.0.28
@@ -376,6 +398,7 @@ CRATES="
 	rand_core@0.6.4
 	rand_hc@0.2.0
 	rand_pcg@0.2.1
+	raw-cpuid@10.7.0
 	readonly@0.2.8
 	redox_syscall@0.2.16
 	regex-automata@0.1.10
@@ -399,6 +422,7 @@ CRATES="
 	rustc-hash@1.1.0
 	rustc_version@0.4.0
 	rustix@0.36.5
+	rustix@0.37.22
 	rustls-webpki@0.100.1
 	rustls@0.20.7
 	rustls@0.21.2
@@ -408,6 +432,7 @@ CRATES="
 	safemem@0.3.3
 	same-file@1.0.6
 	schannel@0.1.20
+	scheduled-thread-pool@0.2.7
 	scoped-futures@0.1.3
 	scoped-tls@1.0.1
 	scopeguard@1.1.0
@@ -434,6 +459,7 @@ CRATES="
 	signal-hook-registry@1.4.0
 	simple_asn1@0.6.2
 	siphasher@0.3.10
+	skeptic@0.13.7
 	slab@0.4.7
 	sled@0.34.7
 	smallvec@1.10.0
@@ -465,6 +491,7 @@ CRATES="
 	syn@2.0.18
 	sync_wrapper@0.1.1
 	syntect@5.0.0
+	tagptr@0.2.0
 	tap@1.0.1
 	task-local-extensions@0.1.4
 	tempfile@3.3.0
@@ -546,6 +573,7 @@ CRATES="
 	vcpkg@0.2.15
 	version_check@0.9.4
 	void@1.0.2
+	waker-fn@1.1.0
 	walkdir@2.3.2
 	want@0.3.0
 	wasi@0.10.0+wasi-snapshot-preview1
@@ -603,29 +631,36 @@ CRATES="
 	zstd-sys@2.0.8+zstd.1.5.5
 	zstd@0.12.3+zstd.1.5.2
 "
-
-inherit cargo systemd flag-o-matic
+MYPV="${PV/_rc/-rc.}"
 MYPN="lemmy"
+S="${WORKDIR}/${MYPN}-${MYPV}"
+KEYWORDS="~amd64 ~arm64"
+
+if [ "${PV}" == "9999" ]; then
+	unset CRATES S KEYWORDS
+	EGIT_REPO_URI="https://github.com/LemmyNet/lemmy"
+	inherit git-r3
+fi
+inherit cargo systemd flag-o-matic
 DESCRIPTION="A link aggregator for the fediverse"
 # Double check the homepage as the cargo_metadata crate
 # does not provide this value so instead repository is used
 HOMEPAGE="https://github.com/LemmyNet/lemmy"
-MYPV="${PV/_rc/-rc.}"
-S="${WORKDIR}/${MYPN}-${MYPV}"
 
-SRC_URI="${CARGO_CRATE_URIS}
-https://github.com/LemmyNet/lemmy/archive/refs/tags/${MYPV}.tar.gz -> ${P}.tar.gz
-https://drive.google.com/uc?export=download&id=1f6WR1e4Ktd1ACGotyMGtprRjttTKPLBL -> lemmy-translations-${PV}.tar.xz"
+if [ "${PV}" != "9999" ]; then
+	SRC_URI="${CARGO_CRATE_URIS}
+	https://github.com/LemmyNet/lemmy/archive/refs/tags/${MYPV}.tar.gz -> ${P}.tar.gz
+	https://drive.google.com/uc?export=download&id=11_xTdN0baIVcB8v2r2J06O1ra1LenO3d -> lemmy-translations-0.18.1.tar.xz"
+fi
 
 # License set may be more restrictive as OR is not respected
 # use cargo@license for a more accurate license picture
 LICENSE="0BSD AGPL-3 Apache-2.0 Apache-2.0-with-LLVM-exceptions BSD BSD-2 Boost-1.0 CC0-1.0 GPL-3 GPL-3+ ISC MIT MIT-0 MPL-2.0 Unicode-DFS-2016 Unlicense ZLIB"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64"
 
 DEPEND="media-libs/gexiv2
-dev-db/postgresql:15=
-dev-libs/openssl:=
+	dev-db/postgresql:15=
+	dev-libs/openssl:=
 "
 RDEPEND="${DEPEND}
 media-gfx/imagemagick
@@ -637,13 +672,21 @@ acct-group/lemmy
 BDEPEND="virtual/pkgconfig
 	virtual/rust[rustfmt]"
 
-
 # rust does not use *FLAGS from make.conf, silence portage warning
 # update with proper path to binaries this crate installs, omit leading /
 QA_FLAGS_IGNORED="usr/bin/lemmy_server"
 
-IUSE="+embed-pictrs"
-
+IUSE="+embed-pictrs opentelemetry-console json-log prometheus-metrics"
+RESTRICT="test" # only one test and its set to ignored anyway so dont waste build time
+src_unpack() {
+	if [ "${PV}" == "9999" ]; then
+		git-r3_src_unpack
+		cargo_live_src_unpack
+		default
+	else
+	cargo_src_unpack
+	fi
+}
 src_prepare() {
 	default
 	if [ "${PV}" != "9999" ]; then
@@ -658,9 +701,12 @@ src_configure() {
 	#gcc's lto causes link issues with undefined symbols that are part of ring
 	# clangs untested. rust does enough of its own lto it shouldn't make much difference
 	local myfeatures=(
+		$(usex opentelemetry-console console "")
 		$(usev embed-pictrs)
+		$(usev json-log)
+		$(usev prometheus-metrics)
 	)
-	cargo_src_configure
+	cargo_src_configure --frozen
 }
 src_install() {
 	cargo_src_install
