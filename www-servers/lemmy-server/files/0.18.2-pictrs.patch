@@ -1,0 +1,22 @@
+Fixes build error with pict-rs 0.4.0
+
+--- ../cargo_home/gentoo/pict-rs-0.4.0/src/lib.rs	2023-07-11 07:42:24.546974339 -0500
++++ ../cargo_home/gentoo/pict-rs-0.4.0/src/lib.rs	2023-07-11 07:48:48.718430917 -0500
+@@ -1211,7 +1211,7 @@
+         .in_scope(|| actix_rt::spawn(queue::process_images(repo, store, next_worker_id())));
+ }
+ 
+-async fn launch_file_store<R: FullRepo + 'static, F: Fn(&mut web::ServiceConfig) + Send + Clone>(
++async fn launch_file_store<R: FullRepo + 'static, F: Fn(&mut web::ServiceConfig) + Send + Clone + 'static>(
+     repo: R,
+     store: FileStore,
+     extra_config: F,
+@@ -1237,7 +1237,7 @@
+ 
+ async fn launch_object_store<
+     R: FullRepo + 'static,
+-    F: Fn(&mut web::ServiceConfig) + Send + Clone,
++    F: Fn(&mut web::ServiceConfig) + Send + Clone + 'static,
+ >(
+     repo: R,
+     store_config: ObjectStoreConfig,

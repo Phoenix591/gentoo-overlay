@@ -37,12 +37,11 @@ CRATES="
 	argparse@0.2.2
 	arrayvec@0.5.2
 	assert-json-diff@2.0.2
-	ast_node@0.8.8
 	async-io@1.13.0
 	async-lock@2.7.0
 	async-stream-impl@0.3.3
 	async-stream@0.3.3
-	async-trait@0.1.68
+	async-trait@0.1.71
 	atom_syndication@0.12.1
 	autocfg@1.1.0
 	awc@3.0.1
@@ -54,8 +53,7 @@ CRATES="
 	base32@0.4.0
 	base64@0.13.1
 	base64@0.21.2
-	bcrypt@0.13.0
-	better_scoped_tls@0.1.0
+	bcrypt@0.15.0
 	bincode@1.3.3
 	bit-set@0.5.3
 	bit-vec@0.6.3
@@ -84,7 +82,7 @@ CRATES="
 	clap@4.0.32
 	clap_derive@4.0.21
 	clap_lex@0.3.0
-	clokwerk@0.3.5
+	clokwerk@0.4.0
 	codespan-reporting@0.11.1
 	color-eyre@0.6.2
 	color-spantrace@0.2.0
@@ -93,7 +91,7 @@ CRATES="
 	concurrent-queue@2.2.0
 	config@0.13.3
 	console-api@0.5.0
-	console-subscriber@0.1.9
+	console-subscriber@0.1.10
 	const_format@0.2.31
 	const_format_proc_macros@0.2.31
 	constant_time_eq@0.2.4
@@ -113,21 +111,22 @@ CRATES="
 	cxxbridge-macro@1.0.80
 	darling@0.13.4
 	darling@0.14.1
+	darling@0.20.1
 	darling_core@0.13.4
 	darling_core@0.14.1
+	darling_core@0.20.1
 	darling_macro@0.13.4
 	darling_macro@0.14.1
+	darling_macro@0.20.1
 	dashmap@5.4.0
 	deadpool-runtime@0.1.2
 	deadpool@0.9.5
-	debug_unreachable@0.1.1
-	deno_ast@0.20.0
 	derivative@2.2.0
 	derive_builder@0.12.0
 	derive_builder_core@0.12.0
 	derive_builder_macro@0.12.0
 	derive_more@0.99.17
-	deser-hjson@1.0.2
+	deser-hjson@1.2.0
 	diesel-async@0.3.1
 	diesel-derive-enum@2.1.0
 	diesel-derive-newtype@2.1.0
@@ -136,19 +135,16 @@ CRATES="
 	diesel_ltree@0.3.0
 	diesel_migrations@2.1.0
 	diesel_table_macro_syntax@0.1.0
-	digest@0.10.5
+	digest@0.10.7
 	diligent-date-parser@0.1.3
 	displaydoc@0.2.4
 	dlv-list@0.3.0
 	doku-derive@0.21.1
 	doku@0.21.1
 	downcast-rs@1.2.0
-	dprint-core@0.59.0
-	dprint-plugin-typescript@0.77.0
-	dprint-swc-ext@0.5.0
 	dyn-clone@1.0.11
 	either@1.8.0
-	email-encoding@0.1.3
+	email-encoding@0.2.0
 	email_address@0.2.3
 	encoding-index-japanese@1.20141219.5
 	encoding-index-korean@1.20141219.5
@@ -159,11 +155,11 @@ CRATES="
 	encoding_index_tests@0.1.4
 	encoding_rs@0.8.31
 	entities@1.0.1
-	enum-map-derive@0.11.0
-	enum-map@2.5.0
+	enum-map-derive@0.12.0
+	enum-map@2.6.0
 	enum_delegate@0.2.0
 	enum_delegate_lib@0.2.0
-	enum_kind@0.2.2
+	equivalent@1.0.0
 	errno-dragonfly@0.1.2
 	errno@0.2.8
 	errno@0.3.1
@@ -174,13 +170,11 @@ CRATES="
 	fallible_collections@0.4.5
 	fancy-regex@0.7.1
 	fastrand@1.8.0
-	fixedbitset@0.4.2
 	flate2@1.0.24
 	fnv@1.0.7
 	foreign-types-shared@0.1.1
 	foreign-types@0.3.2
 	form_urlencoded@1.2.0
-	from_variant@0.1.5
 	fs2@0.4.3
 	funty@1.1.0
 	futf@0.1.5
@@ -203,9 +197,9 @@ CRATES="
 	h2@0.3.14
 	half@1.8.2
 	hashbrown@0.12.3
+	hashbrown@0.14.0
 	hdrhistogram@7.5.2
-	heck@0.3.3
-	heck@0.4.0
+	heck@0.4.1
 	hermit-abi@0.1.19
 	hermit-abi@0.2.6
 	hermit-abi@0.3.2
@@ -233,35 +227,30 @@ CRATES="
 	iana-time-zone@0.1.51
 	ident_case@1.0.1
 	idna@0.2.3
+	idna@0.3.0
 	idna@0.4.0
 	image@0.24.4
 	indenter@0.3.3
 	indexmap@1.9.1
+	indexmap@2.0.0
 	inout@0.1.3
 	instant@0.1.12
 	io-lifetimes@1.0.11
 	ipnet@2.5.0
-	is-macro@0.2.2
 	is-terminal@0.4.2
 	itertools@0.10.5
+	itertools@0.11.0
 	itoa@1.0.6
 	jni-sys@0.3.0
 	jni@0.19.0
 	jobserver@0.1.26
 	js-sys@0.3.60
 	json5@0.4.1
-	jsonwebtoken@8.1.1
+	jsonwebtoken@8.3.0
 	language-tags@0.3.2
 	lazy_static@1.4.0
-	lettre@0.10.1
+	lettre@0.10.4
 	lexical-core@0.7.6
-	lexical-core@0.8.5
-	lexical-parse-float@0.8.5
-	lexical-parse-integer@0.8.6
-	lexical-util@0.8.5
-	lexical-write-float@0.8.5
-	lexical-write-integer@0.8.5
-	lexical@6.1.1
 	libc@0.2.146
 	line-wrap@0.1.1
 	link-cplusplus@1.0.7
@@ -297,9 +286,8 @@ CRATES="
 	minimal-lexical@0.2.1
 	miniz_oxide@0.5.4
 	miniz_oxide@0.6.2
-	mio@0.8.4
+	mio@0.8.8
 	moka@0.11.2
-	multimap@0.8.3
 	native-tls@0.2.10
 	never@0.1.0
 	new_debug_unreachable@1.0.4
@@ -316,13 +304,11 @@ CRATES="
 	once_cell@1.18.0
 	openssl-macros@0.1.0
 	openssl-probe@0.1.5
-	openssl-sys@0.9.88
-	openssl@0.10.54
-	opentelemetry-otlp@0.10.0
+	openssl-sys@0.9.90
+	openssl@0.10.55
 	opentelemetry-otlp@0.12.0
 	opentelemetry-proto@0.2.0
 	opentelemetry@0.16.0
-	opentelemetry@0.17.0
 	opentelemetry@0.19.0
 	opentelemetry_api@0.19.0
 	opentelemetry_sdk@0.19.0
@@ -343,7 +329,6 @@ CRATES="
 	pest_derive@2.4.0
 	pest_generator@2.4.0
 	pest_meta@2.4.0
-	petgraph@0.6.2
 	phf@0.10.1
 	phf@0.11.1
 	phf@0.8.0
@@ -354,14 +339,13 @@ CRATES="
 	phf_shared@0.10.0
 	phf_shared@0.11.1
 	phf_shared@0.8.0
-	pict-rs@0.4.0-rc.3
+	pict-rs@0.4.0
 	pin-project-internal@1.0.12
 	pin-project-lite@0.2.9
 	pin-project@1.0.12
 	pin-utils@0.1.0
 	pkg-config@0.3.25
 	plist@1.4.3
-	pmutil@0.5.3
 	png@0.17.6
 	polling@2.8.0
 	postgres-protocol@0.6.5
@@ -371,24 +355,21 @@ CRATES="
 	precomputed-hash@0.1.1
 	proc-macro-error-attr@1.0.4
 	proc-macro-error@1.0.4
-	proc-macro2@1.0.59
+	proc-macro2@1.0.64
 	procfs@0.14.2
 	prometheus@0.13.3
-	prost-build@0.9.0
 	prost-derive@0.11.0
-	prost-derive@0.9.0
 	prost-types@0.11.1
-	prost-types@0.9.0
 	prost@0.11.0
-	prost@0.9.0
 	protobuf@2.28.0
 	psm@0.1.21
 	pulldown-cmark@0.9.3
 	quanta@0.11.1
 	quick-xml@0.27.1
 	quick-xml@0.28.2
-	quote@1.0.28
-	quoted_printable@0.4.5
+	quick-xml@0.29.0
+	quote@1.0.29
+	quoted_printable@0.4.8
 	radium@0.5.3
 	rand@0.7.3
 	rand@0.8.5
@@ -402,30 +383,30 @@ CRATES="
 	readonly@0.2.8
 	redox_syscall@0.2.16
 	regex-automata@0.1.10
+	regex-automata@0.3.2
 	regex-syntax@0.6.27
-	regex-syntax@0.7.2
-	regex@1.8.4
+	regex-syntax@0.7.3
+	regex@1.9.1
 	remove_dir_all@0.5.3
 	reqwest-middleware@0.2.2
-	reqwest-tracing@0.4.4
+	reqwest-tracing@0.4.5
 	reqwest@0.11.18
 	retain_mut@0.1.9
 	rgb@0.8.34
 	riff@1.0.1
 	ring@0.16.20
 	ron@0.7.1
-	rosetta-build@0.1.2
-	rosetta-i18n@0.1.2
+	rosetta-build@0.1.3
+	rosetta-i18n@0.1.3
 	rss@2.0.4
 	rust-ini@0.18.0
 	rustc-demangle@0.1.21
-	rustc-hash@1.1.0
 	rustc_version@0.4.0
 	rustix@0.36.5
 	rustix@0.37.22
-	rustls-webpki@0.100.1
+	rustls-webpki@0.101.1
 	rustls@0.20.7
-	rustls@0.21.2
+	rustls@0.21.3
 	rustversion@1.0.9
 	rusty-s3@0.4.1
 	ryu@1.0.11
@@ -434,7 +415,6 @@ CRATES="
 	schannel@0.1.20
 	scheduled-thread-pool@0.2.7
 	scoped-futures@0.1.3
-	scoped-tls@1.0.1
 	scopeguard@1.1.0
 	scratch@1.0.2
 	sct@0.7.0
@@ -442,19 +422,19 @@ CRATES="
 	security-framework@2.7.0
 	select@0.5.0
 	semver@1.0.14
-	serde@1.0.164
+	serde@1.0.171
 	serde_cbor@0.11.2
-	serde_derive@1.0.164
-	serde_json@1.0.96
+	serde_derive@1.0.171
+	serde_json@1.0.100
 	serde_plain@1.0.1
 	serde_spanned@0.6.2
 	serde_urlencoded@0.7.1
-	serde_with@1.14.0
-	serde_with_macros@1.5.2
-	serial_test@0.9.0
-	serial_test_derive@0.9.0
+	serde_with@3.0.0
+	serde_with_macros@3.0.0
+	serial_test@2.0.0
+	serial_test_derive@2.0.0
 	sha1@0.10.5
-	sha2@0.10.6
+	sha2@0.10.7
 	sharded-slab@0.1.4
 	signal-hook-registry@1.4.0
 	simple_asn1@0.6.2
@@ -467,28 +447,18 @@ CRATES="
 	socket2@0.4.9
 	socket2@0.5.3
 	spin@0.5.2
-	stable_deref_trait@1.2.0
 	stacker@0.1.15
 	static_assertions@1.1.0
 	storage-path-generator@0.1.1
 	string_cache@0.8.4
 	string_cache_codegen@0.5.2
-	string_enum@0.3.4
 	stringprep@0.1.2
 	strsim@0.10.0
-	strum@0.24.1
-	strum_macros@0.24.3
+	strum@0.25.0
+	strum_macros@0.25.1
 	subtle@2.4.1
-	swc_atoms@0.4.23
-	swc_common@0.29.10
-	swc_ecma_ast@0.94.14
-	swc_ecma_parser@0.122.19
-	swc_eq_ignore_macros@0.1.1
-	swc_macros_common@0.3.7
-	swc_visit@0.5.5
-	swc_visit_macros@0.5.6
 	syn@1.0.103
-	syn@2.0.18
+	syn@2.0.25
 	sync_wrapper@0.1.1
 	syntect@5.0.0
 	tagptr@0.2.0
@@ -497,7 +467,6 @@ CRATES="
 	tempfile@3.3.0
 	tendril@0.4.3
 	termcolor@1.1.3
-	text_lines@0.6.0
 	thiserror-impl@1.0.40
 	thiserror@1.0.40
 	thread_local@1.1.4
@@ -515,15 +484,12 @@ CRATES="
 	tokio-rustls@0.23.4
 	tokio-rustls@0.24.1
 	tokio-stream@0.1.11
-	tokio-util@0.6.10
 	tokio-util@0.7.4
-	tokio@1.28.2
+	tokio@1.29.1
 	toml@0.5.9
 	toml@0.7.4
 	toml_datetime@0.6.2
 	toml_edit@0.19.10
-	tonic-build@0.6.2
-	tonic@0.6.2
 	tonic@0.8.2
 	tonic@0.9.2
 	totp-rs@5.0.2
@@ -531,7 +497,6 @@ CRATES="
 	tower-layer@0.3.2
 	tower-service@0.3.2
 	tower@0.4.13
-	tracing-actix-web@0.6.2
 	tracing-actix-web@0.7.5
 	tracing-attributes@0.1.23
 	tracing-awc@0.1.7
@@ -540,7 +505,6 @@ CRATES="
 	tracing-futures@0.2.5
 	tracing-log@0.1.3
 	tracing-opentelemetry@0.16.0
-	tracing-opentelemetry@0.17.4
 	tracing-opentelemetry@0.19.0
 	tracing-serde@0.1.3
 	tracing-subscriber@0.3.17
@@ -549,30 +513,26 @@ CRATES="
 	try-lock@0.2.3
 	ts-rs-macros@6.2.0
 	ts-rs@6.2.1
-	typed-arena@2.0.2
-	typed-builder@0.10.0
+	typed-builder-macro@0.15.0
+	typed-builder@0.15.0
 	typenum@1.15.0
 	ucd-trie@0.1.5
 	unicase@2.6.0
 	unicode-bidi@0.3.13
 	unicode-general-category@0.6.0
-	unicode-id@0.3.3
 	unicode-ident@1.0.5
 	unicode-normalization@0.1.22
-	unicode-segmentation@1.10.0
 	unicode-width@0.1.10
 	unicode-xid@0.2.4
-	unreachable@0.1.1
 	untrusted@0.7.1
 	url@2.4.0
 	urlencoding@2.1.2
 	utf-8@0.7.6
 	utf8-width@0.1.6
-	uuid@1.3.4
+	uuid@1.4.0
 	valuable@0.1.0
 	vcpkg@0.2.15
 	version_check@0.9.4
-	void@1.0.2
 	waker-fn@1.1.0
 	walkdir@2.3.2
 	want@0.3.0
@@ -592,7 +552,6 @@ CRATES="
 	webpage@1.6.0
 	webpki-roots@0.22.5
 	webpki@0.22.0
-	which@4.3.0
 	winapi-i686-pc-windows-gnu@0.4.0
 	winapi-util@0.1.5
 	winapi-x86_64-pc-windows-gnu@0.4.0
@@ -650,7 +609,7 @@ HOMEPAGE="https://github.com/LemmyNet/lemmy"
 if [ "${PV}" != "9999" ]; then
 	SRC_URI="${CARGO_CRATE_URIS}
 	https://github.com/LemmyNet/lemmy/archive/refs/tags/${MYPV}.tar.gz -> ${P}.tar.gz
-	https://drive.google.com/uc?export=download&id=11_xTdN0baIVcB8v2r2J06O1ra1LenO3d -> lemmy-translations-0.18.1.tar.xz"
+	https://drive.google.com/uc?export=download&id=1fHlHWN-SUTv4-dINLgh9v0pq7tai6Hyv -> lemmy-translations-0.18.2.tar.xz"
 fi
 
 # License set may be more restrictive as OR is not respected
@@ -662,6 +621,7 @@ DEPEND="media-libs/gexiv2
 	dev-db/postgresql:15=
 	dev-libs/openssl:=
 "
+
 RDEPEND="${DEPEND}
 media-gfx/imagemagick
 media-video/ffmpeg
@@ -669,6 +629,7 @@ perl-gcpan/Image-ExifTool
 acct-user/lemmy
 acct-group/lemmy
 "
+
 BDEPEND="virtual/pkgconfig
 	virtual/rust[rustfmt]"
 
@@ -677,7 +638,7 @@ BDEPEND="virtual/pkgconfig
 QA_FLAGS_IGNORED="usr/bin/lemmy_server"
 
 IUSE="+embed-pictrs opentelemetry-console json-log prometheus-metrics"
-RESTRICT="test" # only one test and its set to ignored anyway so dont waste build time
+
 src_unpack() {
 	if [ "${PV}" == "9999" ]; then
 		git-r3_src_unpack
@@ -694,6 +655,10 @@ src_prepare() {
 	else
 		echo "pub const VERSION: &str = \"$(git describe --tag)\";" > "crates/utils/src/version.rs"
 	fi
+	pushd "${WORKDIR}"
+		eapply -p1 "${FILESDIR}/0.18.2-pictrs.patch"
+	popd
+
 }
 
 src_configure() {
