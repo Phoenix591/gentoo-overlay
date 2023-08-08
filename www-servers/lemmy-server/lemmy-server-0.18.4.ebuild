@@ -7,7 +7,7 @@ EAPI=8
 
 CRATES="
 	Inflector@0.11.4
-	activitypub_federation@0.4.5
+	activitypub_federation@0.4.6
 	activitystreams-kinds@0.3.0
 	actix-codec@0.5.0
 	actix-cors@0.6.4
@@ -31,12 +31,13 @@ CRATES="
 	aho-corasick@1.0.2
 	alloc-no-stdlib@2.0.4
 	alloc-stdlib@0.2.2
+	ammonia@3.3.0
 	android-tzdata@0.1.1
 	android_system_properties@0.1.5
 	anyhow@1.0.71
 	argparse@0.2.2
-	arrayvec@0.5.2
 	assert-json-diff@2.0.2
+	async-compression@0.4.0
 	async-io@1.13.0
 	async-lock@2.7.0
 	async-stream-impl@0.3.3
@@ -59,7 +60,6 @@ CRATES="
 	bit-vec@0.6.3
 	bitflags@1.3.2
 	bitflags@2.3.1
-	bitvec@0.19.6
 	block-buffer@0.10.3
 	blowfish@0.9.1
 	brotli-decompressor@2.3.4
@@ -137,7 +137,6 @@ CRATES="
 	diesel_table_macro_syntax@0.1.0
 	digest@0.10.7
 	diligent-date-parser@0.1.3
-	displaydoc@0.2.4
 	dlv-list@0.3.0
 	doku-derive@0.21.1
 	doku@0.21.1
@@ -176,7 +175,6 @@ CRATES="
 	foreign-types@0.3.2
 	form_urlencoded@1.2.0
 	fs2@0.4.3
-	funty@1.1.0
 	futf@0.1.5
 	futures-channel@0.3.28
 	futures-core@0.3.28
@@ -190,8 +188,7 @@ CRATES="
 	futures@0.3.28
 	fxhash@0.2.1
 	generic-array@0.14.6
-	getrandom@0.1.16
-	getrandom@0.2.8
+	getrandom@0.2.10
 	gimli@0.27.0
 	glob@0.3.1
 	h2@0.3.14
@@ -210,7 +207,6 @@ CRATES="
 	html-escape@0.2.13
 	html2md@0.2.14
 	html2text@0.6.0
-	html5ever@0.25.2
 	html5ever@0.26.0
 	http-body@0.4.5
 	http-range-header@0.3.0
@@ -226,7 +222,6 @@ CRATES="
 	iana-time-zone-haiku@0.1.1
 	iana-time-zone@0.1.51
 	ident_case@1.0.1
-	idna@0.2.3
 	idna@0.3.0
 	idna@0.4.0
 	image@0.24.4
@@ -250,7 +245,6 @@ CRATES="
 	language-tags@0.3.2
 	lazy_static@1.4.0
 	lettre@0.10.4
-	lexical-core@0.7.6
 	libc@0.2.146
 	line-wrap@0.1.1
 	link-cplusplus@1.0.7
@@ -265,14 +259,12 @@ CRATES="
 	log@0.4.17
 	mac@0.1.1
 	mach2@0.4.1
+	maplit@1.0.2
 	markdown-it@0.5.1
-	markup5ever@0.10.1
 	markup5ever@0.11.0
-	markup5ever_rcdom@0.1.0
 	markup5ever_rcdom@0.2.0
 	match_cfg@0.1.0
 	matchers@0.1.0
-	matches@0.1.9
 	matchit@0.5.0
 	matchit@0.7.0
 	md-5@0.10.5
@@ -291,7 +283,6 @@ CRATES="
 	native-tls@0.2.10
 	never@0.1.0
 	new_debug_unreachable@1.0.4
-	nom@6.1.2
 	nom@7.1.1
 	nu-ansi-term@0.46.0
 	num-bigint@0.4.3
@@ -331,14 +322,10 @@ CRATES="
 	pest_meta@2.4.0
 	phf@0.10.1
 	phf@0.11.1
-	phf@0.8.0
 	phf_codegen@0.10.0
-	phf_codegen@0.8.0
 	phf_generator@0.10.0
-	phf_generator@0.8.0
 	phf_shared@0.10.0
 	phf_shared@0.11.1
-	phf_shared@0.8.0
 	pict-rs@0.4.0
 	pin-project-internal@1.0.12
 	pin-project-lite@0.2.9
@@ -370,15 +357,9 @@ CRATES="
 	quick-xml@0.29.0
 	quote@1.0.29
 	quoted_printable@0.4.8
-	radium@0.5.3
-	rand@0.7.3
 	rand@0.8.5
-	rand_chacha@0.2.2
 	rand_chacha@0.3.1
-	rand_core@0.5.1
 	rand_core@0.6.4
-	rand_hc@0.2.0
-	rand_pcg@0.2.1
 	raw-cpuid@10.7.0
 	readonly@0.2.8
 	redox_syscall@0.2.16
@@ -420,7 +401,7 @@ CRATES="
 	sct@0.7.0
 	security-framework-sys@2.6.1
 	security-framework@2.7.0
-	select@0.5.0
+	select@0.6.0
 	semver@1.0.14
 	serde@1.0.171
 	serde_cbor@0.11.2
@@ -448,7 +429,6 @@ CRATES="
 	socket2@0.5.3
 	spin@0.5.2
 	stacker@0.1.15
-	static_assertions@1.1.0
 	storage-path-generator@0.1.1
 	string_cache@0.8.4
 	string_cache_codegen@0.5.2
@@ -462,7 +442,6 @@ CRATES="
 	sync_wrapper@0.1.1
 	syntect@5.0.0
 	tagptr@0.2.0
-	tap@1.0.1
 	task-local-extensions@0.1.4
 	tempfile@3.3.0
 	tendril@0.4.3
@@ -538,7 +517,6 @@ CRATES="
 	want@0.3.0
 	wasi@0.10.0+wasi-snapshot-preview1
 	wasi@0.11.0+wasi-snapshot-preview1
-	wasi@0.9.0+wasi-snapshot-preview1
 	wasm-bindgen-backend@0.2.83
 	wasm-bindgen-futures@0.4.33
 	wasm-bindgen-macro-support@0.2.83
@@ -548,7 +526,7 @@ CRATES="
 	wasm-streams@0.2.3
 	wav@1.0.0
 	web-sys@0.3.60
-	webmention@0.4.0
+	webmention@0.5.0
 	webpage@1.6.0
 	webpki-roots@0.22.5
 	webpki@0.22.0
@@ -581,8 +559,6 @@ CRATES="
 	windows_x86_64_msvc@0.48.0
 	winnow@0.4.6
 	winreg@0.10.1
-	wyz@0.2.0
-	xml5ever@0.16.2
 	xml5ever@0.17.0
 	yaml-rust@0.4.5
 	zeroize@1.5.7
@@ -595,7 +571,7 @@ MYPN="lemmy"
 S="${WORKDIR}/${MYPN}-${MYPV}"
 KEYWORDS="~amd64 ~arm64"
 
-if [ "${PV}" == "9999" ]; then
+if [ "${PV}" == "9999" ] || [ "$(ver_cut 3)" == "9999" ]; then
 	unset CRATES S KEYWORDS
 	EGIT_REPO_URI="https://github.com/LemmyNet/lemmy"
 	inherit git-r3
@@ -606,10 +582,10 @@ DESCRIPTION="A link aggregator for the fediverse"
 # does not provide this value so instead repository is used
 HOMEPAGE="https://github.com/LemmyNet/lemmy"
 
-if [ "${PV}" != "9999" ]; then
+if [ "${PV}" != "9999" ] && [ "$(ver_cut 3)" != "9999" ]; then
 	SRC_URI="${CARGO_CRATE_URIS}
 	https://github.com/LemmyNet/lemmy/archive/refs/tags/${MYPV}.tar.gz -> ${P}.tar.gz
-	https://drive.google.com/uc?export=download&id=1fHlHWN-SUTv4-dINLgh9v0pq7tai6Hyv -> lemmy-translations-0.18.2.tar.xz"
+	https://drive.google.com/uc?export=download&id=1fKq0otZhXbQ2GvHq3Z4a93zj1kdtrY4u -> lemmy-translations-0.18.4.tar.xz"
 fi
 
 # License set may be more restrictive as OR is not respected
@@ -631,7 +607,7 @@ acct-group/lemmy
 "
 
 BDEPEND="virtual/pkgconfig
-	virtual/rust[rustfmt]"
+	>=virtual/rust-1.70.0[rustfmt]" #todo test if rustfmt still needed, shouldnt be for 0.18.3+
 
 # rust does not use *FLAGS from make.conf, silence portage warning
 # update with proper path to binaries this crate installs, omit leading /
@@ -644,21 +620,21 @@ src_unpack() {
 		git-r3_src_unpack
 		cargo_live_src_unpack
 		default
+	elif [ "$(ver_cut 3)" == "9999" ]; then
+		EGIT_BRANCH="release/v$(ver_cut 1-2)"
+		git-r3_src_unpack
+		cargo_live_src_unpack
 	else
 	cargo_src_unpack
 	fi
 }
 src_prepare() {
 	default
-	if [ "${PV}" != "9999" ]; then
+	if [ "${PV}" != "9999" ] && [ $(ver_cut 3) != "9999" ]; then
 		echo "pub const VERSION: &str = \"${MYPV}\";" > "crates/utils/src/version.rs"
 	else
 		echo "pub const VERSION: &str = \"$(git describe --tag)\";" > "crates/utils/src/version.rs"
 	fi
-	pushd "${WORKDIR}"
-		eapply -p1 "${FILESDIR}/0.18.2-pictrs.patch"
-	popd
-
 }
 
 src_configure() {
