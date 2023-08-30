@@ -52,7 +52,7 @@ pkg_setup() {
 			fi
 		fi
 	fi
-
+	BUILD_PARAMS+=" CC=$(get-KERNEL_CC)"
 	VMWARE_MODULE_LIST="vmmon vmnet"
 
 	VMWARE_MOD_DIR="${PN}-${PVR}"

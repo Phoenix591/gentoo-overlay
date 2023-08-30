@@ -1,31 +1,28 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit  flag-o-matic linux-info linux-mod  udev
 
 DESCRIPTION="VMware kernel modules"
 HOMEPAGE="https://github.com/mkubecek/vmware-host-modules"
 
-#MY_KERNEL_VERSION="-k5.16"
-SRC_URI="workstation? ( https://github.com/mkubecek/vmware-host-modules/archive/refs/tags/w${PV}${MY_KERNEL_VERSION}.tar.gz -> ${P}-w-${MY_KERNEL_VERSION}.tar.gz )
-	player? ( https://github.com/mkubecek/vmware-host-modules/archive//refs/tags/p${PV}${MY_KERNEL_VERSION}.tar.gz -> ${P}-p-${MY_KERNEL_VERSION}.tar.gz )"
+SRC_URI=" https://github.com/mkubecek/vmware-host-modules/archive/refs/tags/w${PV}.tar.gz -> ${P}-workstation.tar.gz "
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="+workstation player"
-REQUIRED_USE="^^ ( workstation player )"
+IUSE=""
 RDEPEND="acct-group/vmware"
 DEPEND=""
 PDEPEND=""
 RESTRICT="mirror"
-S="${WORKDIR}/vmware-host-modules-${PV}-k${MY_KERNEL_VERSION}"
+S="${WORKDIR}/vmware-host-modules-${PV}"
 
 src_unpack() {
 	default
-	mv "${WORKDIR}"/vmware-host-modules-?"${PV}-k${MY_KERNEL_VERSION}" "${WORKDIR}/vmware-host-modules-${PV}-k${MY_KERNEL_VERSION}" || die
+	mv "${WORKDIR}"/vmware-host-modules-?"${PV}" "${WORKDIR}/vmware-host-modules-${PV}" || die
 }
 pkg_setup() {
 	CONFIG_CHECK="~HIGH_RES_TIMERS"
@@ -40,6 +37,8 @@ pkg_setup() {
 	linux-info_pkg_setup
 	linux-mod_pkg_setup
 
+	BUILD_PARAMS+='V=1 CFLAGS_MODULE="-Wno-error -Wno-error=strict-prototypes"'
+
 	if linux_chkconfig_present CC_IS_CLANG; then
 		ewarn "Warning: building ${PN} with a clang-built kernel is experimental"
 		BUILD_PARAMS+=' CC=${CHOST}-clang'
@@ -51,7 +50,7 @@ pkg_setup() {
 			fi
 		fi
 	fi
-
+	BUILD_PARAMS+=" CC=$(get-KERNEL_CC)"
 	VMWARE_MODULE_LIST="vmmon vmnet"
 
 	VMWARE_MOD_DIR="${PN}-${PVR}"
@@ -60,6 +59,7 @@ pkg_setup() {
 
 	filter-flags -mfpmath=sse -mavx -mpclmul -maes
 	append-cflags -mno-sse  # Found a problem similar to bug #492964
+	append-cflags -Wno-error # Keeps pulling in Werror out of nowhere
 
 	for mod in ${VMWARE_MODULE_LIST}; do
 		MODULE_NAMES="${MODULE_NAMES} ${mod}(misc:${S}/${mod}-only)"
@@ -73,6 +73,7 @@ src_prepare() {
 		-e "s%VM_UNAME = .*\$%VM_UNAME = ${KV_FULL}%" \
 		*/Makefile || die "sed failed"
 
+	sed -i -e 's/-Werror//' */Makefile* || die "Disabling Werror failed"
 	# Allow user patches so they can support RC kernels and whatever else
 	default
 }

@@ -1,10 +1,10 @@
 # Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( python3_{8..10} )
-inherit eutils readme.gentoo-r1 pam python-any-r1 systemd xdg-utils desktop
+inherit readme.gentoo-r1 pam python-any-r1 systemd xdg-utils desktop
 
 MY_PN="VMware-Player-Full"
 MY_PV=$(ver_cut 1-3)
@@ -12,9 +12,11 @@ PV_MODULES="${MY_PV}"
 PV_BUILD=$(ver_cut 4)
 MY_P="${MY_PN}-${MY_PV}-${PV_BUILD}"
 #VMWARE_FUSION_VER="12.1.2/17964953" # https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/
-VMWARE_FUSION_VER="13.0.1/21139760"
+VMWARE_FUSION_VER="13.0.2"
+FUSION_BUILD="21581413"
+MY_VMWARE_FUSION_VER="${VMWARE_FUSION_VER}-${FUSION_BUILD}}"
 SYSTEMD_UNITS_TAG="gentoo-02"
-UNLOCKER_VERSION="3.0.4"
+UNLOCKER_VERSION="3.0.5"
 
 DESCRIPTION="Emulate a complete PC without the performance overhead of most emulators"
 HOMEPAGE="http://www.vmware.com/products/workstation-player/"
@@ -22,8 +24,8 @@ SRC_URI="
 	https://download3.vmware.com/software/WKST-PLAYER-${MY_PV//./}/${MY_P}.x86_64.bundle
 	macos-guests? (
 		https://github.com/paolo-projects/unlocker/archive/${UNLOCKER_VERSION}.tar.gz -> unlocker-${UNLOCKER_VERSION}.tar.gz
-		vmware-tools-darwinPre15? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/universal/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${PV}.zip.tar )
-		vmware-tools-darwin? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/universal/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${PV}.zip.tar )
+		vmware-tools-darwinPre15? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/${FUSION_BUILD}/universal/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${MY_VMWARE_FUSION_VER}.zip.tar )
+		vmware-tools-darwin? ( https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/${VMWARE_FUSION_VER}/${FUSION_BUILD}/universal/core/com.vmware.fusion.zip.tar -> com.vmware.fusion-${MY_VMWARE_FUSION_VER}.zip.tar )
 	)
 	systemd? ( https://github.com/akhuettel/systemd-vmware/archive/${SYSTEMD_UNITS_TAG}.tar.gz -> vmware-systemd-${SYSTEMD_UNITS_TAG}.tgz )
 	"
@@ -58,7 +60,6 @@ RDEPEND="
 	gnome-base/dconf
 	media-gfx/graphite2
 	media-libs/alsa-lib
-	media-libs/libart_lgpl
 	media-libs/libvorbis
 	media-libs/mesa
 	media-plugins/alsa-plugins[speex]
@@ -208,9 +209,8 @@ src_install() {
 	fi
 
 	# Hardcoded EULA path. We need to disable the default compression.
-	insinto /usr/share/doc/vmware-player
-	doins vmware-player/doc/EULA
-	docompress -x /usr/share/doc/vmware-player
+#	insinto /usr/share/doc/vmware-player
+	dodoc vmware-player/doc/EULA
 	# always needed
 	insinto /usr/lib/vmware-ovftool
 	doins vmware-ovftool/vmware.eula
