@@ -36,5 +36,7 @@ python_prepare_all() {
 	distutils-r1_python_prepare_all
 }
 python_test() {
-epytest tests/test1.py
+pushd  tests
+local EPYTEST_IGNORE=('test_issue114.py' ) # known fail
+epytest
 }
