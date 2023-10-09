@@ -74,10 +74,7 @@ src_prepare() {
 		*/Makefile || die "sed failed"
 
 	sed -i -e 's/-Werror//' */Makefile* || die "Disabling Werror failed"
-	if kernel_is -lt 6 5; then
-#		eapply -r "${FILESDIR}/linux-6.5.patch" || die "Failed to revert linux 6.5 change"
-	true
-	fi
+	eapply "${FILESDIR}/17.0.2-mkubecek-fee62c94.patch" || die
 	# Allow user patches so they can support RC kernels and whatever else
 	default
 }

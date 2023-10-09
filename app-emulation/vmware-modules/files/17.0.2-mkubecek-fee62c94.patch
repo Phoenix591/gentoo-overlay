@@ -1,0 +1,1253 @@
+From 85b0a68eea744cd25efb3980f7530d65271ee8da Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Tue, 15 Sep 2020 18:58:14 +0200
+Subject: [PATCH 01/21] vmmon: rename GDT_SIZE macro to avoid collision
+
+When building against kernel 4.12 and newer, macro name GDT_SIZE used in
+(vmmon) include/segs.h collides with macro defined in (kernel source)
+arch/x86/include/asm/segment.h, resulting in its redefinition.
+
+To prevent potential problems, rename vmmon's GDT_SIZE to VMMON_GDT_SIZE
+and GDT_LIMIT to VMMON_GDT_LIMIT. (There is no GDT_LIMIT in mainline kernel
+source but let's be consistent.)
+---
+ vmmon-only/common/crosspage.c | 2 +-
+ vmmon-only/include/segs.h     | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/vmmon-only/common/crosspage.c b/vmmon-only/common/crosspage.c
+index 8a8c11c1df953ad4a5dde19eefad12717c4f3bb3..89e8a8c864bf9db83ee36f2ffca2a51ca9b58bc3 100644
+--- a/vmmon-only/common/crosspage.c
++++ b/vmmon-only/common/crosspage.c
+@@ -121,7 +121,7 @@ CPDATA const VMCrossPageData cpDataTemplate = {
+ 
+    .monTask.IOMapBase = sizeof(Task64),
+ 
+-   .monGDTR.limit  = GDT_LIMIT,
++   .monGDTR.limit  = VMMON_GDT_LIMIT,
+    .monGDTR.offset = GDT_START_VA,
+ 
+    .shadowDR[6].ureg64 = DR6_DEFAULT,
+diff --git a/vmmon-only/include/segs.h b/vmmon-only/include/segs.h
+index 6e25852ac02bb77f34bdda5ca46a8854bbb12ca3..cc9a42b99a55c93eb2e4c7fa93eb3db645cc4d56 100644
+--- a/vmmon-only/include/segs.h
++++ b/vmmon-only/include/segs.h
+@@ -46,15 +46,15 @@
+ 
+ #define PCPU_DATA_SIZE        (32 * CACHELINE_SIZE)
+ 
+-#define GDT_SIZE              (sizeof(Descriptor) * NUM_VALID_SEGMENTS)
+-#define GDT_LIMIT             (GDT_SIZE - 1)
++#define VMMON_GDT_SIZE        (sizeof(Descriptor) * NUM_VALID_SEGMENTS)
++#define VMMON_GDT_LIMIT       (VMMON_GDT_SIZE - 1)
+ 
+ #define IRB_SIZE              32 /* Interrupt redirection bitmap. */
+ #define TSS_SIZE              (sizeof(Task64) + IRB_SIZE)
+ 
+ #define PCPU_DATA_VA          (VPN_2_VA(GDT_AND_TASK_START))
+ #define GDT_START_VA          (PCPU_DATA_VA + PCPU_DATA_SIZE)
+-#define TASK_START_VA         (GDT_START_VA + GDT_SIZE)
++#define TASK_START_VA         (GDT_START_VA + VMMON_GDT_SIZE)
+ 
+ /*
+  * vmkBoot uses some of the lower-numbered segments, as do host kernels on
+-- 
+2.42.0
+
+
+From b9dae88927259689f9f5e5567166ad7d3bcaf57b Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 18 Nov 2022 13:42:16 +0100
+Subject: [PATCH 02/21] modules: use standard constant definitions if available
+
+The PCI_VENDOR_ID_VMWARE macro is defined in mainline pci_ids.h since
+commit 94e57fea6202 ("PCI: Move PCI_VENDOR_ID_VMWARE to pci_ids.h") in
+v3.18-rc1.
+
+The PCI_DEVICE_ID_VMWARE_VMXNET3 macro is defined in mainline pci_ids.h
+since commit b1226c7db1d9 ("vmxnet3: Move PCI Id to pci_ids.h") in
+v4.10-rc1.
+
+The MSR_MISC_FEATURES_ENABLES_CPUID_FAULT macro is defined in mainline
+since commit e9ea1e7f53b8 ("x86/arch_prctl: Add ARCH_[GET|SET]_CPUID") in
+v4.12-rc1.
+
+The CR3_PCID_MASK is defined in mainline asm/processor-flags.h since commit
+6c690ee1039b ("x86/mm: Split read_cr3() into read_cr3_pa() and
+__read_cr3()") in v4.13-rc1.
+---
+ vmmon-only/include/x86_basic_defs.h | 2 ++
+ vmmon-only/include/x86msr.h         | 5 +++++
+ vmnet-only/vm_device_version.h      | 9 +++++++++
+ 3 files changed, 16 insertions(+)
+
+diff --git a/vmmon-only/include/x86_basic_defs.h b/vmmon-only/include/x86_basic_defs.h
+index 42885b08c79b3dee4f21466120b4e351a7b085f7..9ee164fac3cc42788c9829199306a116204068d7 100644
+--- a/vmmon-only/include/x86_basic_defs.h
++++ b/vmmon-only/include/x86_basic_defs.h
+@@ -35,6 +35,8 @@
+ #define INCLUDE_ALLOW_VMCORE
+ #include "includeCheck.h"
+ 
++#include <asm/processor-flags.h>
++
+ #define X86_MAX_INSTR_LEN  15   /* Max byte length of an x86 instruction. */
+ 
+ #define NUM_IDT_VECTORS 256
+diff --git a/vmmon-only/include/x86msr.h b/vmmon-only/include/x86msr.h
+index 7def93ab60881bd5d0c51891fcbe984d3ff7206f..189c98239392671d1bc8e5c3741c80b82ca7a6cb 100644
+--- a/vmmon-only/include/x86msr.h
++++ b/vmmon-only/include/x86msr.h
+@@ -24,6 +24,7 @@
+ 
+ #ifndef _X86MSR_H_
+ #define _X86MSR_H_
++#include <asm/msr-index.h>
+ #define INCLUDE_ALLOW_USERLEVEL
+ #define INCLUDE_ALLOW_VMX
+ 
+@@ -974,7 +975,11 @@ typedef unsigned char MTRRType;
+ /*
+  * MISC_FEATURES_ENABLES bits
+  */
++#ifdef MSR_MISC_FEATURES_ENABLES_CPUID_FAULT
++#define MSR_MISC_FEATURES_ENABLES_CPUID_FAULTING MSR_MISC_FEATURES_ENABLES_CPUID_FAULT
++#else
+ #define MSR_MISC_FEATURES_ENABLES_CPUID_FAULTING 1
++#endif
+ 
+ 
+ 
+diff --git a/vmnet-only/vm_device_version.h b/vmnet-only/vm_device_version.h
+index 7691618d61e4ca22de9f20fa865c21c1805ed8d7..9a921ee49cfcbaa93cdecd372bc0226d235d1876 100644
+--- a/vmnet-only/vm_device_version.h
++++ b/vmnet-only/vm_device_version.h
+@@ -35,6 +35,8 @@
+ #endif
+ #endif
+ 
++#include <linux/pci_ids.h>
++
+ /* LSILogic 53C1030 Parallel SCSI controller
+  * LSILogic SAS1068 SAS controller
+  */
+@@ -54,7 +56,10 @@
+  *    VMware HD Audio codec
+  *    VMware HD Audio controller
+  */
++#ifndef PCI_VENDOR_ID_VMWARE
+ #define PCI_VENDOR_ID_VMWARE                    0x15AD
++#endif
++
+ #define PCI_DEVICE_ID_VMWARE_SBX                0x0420
+ #define PCI_DEVICE_ID_VMWARE_SVGA_EFI           0x0407
+ #define PCI_DEVICE_ID_VMWARE_SVGA3              0x0406
+@@ -74,7 +79,11 @@
+ #define PCI_DEVICE_ID_VMWARE_1394               0x0780
+ #define PCI_DEVICE_ID_VMWARE_BRIDGE             0x0790
+ #define PCI_DEVICE_ID_VMWARE_ROOTPORT           0x07A0
++
++#ifndef PCI_DEVICE_ID_VMWARE_VMXNET3
+ #define PCI_DEVICE_ID_VMWARE_VMXNET3            0x07B0
++#endif
++
+ #define PCI_DEVICE_ID_VMWARE_PVSCSI             0x07C0
+ #define PCI_DEVICE_ID_VMWARE_82574              0x07D0
+ #define PCI_DEVICE_ID_VMWARE_AHCI               0x07E0
+-- 
+2.42.0
+
+
+From 9044435776eaf44c91bdfb70aae0cd6afed3d1c7 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 11 Mar 2022 18:37:33 +0100
+Subject: [PATCH 03/21] vmmon: drop pointless check
+
+Compilation with gcc12 warns that check of header->entries for null is
+always false because it's an array embedded in struct rather than
+a pointer. The check is indeed useless (and omitted by optimizer anyway).
+It does no harm either but keeping the build clean of warnings helps to
+spot new ones so drop the check.
+---
+ vmmon-only/bootstrap/monLoader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vmmon-only/bootstrap/monLoader.c b/vmmon-only/bootstrap/monLoader.c
+index fef36977b778f3e3112752a38d03ecd901695710..535d8f6737543abd1447d28bff1bdcb681867a22 100644
+--- a/vmmon-only/bootstrap/monLoader.c
++++ b/vmmon-only/bootstrap/monLoader.c
+@@ -791,7 +791,7 @@ MonLoader_Process(MonLoaderHeader  *header,   // IN/OUT
+    }
+    *line = LINE_INVALID;
+ 
+-   if (header->entries == 0 || header->count == 0) {
++   if (header->count == 0) {
+       return ML_ERROR_TABLE_MISSING;
+    }
+ 
+-- 
+2.42.0
+
+
+From 4ef90b18e3eda246fe9d110edfef866389d9e277 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 30 Sep 2017 21:41:51 +0200
+Subject: [PATCH 04/21] vmmon: quick workaround for objtool warnings
+
+As discussed in
+
+  https://bugzilla.suse.com/show_bug.cgi?id=1059674
+
+the reason for multiple objtool warnings is the fact that vmmon module
+defines its own Panic() function which never returns. While it is marked as
+such which is used by the compiler for optimization, there is no way to
+find this from object file.
+
+While this seems innocuous, it might result in problems with unwinder
+later. The quickest way around is to replace vmmon's own Panic() with
+standard kernel panic() until a cleaner solution is found.
+---
+ vmmon-only/include/vm_assert.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/vmmon-only/include/vm_assert.h b/vmmon-only/include/vm_assert.h
+index fca8500775d49588a6014cd8aba1d50f18b9248a..d834d682d666656821812db2ae8a45388f730f6b 100644
+--- a/vmmon-only/include/vm_assert.h
++++ b/vmmon-only/include/vm_assert.h
+@@ -74,6 +74,7 @@ extern "C" {
+ # if defined (VMKPANIC)
+ #  include "vmk_assert.h"
+ # else /* !VMKPANIC */
++#  include <linux/kernel.h>
+ #  define _ASSERT_PANIC(name) \
+            Panic(_##name##Fmt "\n", __FILE__, __LINE__)
+ #  define _ASSERT_PANIC_BUG(bug, name) \
+@@ -114,7 +115,7 @@ NORETURN void Panic_NoSave(const char *fmt, ...) PRINTF_DECL(1, 2);
+    } while(0)
+ 
+ #else /* !VMKPANIC */
+-NORETURN void Panic(const char *fmt, ...) PRINTF_DECL(1, 2);
++#define Panic panic
+ #endif
+ 
+ void LogThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
+-- 
+2.42.0
+
+
+From 200a2e31e31bbb6486fcac71ab9da912b86d8fef Mon Sep 17 00:00:00 2001
+From: Theo Bertacchini <theo.bertacchini@epitech.eu>
+Date: Sun, 27 May 2018 17:14:52 +0900
+Subject: [PATCH 05/21] modules: remove .cache.mk on make clean
+
+Remove .cache.mk inside vmmon-only and vmnet-only when executing
+"make clean". This file can cause issues when upgrading gcc as make will
+still look for includes inside older gcc includes directory.
+
+File .cache.mk with cache of generated variables was created by build since
+kernel v4.15-rc1, commit 3298b690b21c ("kbuild: Add a cache for generated
+variables") until the feature was removed in v4.18-rc1, commit e08d6de4e532
+("kbuild: remove kbuild cache").
+---
+ vmmon-only/Makefile.kernel | 2 +-
+ vmnet-only/Makefile.kernel | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/vmmon-only/Makefile.kernel b/vmmon-only/Makefile.kernel
+index 69ee8d03e33d6c46ede940b073b675b4cf914468..a39e099df4ff1bf2d1e3e2025530d89d4ad11144 100644
+--- a/vmmon-only/Makefile.kernel
++++ b/vmmon-only/Makefile.kernel
+@@ -29,7 +29,7 @@ $(DRIVER)-y := $(subst $(SRCROOT)/, , $(patsubst %.c, %.o, \
+ 		$(SRCROOT)/bootstrap/*.c)))
+ 
+ clean:
+-	rm -rf $(wildcard $(DRIVER).mod.c $(DRIVER).ko .tmp_versions \
++	rm -rf $(wildcard $(DRIVER).mod.c $(DRIVER).ko .tmp_versions .cache.mk \
+ 		Module.symvers Modules.symvers Module.markers modules.order \
+ 		$(foreach dir,linux/ common/ bootstrap/ \
+ 		./,$(addprefix $(dir),.*.cmd .*.o.flags *.o)))
+diff --git a/vmnet-only/Makefile.kernel b/vmnet-only/Makefile.kernel
+index 44a8a95d23999cfde4a930b0a04074aae2863c95..de04abeeb8449144e65f25d66441d1c3b346898d 100644
+--- a/vmnet-only/Makefile.kernel
++++ b/vmnet-only/Makefile.kernel
+@@ -32,6 +32,6 @@ $(DRIVER)-y := driver.o hub.o userif.o netif.o bridge.o procfs.o smac_compat.o \
+ ####
+ 
+ clean:
+-	rm -rf $(DRIVER).o $(DRIVER).mod.o $(DRIVER).mod.c $(DRIVER).ko \
++	rm -rf $(DRIVER).o $(DRIVER).mod.o $(DRIVER).mod.c $(DRIVER).ko .cache.mk \
+ 	       .tmp_versions Module.symvers Modules.symvers Module.markers \
+ 	       modules.order $($(DRIVER)-y) .*.cmd .*.o.flags
+-- 
+2.42.0
+
+
+From 631358855532e0f097f6e5b4392b87f15ac868d8 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Thu, 20 Aug 2020 10:39:56 +0200
+Subject: [PATCH 06/21] vmmon: include <asm/irq_vectors.h> explicitly
+
+After mainline commit 13c01139b171 ("x86/headers: Remove APIC headers from
+<asm/smp.h>") in 5.9-rc1, APIC headers are no longer included via
+<asm/smp.h> so that linux/hostif.c will use incorrect fallback definitions
+of SPURIOUS_APIC_VECTOR, POSTED_INTR_VECTOR and ERROR_APIC_VECTOR even if
+built against kernel where these are defined.
+
+Include <asm/irq_vectors.h> in linux/hostif.c explicitly to avoid that.
+---
+ vmmon-only/linux/hostif.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/vmmon-only/linux/hostif.c b/vmmon-only/linux/hostif.c
+index 4fac1e43c51c221c8106aa024f229d1013dc2fec..a2860ba399f63907dbf7f93cf2bbf637bfb4d5d1 100644
+--- a/vmmon-only/linux/hostif.c
++++ b/vmmon-only/linux/hostif.c
+@@ -47,6 +47,7 @@
+ #include <asm/io.h>
+ #include <asm/page.h>
+ #include <asm/uaccess.h>
++#include <asm/irq_vectors.h>
+ #include <linux/capability.h>
+ #include <linux/kthread.h>
+ #include <linux/wait.h>
+-- 
+2.42.0
+
+
+From 41b90f7c8428dcea8fcfea9b5af09d3662d33972 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 14 Mar 2020 10:12:16 +0100
+Subject: [PATCH 07/21] vmnet: convert VNetBridge debugging code to
+ ktime_get_ns()
+
+The do_gettimeofday() helper was removed by commit e4b92b108c6c
+("timekeeping: remove obsolete time accessors") in v5.0-rc1 and since
+commit c766d1472c70 ("y2038: hide timeval/timespec/itimerval/itimerspec
+types") in v5.6-rc3, struct timeval should no longer be used in kernel
+code.
+
+Convert the do_gettimeofday() relics in VNetBridge (which are only compiled
+with LOGLEVEL >= 4) completely to ktime based interface.
+---
+ vmnet-only/bridge.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/vmnet-only/bridge.c b/vmnet-only/bridge.c
+index feb22eec648e594f2b6e93738369297bc1f0ec9d..02456ce8e25d51a25ca7008665df720c07211d82 100644
+--- a/vmnet-only/bridge.c
++++ b/vmnet-only/bridge.c
+@@ -66,7 +66,7 @@
+ #endif
+ 
+ #if LOGLEVEL >= 4
+-static struct timeval vnetTime;
++static u64 vnetTime;
+ #endif
+ 
+ typedef struct VNetBridge VNetBridge;
+@@ -690,7 +690,7 @@ VNetBridgeReceiveFromVNet(VNetJack        *this, // IN: jack
+          netif_rx(clone);
+ #endif
+ #	 if LOGLEVEL >= 4
+-	 do_gettimeofday(&vnetTime);
++	 vnetTime = ktime_get_ns();
+ #	 endif
+       }
+    }
+@@ -1489,12 +1489,11 @@ VNetBridgeReceiveFromDev(struct sk_buff *skb,         // IN: packet to receive
+ 
+ #  if LOGLEVEL >= 4
+    {
+-      struct timeval now;
+-      do_gettimeofday(&now);
++      u64 now;
++
++      now = ktime_get_ns();
+       LOG(3, (KERN_DEBUG "bridge-%s: time %d\n",
+-	      bridge->name,
+-	      (int)((now.tv_sec * 1000000 + now.tv_usec)
+-                    - (vnetTime.tv_sec * 1000000 + vnetTime.tv_usec))));
++	      bridge->name, (int)((now - vnetTime) / NSEC_PER_USEC)));
+    }
+ #  endif
+ 
+-- 
+2.42.0
+
+
+From d145cf1c497601b6364df0e9d7545101cefe0032 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 26 Nov 2022 23:55:10 +0100
+Subject: [PATCH 08/21] vmnet: hack around SLE15-SP5 backport of
+ netdevice::dev_addr changes
+
+SLE15-SP5 backported mainline commit adeef3e32146 ("net: constify
+netdev->dev_addr") from 5.17-rc1 into their "5.14" kernel. Add an extra
+hack to the version check to fix SLE15-SP5 build.
+---
+ vmmon-only/include/compat_autoconf.h | 6 ++++++
+ vmnet-only/compat_autoconf.h         | 6 ++++++
+ vmnet-only/netif.c                   | 5 +++--
+ 3 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/vmmon-only/include/compat_autoconf.h b/vmmon-only/include/compat_autoconf.h
+index 26064aa8d0b03599a66aaa33c8c62a0ef7dd4ce6..ee00015afee2d48e451f6e8cc128913894dfc23a 100644
+--- a/vmmon-only/include/compat_autoconf.h
++++ b/vmmon-only/include/compat_autoconf.h
+@@ -38,4 +38,10 @@
+ #   include <generated/autoconf.h>
+ #endif
+ 
++#if defined(CONFIG_SUSE_VERSION) && defined(CONFIG_SUSE_PATCHLEVEL)
++#   if CONFIG_SUSE_VERSION == 15 && CONFIG_SUSE_PATCHLEVEL >= 5
++#      define SLE15_SP5_BACKPORTS 1
++#   endif
++#endif
++
+ #endif /* __COMPAT_AUTOCONF_H__ */
+diff --git a/vmnet-only/compat_autoconf.h b/vmnet-only/compat_autoconf.h
+index 26064aa8d0b03599a66aaa33c8c62a0ef7dd4ce6..ee00015afee2d48e451f6e8cc128913894dfc23a 100644
+--- a/vmnet-only/compat_autoconf.h
++++ b/vmnet-only/compat_autoconf.h
+@@ -38,4 +38,10 @@
+ #   include <generated/autoconf.h>
+ #endif
+ 
++#if defined(CONFIG_SUSE_VERSION) && defined(CONFIG_SUSE_PATCHLEVEL)
++#   if CONFIG_SUSE_VERSION == 15 && CONFIG_SUSE_PATCHLEVEL >= 5
++#      define SLE15_SP5_BACKPORTS 1
++#   endif
++#endif
++
+ #endif /* __COMPAT_AUTOCONF_H__ */
+diff --git a/vmnet-only/netif.c b/vmnet-only/netif.c
+index e97ff5ce23b576b38beb95dfad5b7517edcfb622..dc5ac62b465c708d41478105c2f154c473256ae2 100644
+--- a/vmnet-only/netif.c
++++ b/vmnet-only/netif.c
+@@ -41,6 +41,7 @@
+ #include <linux/file.h>
+ 
+ #include "vnetInt.h"
++#include "compat_autoconf.h"
+ #include "compat_netdevice.h"
+ #include "vmnetInt.h"
+ 
+@@ -253,7 +254,7 @@ VNetNetIf_Create(char *devName,  // IN:
+ 
+    memset(&netIf->stats, 0, sizeof netIf->stats);
+ 
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0) && !defined(SLE15_SP5_BACKPORTS)
+    memcpy(dev->dev_addr, netIf->port.paddr, sizeof netIf->port.paddr);
+ #else
+    eth_hw_addr_set(dev, netIf->port.paddr);
+@@ -540,7 +541,7 @@ VNetNetifSetMAC(struct net_device *dev, // IN:
+       return -EINVAL;
+    }
+    memcpy(netIf->port.paddr, addr->sa_data, dev->addr_len);
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0) && !defined(SLE15_SP5_BACKPORTS)
+    memcpy(dev->dev_addr, netIf->port.paddr, dev->addr_len);
+ #else
+    eth_hw_addr_set(dev, netIf->port.paddr);
+-- 
+2.42.0
+
+
+From c219148df0129222ce6b24a48c2ee0dd6c496f91 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 26 Nov 2022 22:56:16 +0100
+Subject: [PATCH 09/21] vmnet: hack around RHEL 9.1 backports
+
+It seems RHEL 9.1 backported mainline commit 2655926aea9b ("net: Remove
+netif_rx_any_context() and netif_rx_ni().") from 5.18-rc1 into their "5.14"
+kernel. Add an extra hack to the version check to fix RHEL >= 9.1 build.
+---
+ vmmon-only/include/compat_version.h | 3 +++
+ vmnet-only/bridge.c                 | 3 ++-
+ vmnet-only/compat_version.h         | 3 +++
+ vmnet-only/netif.c                  | 3 ++-
+ 4 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/vmmon-only/include/compat_version.h b/vmmon-only/include/compat_version.h
+index 51facf4ba6cddf6129ee758594c5b7f770448f63..ec6bc8b7c3015e8da5d9a4e79760e6e679146b4c 100644
+--- a/vmmon-only/include/compat_version.h
++++ b/vmmon-only/include/compat_version.h
+@@ -135,6 +135,9 @@
+ #   if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(8, 5)
+ #      define RHEL85_BACKPORTS 1
+ #   endif
++#   if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(9, 1)
++#      define RHEL91_BACKPORTS 1
++#   endif
+ #endif
+ 
+ #endif /* __COMPAT_VERSION_H__ */
+diff --git a/vmnet-only/bridge.c b/vmnet-only/bridge.c
+index 02456ce8e25d51a25ca7008665df720c07211d82..906e09fbe9f8aed116aac086d36a45114a037aaa 100644
+--- a/vmnet-only/bridge.c
++++ b/vmnet-only/bridge.c
+@@ -49,6 +49,7 @@
+ #   include <linux/wireless.h>
+ #endif
+ #include "vmnetInt.h"
++#include "compat_version.h"
+ #include "compat_netdevice.h"
+ #include "vnetInt.h"
+ #include "smac.h"
+@@ -684,7 +685,7 @@ VNetBridgeReceiveFromVNet(VNetJack        *this, // IN: jack
+ 	 }
+          spin_unlock_irqrestore(&bridge->historyLock, flags);
+ 
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0) && !defined(RHEL91_BACKPORTS)
+          netif_rx_ni(clone);
+ #else
+          netif_rx(clone);
+diff --git a/vmnet-only/compat_version.h b/vmnet-only/compat_version.h
+index 51facf4ba6cddf6129ee758594c5b7f770448f63..ec6bc8b7c3015e8da5d9a4e79760e6e679146b4c 100644
+--- a/vmnet-only/compat_version.h
++++ b/vmnet-only/compat_version.h
+@@ -135,6 +135,9 @@
+ #   if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(8, 5)
+ #      define RHEL85_BACKPORTS 1
+ #   endif
++#   if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(9, 1)
++#      define RHEL91_BACKPORTS 1
++#   endif
+ #endif
+ 
+ #endif /* __COMPAT_VERSION_H__ */
+diff --git a/vmnet-only/netif.c b/vmnet-only/netif.c
+index dc5ac62b465c708d41478105c2f154c473256ae2..8c39384a5b288d1f31547d7b46aae4ee016a2160 100644
+--- a/vmnet-only/netif.c
++++ b/vmnet-only/netif.c
+@@ -41,6 +41,7 @@
+ #include <linux/file.h>
+ 
+ #include "vnetInt.h"
++#include "compat_version.h"
+ #include "compat_autoconf.h"
+ #include "compat_netdevice.h"
+ #include "vmnetInt.h"
+@@ -350,7 +351,7 @@ VNetNetIfReceive(VNetJack        *this, // IN: jack
+    /* send to the host interface */
+    skb->dev = netIf->dev;
+    skb->protocol = eth_type_trans(skb, netIf->dev);
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0) && !defined(RHEL91_BACKPORTS)
+    netif_rx_ni(skb);
+ #else
+    netif_rx(skb);
+-- 
+2.42.0
+
+
+From 8b8c877556feb2c75d5c43bdad293365cd9a8d1c Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 26 Nov 2022 23:26:01 +0100
+Subject: [PATCH 10/21] vmmon: hack around RHEL 9.2 backport
+ (HAVE_GET_KERNEL_NOFAULT)
+
+Apparently RHEL 9.2 backported mainline commit 34737e269803 ("uaccess: add
+generic __{get,put}_kernel_nofault") from 5.18-rc1 into their "5.14" kernel.
+To avoid another RHEL_RELEASE_CODE test, check for __get_kernel_nofault
+macro like we do in workstation-16.2.4 branch.
+---
+ vmmon-only/linux/hostif.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/vmmon-only/linux/hostif.c b/vmmon-only/linux/hostif.c
+index a2860ba399f63907dbf7f93cf2bbf637bfb4d5d1..b9e3d30cb33782479fa103b1df7521b8f4d7e796 100644
+--- a/vmmon-only/linux/hostif.c
++++ b/vmmon-only/linux/hostif.c
+@@ -2333,7 +2333,8 @@ isVAReadable(VA r)  // IN:
+    int ret;
+ 
+    r = APICR_TO_ADDR(r, APICR_VERSION);
+-#if defined(HAVE_GET_KERNEL_NOFAULT) || LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0)
++#if defined(HAVE_GET_KERNEL_NOFAULT) || LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0) || \
++    defined(__get_kernel_nofault)
+    /*
+     * Exists from 5.10, first indicated by HAVE_GET_KERNEL_NOFAULT,
+     * and from post-5.17 just existing everywhere.
+-- 
+2.42.0
+
+
+From 0ca979d4bd06144204d720bb82f0a1e29024f9fa Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Wed, 18 Jan 2023 00:19:52 +0100
+Subject: [PATCH 11/21] vmnet: use explicit module_init() and module_exit()
+ (#187)
+
+While vmmon module already uses explicit module_init() and module_exit()
+for its init and cleanup function, vmnet relies on traditional magic names
+init_module() and cleanup_module(). Apparently this has an unfortunate side
+effect that the two functions are not identified as indirect call targets
+by objdump and they get "sealed" when the module is built against and
+loaded into an IBT enabled kernel.
+
+Starting with 6.3-rc1, objtool is going to warn about this issue,
+indicating that the legacy module initialization is deprecated and
+module_init() and module_exit() macros should be used instead so do that
+for vmnet as well.
+---
+ vmnet-only/driver.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/vmnet-only/driver.c b/vmnet-only/driver.c
+index 197a21344d8b6fbcd3a492baffc37e663c5d9753..b22cbfb677043556ecfa622394c8f080b5dee425 100644
+--- a/vmnet-only/driver.c
++++ b/vmnet-only/driver.c
+@@ -279,7 +279,7 @@ VNetRemovePortFromList(const VNetPort *port) // IN: port to remove from list
+ /*
+  *----------------------------------------------------------------------
+  *
+- * init_module --
++ * vmnet_init_module --
+  *
+  *      linux module entry point. Called by /sbin/insmod command.
+  *      Initializes module and Registers this driver for a
+@@ -296,7 +296,7 @@ VNetRemovePortFromList(const VNetPort *port) // IN: port to remove from list
+  */
+ 
+ int
+-init_module(void)
++vmnet_init_module(void)
+ {
+    int retval;
+ 
+@@ -358,7 +358,7 @@ err_proto:
+ /*
+  *----------------------------------------------------------------------
+  *
+- * cleanup_module --
++ * vmnet_cleanup_module --
+  *
+  *      Called by /sbin/rmmod.  Unregisters this driver for a
+  *      vnet major #, and deinitializes the modules.  The 64-bit
+@@ -375,7 +375,7 @@ err_proto:
+  */
+ 
+ void
+-cleanup_module(void)
++vmnet_cleanup_module(void)
+ {
+    unregister_chrdev(VNET_MAJOR_NUMBER, "vmnet");
+    VNetProtoUnregister();
+@@ -1670,3 +1670,5 @@ MODULE_LICENSE("GPL v2");
+  * by default (i.e., neither mkinitrd nor modprobe will accept it).
+  */
+ MODULE_INFO(supported, "external");
++module_init(vmnet_init_module);
++module_exit(vmnet_cleanup_module);
+-- 
+2.42.0
+
+
+From ce0b61c977529140eeed8bc7b2a342b606ece669 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Tue, 17 Jan 2023 22:40:04 +0100
+Subject: [PATCH 12/21] vmmon: use standard ASM_ENDBR macro
+
+Some cross page functions need an explicit endbr64 instruction as they are
+indirect branch targets but are not recognized as such. VMware 17 uses home
+cooked ENDBR macro rather than standard ASM_ENDBR defined in kernel.
+
+Use ASM_ENDBR instead and define it as empty if not available (kernel
+before 5.18-rc1) so that we do not generate useless endbr64 instructions
+when building against kernel which does not support IBT or has it disabled.
+---
+ vmmon-only/common/crosspage.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/vmmon-only/common/crosspage.c b/vmmon-only/common/crosspage.c
+index 89e8a8c864bf9db83ee36f2ffca2a51ca9b58bc3..5fdf85e6feba55d120decc2450f313634e1c94c6 100644
+--- a/vmmon-only/common/crosspage.c
++++ b/vmmon-only/common/crosspage.c
+@@ -75,7 +75,9 @@
+ 
+ #define EXPORTED_ASM_SYMBOL(fn) ".global " ASM_PREFIX #fn "\n"   \
+                                 ASM_PREFIX #fn ":\n"
+-#define ENDBR ".byte 0xf3, 0x0f, 0x1e, 0xfa\n"
++#ifndef ASM_ENDBR
++#define ASM_ENDBR
++#endif
+ 
+ /*
+  * Tag the crosspage code C wrapper with the crosspage section and page
+@@ -295,7 +297,7 @@ CrossPage_CodePage(void)
+ 
+    ".p2align 4\n"
+    EXPORTED_ASM_SYMBOL(SwitchDBHandler)
+-   ENDBR
++   ASM_ENDBR
+    "pushq        %%rax\n"
+    "call         SwitchExcGetCrossPageData\n"
+    "addq         %[wsExceptionDB], %%rax\n"
+@@ -334,7 +336,7 @@ CrossPage_CodePage(void)
+ 
+    ".p2align 4\n"
+    EXPORTED_ASM_SYMBOL(SwitchUDHandler)
+-   ENDBR
++   ASM_ENDBR
+    "pushq        %%rax\n"
+    "pushq        %%rbx\n"
+    "pushq        %%rcx\n"
+@@ -403,7 +405,7 @@ CrossPage_CodePage(void)
+ 
+    ".p2align 4\n"
+    EXPORTED_ASM_SYMBOL(SwitchNMIHandler)
+-   ENDBR
++   ASM_ENDBR
+    "pushq        %%rax\n"
+    "call         SwitchExcGetCrossPageData\n"
+    "addq         %[wsExceptionNMI], %%rax\n"
+@@ -439,7 +441,7 @@ CrossPage_CodePage(void)
+ 
+    ".p2align 4\n"
+    EXPORTED_ASM_SYMBOL(SwitchMCEHandler)
+-   ENDBR
++   ASM_ENDBR
+    "pushq        %%rax\n"
+    "call         SwitchExcGetCrossPageData\n"
+    "addq         %[wsExceptionMC], %%rax\n"
+@@ -560,7 +562,7 @@ CrossPage_CodePage(void)
+ 
+    ".p2align 4\n"
+    EXPORTED_ASM_SYMBOL(VmmToHost)
+-   ENDBR
++   ASM_ENDBR
+    "movq            %c[VMMCROSSPAGE] + %c[crosspageDataLA], %%rcx\n"
+    /* Create an lret frame on the monitor stack. */
+    "pushq           (%%rsp)\n"
+-- 
+2.42.0
+
+
+From 25df5e37490f52e2957ee631571853dc837efa30 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 18 Nov 2022 14:24:17 +0100
+Subject: [PATCH 13/21] vmnet: fix csum_and_copy_to_user workaround for kernel
+ >= 5.19
+
+Mainline commit 6308499b5e99 ("net: unexport csum_and_copy_{from,to}_user")
+in 5.19-rc1 unexports csum_and_copy_to_user as no in-tree module is using
+it. A clean solution would probably be rewriting the code to use iovec
+iterator as csum_and_copy_to_iter() is still exported (or perhaps
+skb_copy_and_csum_datagram() might be used instead). Anything like this
+would be way too intrusive so it would have to wait for VMware developers.
+
+Workstation 17.0.0 handles this with a call to csum_partial_copy_nocheck()
+inside a user_access_begin()/user_access_end() block which lets the build
+succeed but objtool still warns about a call to csum_partial_copy_nocheck()
+with UACCESS enabled. Based on the reasoning in commit message of mainline
+commit ea24213d8088 ("objtool: Add UACCESS validation"), this workaround
+does indeed seem questionable.
+
+Use the older workaround combining csum_partial() with copy_to_user() like
+in workstation-16.2.4 branch instead. This will be less efficient but
+hopefully the performace hit will not be noticeable.
+---
+ vmnet-only/userif.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/vmnet-only/userif.c b/vmnet-only/userif.c
+index 0d6b258b119a617fff40f0ed48f58e0e3a52a954..e8bca66f2a8f18a4697f9bdc272407a9bf03b76c 100644
+--- a/vmnet-only/userif.c
++++ b/vmnet-only/userif.c
+@@ -550,14 +550,10 @@ VNetCsumAndCopyToUser(const void *src,   // IN: Source
+    csum = csum_and_copy_to_user(src, dst, len);
+    *err = (csum == 0) ? -EFAULT : 0;
+ #else
+-   if (!user_access_begin(dst, len)) {
+-      *err = -EFAULT;
++   csum = csum_partial(src, len, ~0U);
++   if (copy_to_user(dst, src, len))
+       csum = 0;
+-   } else {
+-      *err = 0;
+-      csum = csum_partial_copy_nocheck(src, dst, len);
+-      user_access_end();
+-   }
++   *err = (csum == 0) ? -EFAULT : 0;
+ #endif
+    return csum;
+ }
+-- 
+2.42.0
+
+
+From d2b75dd269d2341935835465ca99dfb89e62e012 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Tue, 7 Jun 2022 21:29:28 +0200
+Subject: [PATCH 14/21] vmnet: fix wireless device detection
+
+Mainline commit c304eddcecfe ("net: wrap the wireless pointers in struct
+net_device in an ifdef") in 5.19-rc1 makess ieee80211_ptr member present in
+struct net_device only if CONFIG_CFG80211 is enabled. Workstation 17.0.0
+checks if CONFIG_CFG80211 is enabled but only when CONFIG_WIRELESS_EXT is
+not. Thus a build against a kernel with CONFIG_WIRELESS_EXT enabled and
+CONFIG_CFG80211 disabled still fails. Also, the newly introduced version
+check is pointless, there is no point checking dev->ieee80211_ptr with
+CONFIG_CFG80211 disabled (fortunately it will be null anyway).
+
+Rewrite the check in VNetBridgeIsDeviceWireless() to check each of the two
+pointers only if it actually exists.
+---
+ vmnet-only/bridge.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/vmnet-only/bridge.c b/vmnet-only/bridge.c
+index 906e09fbe9f8aed116aac086d36a45114a037aaa..2886be43b67f4f1af3028e84ea1f869f43efa004 100644
+--- a/vmnet-only/bridge.c
++++ b/vmnet-only/bridge.c
+@@ -807,12 +807,14 @@ static Bool
+ VNetBridgeIsDeviceWireless(struct net_device *dev) //IN: sock
+ {
+ #if defined(CONFIG_WIRELESS_EXT)
+-   return dev->ieee80211_ptr != NULL || dev->wireless_handlers != NULL;
+-#elif LINUX_VERSION_CODE < KERNEL_VERSION(5, 19, 0) || IS_ENABLED(CONFIG_CFG80211)
+-   return dev->ieee80211_ptr != NULL;
+-#else
+-   return FALSE;
++   if (dev->wireless_handlers)
++      return TRUE;
+ #endif
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 19, 0) || IS_ENABLED(CONFIG_CFG80211)
++   if (dev->ieee80211_ptr)
++      return TRUE;
++#endif
++   return FALSE;
+ }
+ 
+ 
+-- 
+2.42.0
+
+
+From eb5549e463cc373704240f1e80306e700601309c Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 7 Oct 2022 11:16:03 +0200
+Subject: [PATCH 15/21] vmmon: update crosspage assembler code to recent
+ mitigations
+
+Starting with kernel 5.19-rc7, objtool issues warning
+
+  ... CrossPage_CodePage+0x1f7: 'naked' return found in RETHUNK build
+
+when building against kernel built with CONFIG_RETHUNK=y. Use ASM_RET macro
+which expands to the right code based on the combination of CONFIG_RETHUNK
+and CONFIG_SLS. Define ASM_RET as simple ret instruction when unavailable
+to preserve compatibility with older kernels.
+---
+ vmmon-only/common/crosspage.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/vmmon-only/common/crosspage.c b/vmmon-only/common/crosspage.c
+index 5fdf85e6feba55d120decc2450f313634e1c94c6..7749a98ff4ecbf2749d966381187a7927b8b92e5 100644
+--- a/vmmon-only/common/crosspage.c
++++ b/vmmon-only/common/crosspage.c
+@@ -93,6 +93,10 @@
+ 
+ #define NOT_REACHED_MINIMAL __builtin_unreachable
+ 
++#ifndef ASM_RET
++#define ASM_RET "ret\n"
++#endif
++
+ void VmmToHost(void);
+ void SwitchDBHandler(void);
+ void SwitchUDHandler(void);
+@@ -645,7 +649,7 @@ CrossPage_CodePage(void)
+    "movq            2(%%rsp),         %%rax\n" /* DTR.offset */
+    "addq            $0x10,            %%rsp\n"
+    "andq            %[PageAlignMask], %%rax\n"
+-   "ret\n"
++   ASM_RET
+ 
+    EXPORTED_ASM_SYMBOL(CrossPage_CodeEnd)
+ 
+-- 
+2.42.0
+
+
+From d9e8b780c93aa83f88356897965f2fbe85fc9f3c Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Thu, 11 Aug 2022 22:07:12 +0200
+Subject: [PATCH 16/21] modules: rename conflicting DO_ONCE() macro
+
+Both vmmon and vmnet modules define a DO_ONCE() macro which is different
+from upstream macro of the same name. This never caused a conflict as
+<linux/once.h> was not included in any file where vmmon/vmnet macro was
+defined. However, this changed after mainline commit 36d4b36b6959
+("lib/nodemask: inline next_node_in() and node_random()") in 6.0-rc1 so
+that now the two incompatible macro definitions conflict.
+
+Rename vmmon/vmnet DO_ONCE() to VMWARE_DO_ONCE() to avoid the conflict.
+---
+ vmmon-only/include/vm_assert.h     | 4 ++--
+ vmmon-only/include/vm_basic_defs.h | 2 +-
+ vmnet-only/vm_assert.h             | 4 ++--
+ vmnet-only/vm_basic_defs.h         | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/vmmon-only/include/vm_assert.h b/vmmon-only/include/vm_assert.h
+index d834d682d666656821812db2ae8a45388f730f6b..b2eae9dfdb66263c1a2a2750753459a78d315ee5 100644
+--- a/vmmon-only/include/vm_assert.h
++++ b/vmmon-only/include/vm_assert.h
+@@ -265,7 +265,7 @@ void WarningThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
+ #endif
+ 
+ #define ASSERT_NOT_TESTED(cond) (UNLIKELY(!(cond)) ? NOT_TESTED() : (void)0)
+-#define NOT_TESTED_ONCE()       DO_ONCE(NOT_TESTED())
++#define NOT_TESTED_ONCE()       VMWARE_DO_ONCE(NOT_TESTED())
+ 
+ #define NOT_TESTED_1024()                                               \
+    do {                                                                 \
+@@ -274,7 +274,7 @@ void WarningThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
+       count = (count + 1) & 1023;                                       \
+    } while (0)
+ 
+-#define LOG_ONCE(...) DO_ONCE(Log(__VA_ARGS__))
++#define LOG_ONCE(...) VMWARE_DO_ONCE(Log(__VA_ARGS__))
+ 
+ 
+ /*
+diff --git a/vmmon-only/include/vm_basic_defs.h b/vmmon-only/include/vm_basic_defs.h
+index fd597664d42b63c32a3a7835e0f73f24207f9f30..f3b2dccc1a44a0de3dd540ed36c862b4527958d9 100644
+--- a/vmmon-only/include/vm_basic_defs.h
++++ b/vmmon-only/include/vm_basic_defs.h
+@@ -776,7 +776,7 @@ typedef int pid_t;
+                                                      lfMessageFont)
+ 
+ /* This is not intended to be thread-safe. */
+-#define DO_ONCE(code)                                                   \
++#define VMWARE_DO_ONCE(code)                                            \
+    do {                                                                 \
+       static MONITOR_ONLY(PERVCPU) Bool _doOnceDone = FALSE;            \
+       if (UNLIKELY(!_doOnceDone)) {                                     \
+diff --git a/vmnet-only/vm_assert.h b/vmnet-only/vm_assert.h
+index fca8500775d49588a6014cd8aba1d50f18b9248a..1938cc6629c525a4cfe414bdd581afce5f4d5f72 100644
+--- a/vmnet-only/vm_assert.h
++++ b/vmnet-only/vm_assert.h
+@@ -264,7 +264,7 @@ void WarningThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
+ #endif
+ 
+ #define ASSERT_NOT_TESTED(cond) (UNLIKELY(!(cond)) ? NOT_TESTED() : (void)0)
+-#define NOT_TESTED_ONCE()       DO_ONCE(NOT_TESTED())
++#define NOT_TESTED_ONCE()       VMWARE_DO_ONCE(NOT_TESTED())
+ 
+ #define NOT_TESTED_1024()                                               \
+    do {                                                                 \
+@@ -273,7 +273,7 @@ void WarningThrottled(uint32 *count, const char *fmt, ...) PRINTF_DECL(2, 3);
+       count = (count + 1) & 1023;                                       \
+    } while (0)
+ 
+-#define LOG_ONCE(...) DO_ONCE(Log(__VA_ARGS__))
++#define LOG_ONCE(...) VMWARE_DO_ONCE(Log(__VA_ARGS__))
+ 
+ 
+ /*
+diff --git a/vmnet-only/vm_basic_defs.h b/vmnet-only/vm_basic_defs.h
+index fd597664d42b63c32a3a7835e0f73f24207f9f30..f3b2dccc1a44a0de3dd540ed36c862b4527958d9 100644
+--- a/vmnet-only/vm_basic_defs.h
++++ b/vmnet-only/vm_basic_defs.h
+@@ -776,7 +776,7 @@ typedef int pid_t;
+                                                      lfMessageFont)
+ 
+ /* This is not intended to be thread-safe. */
+-#define DO_ONCE(code)                                                   \
++#define VMWARE_DO_ONCE(code)                                            \
+    do {                                                                 \
+       static MONITOR_ONLY(PERVCPU) Bool _doOnceDone = FALSE;            \
+       if (UNLIKELY(!_doOnceDone)) {                                     \
+-- 
+2.42.0
+
+
+From 663ae4b95951f126db0561cec04013f1e04813c0 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 17 Feb 2023 09:41:26 +0100
+Subject: [PATCH 17/21] vmnet: use void as argument list in function
+ definitions (#188)
+
+Two functions use "foo()" rather than proper "foo(void)" in their
+definitions and as reported, clang compiler treats it as an error.
+
+While at it, also mark VNetFreeInterfaceList() static to make its
+definition match the declaration.
+---
+ vmnet-only/driver.c      | 4 ++--
+ vmnet-only/smac_compat.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/vmnet-only/driver.c b/vmnet-only/driver.c
+index b22cbfb677043556ecfa622394c8f080b5dee425..f314ff2e1fe628b0e1a8940c2f8a127fb95dfa69 100644
+--- a/vmnet-only/driver.c
++++ b/vmnet-only/driver.c
+@@ -1407,8 +1407,8 @@ VNetCycleDetectIf(const char *name, // IN:
+  *----------------------------------------------------------------------
+  */
+ 
+-void
+-VNetFreeInterfaceList()
++static void
++VNetFreeInterfaceList(void)
+ {
+    while (vnetInterfaces != NULL) {
+       VNetInterface *next = vnetInterfaces->next;
+diff --git a/vmnet-only/smac_compat.c b/vmnet-only/smac_compat.c
+index 28581045d354276d1c7594a90372415dc13b5d6e..e704b50cec9376f115aabde3a6324b2dba97508a 100644
+--- a/vmnet-only/smac_compat.c
++++ b/vmnet-only/smac_compat.c
+@@ -83,7 +83,7 @@
+  */
+ 
+ unsigned long SMACINT
+-SMACL_GetUptime()
++SMACL_GetUptime(void)
+ {
+    return jiffies;
+ }
+-- 
+2.42.0
+
+
+From 650fb3abeb82f2b7d3a14f9579a7529d153636b7 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Fri, 7 Oct 2022 12:56:44 +0200
+Subject: [PATCH 18/21] vmnet: work around field-spanning write warning (#195)
+
+While VMware 17.0.1 did work around the field-spanning write warning in
+VNetEvent_Send() by wrapping struct VNet_EventHeader into a union, they
+neglected to handle the same problem in VNetUserListenerEventHandler() so
+that running 17.0.1 on kernel >= 6.1-rc1 still issues
+
+  memcpy: detected field-spanning write (size 28) of single field "&t->event"
+
+only this time it happens on VM start rather than on module load. Apply the
+same workaround as in 17.0.0 branch to avoid the warning.
+---
+ vmnet-only/vnet.h             | 8 ++++++++
+ vmnet-only/vnetEvent.c        | 2 +-
+ vmnet-only/vnetUserListener.c | 2 +-
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/vmnet-only/vnet.h b/vmnet-only/vnet.h
+index d6691d5c57ce68cc392375f028cbe0decb3c2f47..d5bb5572c93a56ec65cacd6edbb8ca6e50d77d40 100644
+--- a/vmnet-only/vnet.h
++++ b/vmnet-only/vnet.h
+@@ -269,6 +269,7 @@ typedef struct VNet_EventHeader {
+    uint32 eventId;
+    uint32 classSet;
+    uint32 type;
++   char payload[];
+ } VNet_EventHeader;
+ #pragma pack(pop)
+ 
+@@ -286,6 +287,13 @@ typedef struct VNet_LinkStateEvent {
+ } VNet_LinkStateEvent;
+ #pragma pack(pop)
+ 
++static inline void VNet_Event_copy(VNet_EventHeader *dst,
++			      const VNet_EventHeader *src)
++{
++	*dst = *src;
++	memcpy(dst->payload, src->payload, src->size - sizeof(*src));
++}
++
+ /*
+  *----------------------------------------------------------------------------
+  */
+diff --git a/vmnet-only/vnetEvent.c b/vmnet-only/vnetEvent.c
+index f1579292eb70de35c7136acbcf7b567467c9e0e6..120360707d9c1ec05bb17e7d43e875787804c955 100644
+--- a/vmnet-only/vnetEvent.c
++++ b/vmnet-only/vnetEvent.c
+@@ -401,7 +401,7 @@ VNetEvent_Send(VNetEvent_Sender *s, // IN: a sender
+       p->nextEvent = s->firstEvent;
+       s->firstEvent = p;
+    }
+-   memcpy(&p->event, e, e->size);
++   VNet_Event_copy(&p->event.header, e);
+ 
+    /* send event */
+    classSet = e->classSet;
+diff --git a/vmnet-only/vnetUserListener.c b/vmnet-only/vnetUserListener.c
+index 114f39071c7bad8570e8034057b086c6185c5ac2..e9f517553b4367c02f5ec00fdddbc223fe97b5c6 100644
+--- a/vmnet-only/vnetUserListener.c
++++ b/vmnet-only/vnetUserListener.c
+@@ -226,7 +226,7 @@ VNetUserListenerEventHandler(void *context,       // IN: the user listener
+       return;
+    }
+    t->nextEvent = NULL;
+-   memcpy(&t->event, e, e->size);
++   VNet_Event_copy(&t->event, e);
+ 
+    /* append event to event list */
+    userListener = (VNetUserListener*)context;
+-- 
+2.42.0
+
+
+From b75cd616cca0a4c9ff22124c4c91d218e64e6205 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Thu, 29 Jun 2023 11:04:21 +0200
+Subject: [PATCH 19/21] vmnet: add include for GSO related declarations
+
+Mainline commit d457a0e329b0 ("net: move gso declarations and functions to
+their own files") in 6.5-rc1 moved the declaration of skb_gso_segment()
+from <linux/skbuff.h> to <net/gso.h> so that we need to include this header
+in vmnet-only/bridge.c.
+
+Fortunately the same commit also moved the definition of SKB_GSO_CB macro
+so that we can make the workaround more robust by checking this macro on
+kernels 3.9 through 6.4 (SKB_GSO_CB was introduced in mainline 3.9-rc1),
+hopefully nobody is going to backport this commit into pre-3.9 kernels.
+---
+ vmnet-only/bridge.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/vmnet-only/bridge.c b/vmnet-only/bridge.c
+index 2886be43b67f4f1af3028e84ea1f869f43efa004..bc4727c8a7c786cfa91d3b8d9894325ab40434af 100644
+--- a/vmnet-only/bridge.c
++++ b/vmnet-only/bridge.c
+@@ -44,6 +44,10 @@
+ #include <linux/if_arp.h>
+ #include <net/tcp.h>
+ #include <net/ipv6.h>
++#if !COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) || \
++    (!defined(SKB_GSO_CB) && !COMPAT_LINUX_VERSION_CHECK_LT(3, 9, 0))
++#include <net/gso.h>
++#endif
+ 
+ #ifdef CONFIG_NET_RADIO
+ #   include <linux/wireless.h>
+-- 
+2.42.0
+
+
+From 8b2d31498a8df9b1215f407c989b065953b73455 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Sat, 12 Aug 2023 20:03:09 +0200
+Subject: [PATCH 20/21] modules: make COMPAT_LINUX_VERSION_CHECK_LT less tricky
+
+The definition of COMPAT_LINUX_VERSION_CHECK_LT() macro lacks surrounding
+paretheses so that negated tests like !COMPAT_LINUX_VERSION_CHECK_LT(...)
+expand to something completely different. This could be worked around
+easily by adding parentheses to each place the macro is used in an
+expression but it makes much more sense to fix the macro definition so that
+the macro does not serve as a trap.
+---
+ vmmon-only/include/compat_version.h | 4 ++--
+ vmnet-only/compat_version.h         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/vmmon-only/include/compat_version.h b/vmmon-only/include/compat_version.h
+index ec6bc8b7c3015e8da5d9a4e79760e6e679146b4c..a2abb0156c424190efdca4ad91b3a5b3f32fd112 100644
+--- a/vmmon-only/include/compat_version.h
++++ b/vmmon-only/include/compat_version.h
+@@ -118,11 +118,11 @@
+  */
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 0)
+    /* Straight forward comparison if kernel version is 3.0.0 and beyond */
+-#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) LINUX_VERSION_CODE < KERNEL_VERSION (a, b, c)
++#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) (LINUX_VERSION_CODE < KERNEL_VERSION (a, b, c))
+ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 40)
+    /* Use b of the check to calculate corresponding c of kernel
+     *  version to compare */
+-#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) LINUX_VERSION_CODE < KERNEL_VERSION (2, 6, (b + 40))
++#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) (LINUX_VERSION_CODE < KERNEL_VERSION (2, 6, (b + 40)))
+ #else
+     /* This is anyways lesser than any 3.x versions */
+ #   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) 1
+diff --git a/vmnet-only/compat_version.h b/vmnet-only/compat_version.h
+index ec6bc8b7c3015e8da5d9a4e79760e6e679146b4c..a2abb0156c424190efdca4ad91b3a5b3f32fd112 100644
+--- a/vmnet-only/compat_version.h
++++ b/vmnet-only/compat_version.h
+@@ -118,11 +118,11 @@
+  */
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 0, 0)
+    /* Straight forward comparison if kernel version is 3.0.0 and beyond */
+-#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) LINUX_VERSION_CODE < KERNEL_VERSION (a, b, c)
++#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) (LINUX_VERSION_CODE < KERNEL_VERSION (a, b, c))
+ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 40)
+    /* Use b of the check to calculate corresponding c of kernel
+     *  version to compare */
+-#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) LINUX_VERSION_CODE < KERNEL_VERSION (2, 6, (b + 40))
++#   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) (LINUX_VERSION_CODE < KERNEL_VERSION (2, 6, (b + 40)))
+ #else
+     /* This is anyways lesser than any 3.x versions */
+ #   define COMPAT_LINUX_VERSION_CHECK_LT(a, b, c) 1
+-- 
+2.42.0
+
+
+From b049eda89ec1245a33c22f5d114f2d0396d5be65 Mon Sep 17 00:00:00 2001
+From: Michal Kubecek <mkubecek@suse.cz>
+Date: Mon, 21 Aug 2023 19:54:57 +0200
+Subject: [PATCH 21/21] vmmon: use get_user_pages to get page PFN
+
+As a side effect of mainline commit 0d940a9b270b ("mm/pgtable: allow
+pte_offset_map[_lock]() to fail") in 6.5-rc1, __pte_offset_map(), called by
+pte_offset_map(), is no longer exported.
+
+As this function is only used to get PFN from a virtual address, is is more
+appropriate (and reliable) to use get_user_pages infrastructure instead.
+
+Note: this is an experimental solution, more research will be needed to
+indentify the most appropriate get_user_pages_*() function and flags.
+---
+ vmmon-only/include/pgtbl.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/vmmon-only/include/pgtbl.h b/vmmon-only/include/pgtbl.h
+index 0935e0906ea1e0549525de5aa8663b13e11c0773..2334e2903cd2989a8c692e098478e8d9eada4de5 100644
+--- a/vmmon-only/include/pgtbl.h
++++ b/vmmon-only/include/pgtbl.h
+@@ -25,6 +25,7 @@
+ #include "compat_pgtable.h"
+ #include "compat_spinlock.h"
+ #include "compat_page.h"
++#include "compat_version.h"
+ 
+ 
+ /*
+@@ -45,6 +46,8 @@
+  *-----------------------------------------------------------------------------
+  */
+ 
++#if COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0)
++
+ static INLINE MPN
+ PgtblVa2MPNLocked(struct mm_struct *mm, // IN: Mm structure of a process
+                   VA addr)              // IN: Address in the virtual address
+@@ -139,4 +142,24 @@ PgtblVa2MPN(VA addr)  // IN
+    return mpn;
+ }
+ 
++#else /* COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) */
++
++static INLINE MPN
++PgtblVa2MPN(VA addr)  // IN
++{
++   struct page *page;
++   int npages;
++   MPN mpn;
++
++   npages = get_user_pages_unlocked(addr, 1, &page, FOLL_HWPOISON);
++   if (npages != 1)
++	   return INVALID_MPN;
++   mpn = page_to_pfn(page);
++   put_page(page);
++
++   return mpn;
++}
++
++#endif /* COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) */
++
+ #endif /* __PGTBL_H__ */
+-- 
+2.42.0
+
