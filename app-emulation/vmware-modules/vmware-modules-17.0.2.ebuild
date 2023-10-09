@@ -74,8 +74,10 @@ src_prepare() {
 		*/Makefile || die "sed failed"
 
 	sed -i -e 's/-Werror//' */Makefile* || die "Disabling Werror failed"
-	#Add new include for 6.4.x+ https://communities.vmware.com/t5/VMware-Workstation-Pro/Cannot-compile-vmnet-kernel-module-on-kernel-6-4-10/td-p/2982156
-	sed -i '46 a#include <net/gso.h>' vmnet-only/bridge.c
+	if kernel_is -lt 6 5; then
+#		eapply -r "${FILESDIR}/linux-6.5.patch" || die "Failed to revert linux 6.5 change"
+	true
+	fi
 	# Allow user patches so they can support RC kernels and whatever else
 	default
 }
