@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{11..12} )
 inherit readme.gentoo-r1 pam python-any-r1 systemd xdg-utils desktop
 
 MY_PN="VMware-Player-Full"
