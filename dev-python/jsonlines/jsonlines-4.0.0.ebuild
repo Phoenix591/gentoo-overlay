@@ -1,10 +1,10 @@
-# Copyright 2021-2022 Gentoo Authors
+# Copyright 2021-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 DISTUTILS_USE_PEP517="setuptools"
-PYTHON_COMPAT=( python3_{8..10} )
+PYTHON_COMPAT=( python3_{10..11} )
 inherit distutils-r1
 
 DESCRIPTION="Library with helpers for the jsonlines file format"
@@ -14,29 +14,17 @@ if [[ ${PV} == "9999" ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/wbolster/jsonlines"
 else
-	KEYWORDS="~amd64 ~arm64 ~x86"
+	KEYWORDS="~amd64 ~arm64"
 #	tests not distributed through pypi mirror
 #	SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
-	SRC_URI="https://github.com/wbolster/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz"
+	SRC_URI="https://github.com/wbolster/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.gh.tar.gz"
 fi
 LICENSE="BSD"
 SLOT="0"
 IUSE="test"
 RESTRICT="mirror" #overlay, no real issue
-
-DEPEND=""
-#todo 12-11-21 double check these rdeps since they arnt mentioned in doc
-RDEPEND=( "${DEPEND}"
-	"dev-python/future[${PYTHON_USEDEP}]"
-	"dev-python/requests[${PYTHON_USEDEP}]"
-	"dev-python/pyyaml[${PYTHON_USEDEP}]"
-)
-BDEPEND="(
-	test? ( "dev-python/black[${PYTHON_USEDEP}]"
-		"dev-python/mypy[${PYTHON_USEDEP}]"
-		"dev-python/pytest[${PYTHON_USEDEP}]"
-		"dev-python/sphinx[${PYTHON_USEDEP}]" )
-	)"
+RDEPEND="dev-python/attrs[${PYTHON_USEDEP}]"
+BDEPEND=" test? ( ${RDEPEND} )"
 
 distutils_enable_tests pytest
 
