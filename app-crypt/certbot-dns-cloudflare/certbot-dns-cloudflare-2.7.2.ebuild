@@ -1,16 +1,19 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=(python{3_8,3_9,3_10})
-DISTUTILS_USE_SETUPTOOLS=rdepend
+PYTHON_COMPAT=(python{3_10,3_11})
+#DISTUTILS_USE_SETUPTOOLS=rdepend
+DISTUTILS_USE_PEP517=setuptools
+
+MYPN="certbot"
 
 if [[ ${PV} == 9999* ]]; then
 	EGIT_REPO_URI="https://github.com/certbot/certbot.git"
 	inherit git-r3
 	S=${WORKDIR}/${P}/${PN}
 else
-	SRC_URI="https://github.com/certbot/certbot/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+	SRC_URI="https://github.com/certbot/${MYPN}/archive/v${PV}.tar.gz -> ${MYPN}-${PV}.gh.tar.gz"
 	KEYWORDS="~amd64 ~x86"
 	S=${WORKDIR}/certbot-${PV}/${PN}
 fi
@@ -26,7 +29,6 @@ SLOT="0"
 RDEPEND="${CDEPEND}
 	>=app-crypt/certbot-${PV}[${PYTHON_USEDEP}]
 	>=app-crypt/acme-${PV}[${PYTHON_USEDEP}]
-	dev-python/mock[${PYTHON_USEDEP}]
 	dev-python/zope-interface[${PYTHON_USEDEP}]
 	dev-python/dns-lexicon[${PYTHON_USEDEP}]
 	dev-python/cloudflare[${PYTHON_USEDEP}]"
