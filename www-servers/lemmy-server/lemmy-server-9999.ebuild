@@ -637,7 +637,7 @@ BDEPEND="virtual/pkgconfig
 # update with proper path to binaries this crate installs, omit leading /
 QA_FLAGS_IGNORED="usr/bin/lemmy_server"
 
-IUSE="+embed-pictrs opentelemetry-console json-log prometheus-metrics"
+IUSE="+embed-pictrs opentelemetry-console json-log"
 
 src_unpack() {
 	if [ "${PV}" == "9999" ]; then
@@ -669,7 +669,6 @@ src_configure() {
 		$(usex opentelemetry-console console "")
 		$(usev embed-pictrs)
 		$(usev json-log)
-		$(usev prometheus-metrics)
 	)
 	cargo_src_configure --frozen
 }
