@@ -31,6 +31,7 @@ RDEPEND="${PYTHON_DEPS}
 	|| (
 		>=media-libs/raspberrypi-userland-0_pre20201022
 		>=media-libs/raspberrypi-userland-bin-1.20201022
+		dev-embedded/rpi-utils
 	)
 	dev-libs/openssl"
 
@@ -49,13 +50,17 @@ src_install() {
 	dosbin rpi-eeprom-update rpi-eeprom-digest
 	keepdir /var/lib/raspberrypi/bootloader/backup
 
-	for dir in critical stable; do
-		insinto /lib/firmware/raspberrypi/bootloader
-		doins -r firmware/${dir}
+	for dev in 2711 2712; do
+		for dir in default latest; do
+			insinto /lib/firmware/raspberrypi/bootloader-${dev}
+			doins -r firmware-${dev}/${dir}
+			TAR="/lib/firmware/raspberrypi/bootloader-${dev}"
+			dosym latest ${TAR}/beta
+			dosym latest ${TAR}/stable
+			dosym default ${TAR}/critical
+		done
+		newdoc firmware-${dev}/release-notes.md ${dev}-release-notes.md
 	done
-
-	dodoc firmware/release-notes.md
-
 	help2man -N \
 		--version-string="${PV}" --help-option="-h" \
 		--name="Bootloader EEPROM configuration tool for the Raspberry Pi 4B" \
