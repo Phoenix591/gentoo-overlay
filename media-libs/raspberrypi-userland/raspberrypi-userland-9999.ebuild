@@ -24,12 +24,16 @@ fi
 DESCRIPTION="Raspberry Pi userspace tools and libraries"
 HOMEPAGE="https://github.com/raspberrypi/userland"
 
+# can end up in a loop with libcec detecting the old .so but failing to build with the headers gone
+RESTRICT="preserve-libs"
+
 LICENSE="BSD"
 SLOT="0"
 
 DEPEND=""
 RDEPEND="acct-group/video
-	!media-libs/raspberrypi-userland-bin"
+	!media-libs/raspberrypi-userland-bin
+	!sys-apps/dtc"
 
 PATCHES=(
 	# Install in $(get_libdir)
@@ -88,6 +92,7 @@ src_install() {
 }
 pkg_postinst() {
 	udev_reload
+	ewarn "Upstream has depreciated this package. Its useful commands have been split into rpi-utils"
 }
 pkg_postrm() {
 	udev_reload
