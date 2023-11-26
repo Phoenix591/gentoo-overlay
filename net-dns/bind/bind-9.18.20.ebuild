@@ -12,7 +12,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..11} )
+PYTHON_COMPAT=( python3_{10..12} )
 
 inherit autotools toolchain-funcs systemd tmpfiles python-any-r1
 
@@ -31,7 +31,6 @@ LICENSE="Apache-2.0 BSD BSD-2 GPL-2 HPND ISC MPL-2.0"
 SLOT="0"
 #KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
-RESTRICT="mirror"
 # -berkdb by default re bug 602682
 IUSE="+caps dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
 json lmdb selinux static-libs test
@@ -95,7 +94,8 @@ S="${WORKDIR}/${MY_P}"
 # bug 479092, requires networking
 # bug 710840, cmocka fails LDFLAGS='-Wl,-O1'
 # tests require network, and not JUST network, they require specific ip addresses
-RESTRICT="test"
+# mirror restriction just because overlay
+RESTRICT="test mirror"
 
 src_prepare() {
 	default
