@@ -5,7 +5,7 @@
 EAPI=8
 
 DIST_AUTHOR="EXIFTOOL"
-DIST_VERSION="12.60"
+DIST_VERSION="${PV}"
 
 
 inherit perl-module
