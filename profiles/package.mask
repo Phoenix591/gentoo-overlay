@@ -1,7 +1,0 @@
-#some runtime issues with goverlay
-#and I don't personally use it, removal around June 14
-games-util/goverlay
-dev-libs/qt5pas
-
-#Please copy to your own overlay, I don't plan to keep this around forever since I don't use it
-dev-db/foundationdb-bin
