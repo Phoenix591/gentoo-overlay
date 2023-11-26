@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..11} )
+PYTHON_COMPAT=( python3_{9..12} )
 DISTUTILS_USE_PEP517="setuptools"
 inherit distutils-r1
 
@@ -20,7 +20,6 @@ RESTRICT="mirror" #overlay, not goign to be mirrored
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
-	dev-python/future[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
 BDEPEND=""
@@ -37,5 +36,7 @@ python_prepare_all() {
 	distutils-r1_python_prepare_all
 }
 python_test() {
-epytest tests/test1.py
+pushd  tests
+local EPYTEST_IGNORE=('test_issue114.py' ) # known fail
+epytest
 }
