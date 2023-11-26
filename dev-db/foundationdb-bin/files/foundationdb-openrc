@@ -1,9 +1,0 @@
-#!/sbin/openrc-run
-command=/usr/LIBDIR/foundationdb/fdbmonitor
-command_args="--conffile /etc/foundationdb/foundationdb.conf --lockfile /var/run/fdbmonitor.pid --daemonize"
-pidfile=/var/run/fdbmonitor.pid
-#command_user="foundationdb:foundationdb"
-
-stop_post() {
-    rm -f /var/run/fdbmonitor.pid
-}
