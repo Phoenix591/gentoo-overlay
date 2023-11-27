@@ -15,14 +15,12 @@ SRC_URI="https://github.com/cloudflare/python-cloudflare/archive/refs/tags/${PV}
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~x86"
-IUSE=""
 RESTRICT="mirror" #overlay, not goign to be mirrored
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
-BDEPEND=""
 S="${WORKDIR}/python-${P}"
 PROPERTIES="test_network" #actually sends a test request
 RESTRICT="test"
