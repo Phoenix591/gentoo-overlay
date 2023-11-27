@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..12} )
+PYTHON_COMPAT=( python3_{10..12} )
 DISTUTILS_USE_PEP517="setuptools"
 inherit distutils-r1
 
@@ -14,8 +14,7 @@ HOMEPAGE="https://pypi.org/project/cloudflare/"
 SRC_URI="https://github.com/cloudflare/python-cloudflare/archive/refs/tags/${PV}.tar.gz -> ${P}-gh.tar.gz"
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64 ~x86"
-RESTRICT="mirror" #overlay, not goign to be mirrored
+KEYWORDS="~amd64 ~arm64"
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
@@ -23,7 +22,7 @@ RDEPEND="( ${DEPEND}
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
 S="${WORKDIR}/python-${P}"
 PROPERTIES="test_network" #actually sends a test request
-RESTRICT="test"
+RESTRICT="test mirror" #mirror restricted only becausw overlay
 
 distutils_enable_tests pytest
 python_prepare_all() {
