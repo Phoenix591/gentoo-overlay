@@ -7,15 +7,13 @@ EAPI=8
 DIST_AUTHOR="EXIFTOOL"
 DIST_VERSION="${PV}"
 
-
 inherit perl-module
 
 DESCRIPTION="Read and write meta information"
 
 LICENSE="|| ( Artistic GPL-1 GPL-2 GPL-3 )"
 SLOT="0"
-KEYWORDS="~arm64 ~amd64"
-IUSE=""
+KEYWORDS="~amd64 ~arm64"
 
 DEPEND="dev-perl/Archive-Zip
 	dev-lang/perl"
