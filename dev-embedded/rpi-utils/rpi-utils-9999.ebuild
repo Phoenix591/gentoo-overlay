@@ -16,7 +16,7 @@ else
 	KEYWORDS="~arm ~arm64"
 	SRC_URI="https://github.com/raspberrypi/${PN}/archive/refs/tags/v${PV}.tar.gz"
 fi
-PATCHES=( ${FILESDIR}/dtovl-install.patch )
+PATCHES=( "${FILESDIR}/dtovl-install.patch" )
 
 SLOT="0"
 LICENSE="BSD"
