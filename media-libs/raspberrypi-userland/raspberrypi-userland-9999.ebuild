@@ -7,7 +7,6 @@ inherit cmake flag-o-matic udev
 if [[ ${PV} == 9999* ]]; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/${PN/-//}.git"
-	SRC_URI=""
 else
 	# We base our versioning on  Raspbian
 	# Go to https://archive.raspberrypi.org/debian/pool/main/r/raspberrypi-userland/
@@ -30,7 +29,6 @@ RESTRICT="preserve-libs"
 LICENSE="BSD"
 SLOT="0"
 
-DEPEND=""
 RDEPEND="acct-group/video
 	!media-libs/raspberrypi-userland-bin
 	!sys-apps/dtc"
@@ -50,12 +48,14 @@ PATCHES=(
 pkg_pretend() {
 
 	if ! ( use arm || use arm64 || [ -n "${I_KNOW_THIS_IS_FOR_THE_PI}" ]); then
-		eerror "If you are trying to cross-compile things arn't set right and its trying to build for your host"
+		eerror "If you are trying to cross-compile things arn't set right"
+		eerror "its trying to build for your host"
 		die "${PN} is for the Raspberry pi: arm/arm64 only"
 	fi
 	if [ -n "${I_KNOW_THIS_IS_FOR_THE_PI}" ]; then
 		ewarn "This is for the arm/arm64 pi only, if you set this on something not arm and it breaks you get to keep the pieces"
-		ewarn "Wrappers such as aarch64-unknown-linux-gnu-emerge set things so that this isn't needed and should sucessfully cross compile this"
+		ewarn "Wrappers such as aarch64-unknown-linux-gnu-emerge set things"
+		ewarn  "so that this isn't needed and should sucessfully cross compile this"
 	fi
 }
 
