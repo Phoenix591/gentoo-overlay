@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10,11} )
+PYTHON_COMPAT=( python3_{10..12} )
 DISTUTILS_USE_PEP517=setuptools
 
 inherit distutils-r1
@@ -16,9 +16,7 @@ SRC_URI="https://notabug.org/necklace/libray/archive/${PV}.tar.gz -> ${P}.tar.gz
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE=""
 S="${WORKDIR}/${PN}"
-BDEPEND=""
 RDEPEND="
 	dev-python/tqdm[${PYTHON_USEDEP}]
 	dev-python/pycryptodome[${PYTHON_USEDEP}]
@@ -26,4 +24,5 @@ RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/html5lib[${PYTHON_USEDEP}]
 	"
-RESTRICT=test #todo (adding test deps and enabling)
+RESTRICT="test" #currently fails but app still works
+distutils_enable_tests unittest
