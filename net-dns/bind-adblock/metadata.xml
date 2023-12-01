@@ -5,6 +5,7 @@
 		Fetch various blocklists and generate a BIND zone from them.
 		Configure BIND to return NXDOMAIN for ad and tracking domains to stop clients from contacting them.
 	</longdescription>
-	<use>
-	</use>
+	<upstream>
+		<remote-id type="github">Trellmor/bind-adblock</remote-id>
+	</upstream>
 </pkgmetadata>

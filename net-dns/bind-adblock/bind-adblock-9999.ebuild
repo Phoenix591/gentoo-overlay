@@ -1,9 +1,10 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit git-r3
+PYTHON_COMPAT=( python3_{10..12} )
+inherit git-r3 python-single-r1
 
 DESCRIPTION="Fetch various blocklists and generate a BIND zone from them."
 HOMEPAGE="https://github.com/Trellmor/bind-adblock"
@@ -12,28 +13,36 @@ EGIT_REPO_URI="https://github.com/Trellmor/bind-adblock.git"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
-IUSE=""
 
-DEPEND=""
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+
+BDEPEND="${PYTHON_DEPS}"
 RDEPEND="
-	${DEPEND}
-	dev-python/pycryptodome
-	dev-python/dnspython
-	dev-python/requests
-	dev-python/pyyaml
-	dev-python/validators
+	${PYTHON_DEPS}
+	$(python_gen_cond_dep '
+		dev-python/pycryptodome[${PYTHON_USEDEP}]
+		dev-python/dnspython[${PYTHON_USEDEP}]
+		dev-python/requests[${PYTHON_USEDEP}]
+		dev-python/pyyaml[${PYTHON_USEDEP}]
+		dev-python/validators[${PYTHON_USEDEP}]
+		')
 "
 
+src_prepare() {
+	sed -i -e s#blocklist.txt#/etc/bind-blocklist.txt# \
+		-e s#.cache/bind_adblock#/tmp/bind_adblock# config.yml || die
+	eapply "${FILESDIR}/use-etc.patch" || die
+	default
+}
 src_install() {
-	exeinto /opt/bind-adblock
-	doexe update-zonefile.py
+	python_doscript update-zonefile.py
+	dodoc README.md
+	insinto /etc
+	newins config.yml bind-adblock.yml
+	newins  blocklist.txt bind-blocklist.txt
 
-	insinto /opt/bind-adblock
-	doins README.md blocklist.txt config.yml
-
-	dodir /opt/bin
-	dosym ../bind-adblock/update-zonefile.py /opt/bin/update-zonefile.py
-	newenvd - 99bind-adblock <<< "CONFIG_PROTECT=\"/opt/bind-adblock/config.yml\""
 }
 
+pkg_postinst() {
+	einfo "The script has been modified to look for its config in /etc"
+}

@@ -1,0 +1,12 @@
+--- ./update-zonefile.py	2023-12-01 16:15:51.060068222 -0600
++++ ./update-zonefile.py	2023-12-01 16:17:02.029223484 -0600
+@@ -50,8 +50,8 @@
+     'cache': Path(os.path.dirname(os.path.realpath(__file__)), )
+ }
+ 
+ parent_dir = os.path.dirname(os.path.realpath(__file__))
+-main_conf_file = os.path.join(parent_dir, 'config.yml')
++main_conf_file = '/etc/bind-adblock.yml'
+ config = yaml.safe_load(open(main_conf_file))
+ config['cache'] = Path(config['cache'])
+ if not config['cache'].is_absolute():
