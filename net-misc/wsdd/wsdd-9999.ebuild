@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=( python3_{9..11} )
+PYTHON_COMPAT=( python3_{9..12} )
 PYTHON_REQ_USE="xml(+)"
 
 inherit python-r1 systemd
@@ -22,14 +22,14 @@ SLOT="0"
 IUSE="samba systemd"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
-DEPEND=""
+#DEPEND=""
 # Samba is technically not a requirement of wsdd, but depend on it if the use flags is set.
 # with systemd it uses the dynamic user feature to allocate/release user.
 RDEPEND="( ${PYTHON_DEPS}
 	!systemd? ( acct-group/${PN} acct-user/${PN} )
 	samba? ( net-fs/samba )
 	)"
-BDEPEND=""
+#BDEPEND=""
 
 src_install() {
 	python_foreach_impl python_newscript src/wsdd.py wsdd
