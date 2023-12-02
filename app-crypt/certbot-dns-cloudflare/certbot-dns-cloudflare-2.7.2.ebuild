@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=(python{3_10,3_11})
+PYTHON_COMPAT=(python3_{10..11})
 #DISTUTILS_USE_SETUPTOOLS=rdepend
 DISTUTILS_USE_PEP517=setuptools
 
@@ -14,7 +14,7 @@ if [[ ${PV} == 9999* ]]; then
 	S=${WORKDIR}/${P}/${PN}
 else
 	SRC_URI="https://github.com/certbot/${MYPN}/archive/v${PV}.tar.gz -> ${MYPN}-${PV}.gh.tar.gz"
-	KEYWORDS="~amd64 ~x86"
+	KEYWORDS="~amd64"
 	S=${WORKDIR}/certbot-${PV}/${PN}
 fi
 
