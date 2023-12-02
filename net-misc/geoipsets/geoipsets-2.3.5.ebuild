@@ -17,14 +17,14 @@ else
 	KEYWORDS="~amd64 ~arm64 ~x86"
 #	tests not distributed through pypi mirror
 #	SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
-	SRC_URI="https://github.com/chr0mag/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+	SRC_URI="https://github.com/chr0mag/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
 fi
 LICENSE="GPL-3"
 SLOT="0"
 IUSE="test"
 RESTRICT="mirror" #overlay, no real issue
 
-DEPEND=""
+#DEPEND=""
 RDEPEND=( "${DEPEND}"
 	"dev-python/requests[${PYTHON_USEDEP}]"
 	"dev-python/beautifulsoup4[${PYTHON_USEDEP}]"
@@ -55,4 +55,3 @@ python_test() {
 	)
 	epytest
 }
-

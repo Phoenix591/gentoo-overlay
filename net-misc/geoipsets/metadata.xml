@@ -3,5 +3,6 @@
 <pkgmetadata>
 	<upstream>
 		<remote-id type="github">chr0mag/geoipsets</remote-id>
+		<remote-id type="pypi">geoipsets</remote-id>
 	</upstream>
 </pkgmetadata>
