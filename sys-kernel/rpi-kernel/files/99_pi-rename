@@ -1,0 +1,10 @@
+#!/bin/bash
+VER="${1}"
+IMG="${2}"
+mv -f /boot/kernel8.img.1 /boot/kernel8.2
+mv /boot/kernel8.img /boot/kernel8.img.1
+mv "${IMG}"  /boot/kernel8.img
+echo $1
+echo $2
+rsync --del -vr "/boot/dtbs/${VER}/overlays" /boot/
+rsync -v /boot/dtbs/${VER}/broadcom/bcm2711-rpi-4-b.dtb /boot/

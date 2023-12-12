@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<upstream>
+		<remote-id type="github">raspberrypi/linux</remote-id>
+	</upstream>
+	<use>
+		<flag name="initramfs">Builds an initramfs with Dracut. Untested</flag>
+		<flag name="pi1">Builds the kernel for the Original Pi</flag>
+		<flag name="pi2">Builds the kernel for the Pi 2</flag>
+		<flag name="pi3">Builds the kernel for the Pi 3</flag>
+		<flag name="pi4">Builds the kernel for the Pi 4</flag>
+		<flag name="pi5">Builds the kernel for the Pi 5</flag>
+	</use>
+</pkgmetadata>
