@@ -43,6 +43,9 @@ src_configure() {
 	export KCFLAGS="${BUILD_CFLAGS}"
 	mkdir -p "${WORKDIR}/mkconfig"
 	local CDIR="${WORKDIR}/mkconfig"
+	#Defconfig device/arch pairs from
+	#  https://www.raspberrypi.com/documentation/computers/linux_kernel.html
+	# Retrived/updated: 12/12/2023
 	if use pi1; then
 		export KERNEL=kernel
 		local DEFCONFIG="bcmrpi_defconfig"
