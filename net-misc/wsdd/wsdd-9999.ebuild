@@ -58,6 +58,9 @@ src_install() {
 	fi
 	dodoc README.md
 	doman man/wsdd.8
+	# various firewall config files
+	insinto /etc
+	doins -r etc/{ufw,firewalld}
 }
 py_test() {
 	sed -i -e "s/python_versions=(.*/python_versions=(\'${EPYTHON#python}\')/" \
