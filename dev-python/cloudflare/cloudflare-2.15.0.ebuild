@@ -17,23 +17,21 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm64"
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
-	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
 S="${WORKDIR}/python-${P}"
 PROPERTIES="test_network" #actually sends a test request
 RESTRICT="test mirror" #mirror restricted only becausw overlay
-
 distutils_enable_tests pytest
 python_prepare_all() {
-	sed -r -e "/packages *=/ s|\[[^]]*\]\+||" -i -- setup.py
-
-	rm -r examples
+	# don't install tests or examples
+	sed -i -e 's/find_packages()/find_packages(exclude=["tests","examples"])/' \
+		-e "s/'cli4', 'examples'/'cli4'/" setup.py || die
 
 	distutils-r1_python_prepare_all
 }
 python_test() {
 pushd  tests
-local EPYTEST_IGNORE=('test_issue114.py' ) # known fail
+#local EPYTEST_IGNORE=('test_issue114.py' ) # known fail
 epytest
 }
