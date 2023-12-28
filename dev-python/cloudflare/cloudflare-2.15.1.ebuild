@@ -31,7 +31,13 @@ python_prepare_all() {
 	distutils-r1_python_prepare_all
 }
 python_test() {
-pushd  tests
-#local EPYTEST_IGNORE=('test_issue114.py' ) # known fail
-epytest
+	pushd  tests
+	if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+		local EPYTEST_IGNORE=('test_dns_records.py' 'test_radar_returning_csv.py')
+		# these test(s) need an api key/token setup
+		# Permissions needed are zone dns edit and user details read
+	fi
+	# Not sure what permissions/tokens/whatever this test needs
+	local EPYTEST_IGNORE+=('test_issue114.py')
+	epytest
 }
