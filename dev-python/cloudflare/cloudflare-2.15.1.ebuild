@@ -33,7 +33,8 @@ python_prepare_all() {
 python_test() {
 	pushd  tests
 	if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
-		local EPYTEST_IGNORE=('test_dns_records.py' 'test_radar_returning_csv.py')
+		local EPYTEST_IGNORE=('test_dns_records.py' 'test_radar_returning_csv.py'
+			'test_dns_import_export.py')
 		# these test(s) need an api key/token setup
 		# Permissions needed are zone dns edit and user details read
 	fi
