@@ -41,18 +41,18 @@ src_prepare() {
 }
 src_configure() {
 	local mycmakeargs=(
-		EnableTests=$(usex test)
+		-DEnableTests=$(usex test)
+		-DCMAKE_INSTALL_SYSCONFDIR="${EPREFIX}/etc"
 	)
 	cmake_src_configure
 }
 src_install() {
 	cmake_src_install
 	mv "${ED}/usr/bin/sasl-xoauth2-tool" "${T}/"
-	mv "${ED}/usr/etc" "${ED}/"
 	python_foreach_impl python_doscript "${T}/sasl-xoauth2-tool"
 	keepdir /etc/tokens
 }
 
 pkg_postinst() {
-	einfo "Postfix (or whatver will use this plugin) will need write permission to /etc/tokens"
+	einfo "See ${EPREFIX}/usr/share/doc/sasl-xoauth2-0.24/README.md.bz2 for detailed setup guide"
 }
