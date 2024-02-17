@@ -26,6 +26,7 @@ distutils_enable_tests pytest
 python_prepare_all() {
 	# don't install tests or examples
 	sed -i -e "s/'cli4', 'examples'/'cli4'/" \
+		-e "s#'CloudFlare/tests',##" \
 		 setup.py || die
 
 	distutils-r1_python_prepare_all
