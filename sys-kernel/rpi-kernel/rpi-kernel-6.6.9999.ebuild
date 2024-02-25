@@ -37,6 +37,7 @@ QA_FLAGS_IGNORED="
 
 src_prepare() {
 	default
+	cp "${FILESDIR}/99_pi-rename" "${T}/"
 }
 src_configure() {
 	tc-export_build_env
@@ -49,15 +50,18 @@ src_configure() {
 	if use pi1; then
 		export KERNEL=kernel
 		local DEFCONFIG="bcmrpi_defconfig"
+		sed -i s/PI=5/PI=1/ "${T}/99_pi-rename"
 	elif (use pi2 || use pi3 ) && use arm; then
 		export KERNEL=kernel7
 		local DEFCONFIG="bcm2709_defconfig"
+		sed -i s/PI=5/PI=3/ "${T}/99_pi-rename"
 	elif (use pi3 || use pi4 ) && use arm64; then
 		export KERNEL=kernel8
 		local DEFCONFIG="bcm2711_defconfig"
 	elif use pi4 && use arm; then
 		export KERNEL=kernel7l
 		local DEFCONFIG="bcm2711_defconfig"
+		sed -i s/PI=5/PI=4/ "${T}/99_pi-rename"
 	elif use pi5 && use arm64; then
 		export KERNEL=kernel_2712
 		local DEFCONFIG="bcm2712_defconfig"
@@ -72,7 +76,7 @@ src_configure() {
 src_install() {
 	kernel-build_src_install
 	into /etc/kernel/postinst.d
-	doins "${FILESDIR}/99_pi-rename"
+	doins "${T}/99_pi-rename"
 }
 pkg_postinst() {
 	kernel-build_pkg_postinst

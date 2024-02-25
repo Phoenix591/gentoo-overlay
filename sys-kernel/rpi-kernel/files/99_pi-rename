@@ -1,10 +1,33 @@
 #!/bin/bash
 VER="${1}"
 IMG="${2}"
-mv -f /boot/kernel8.img.1 /boot/kernel8.2
-mv /boot/kernel8.img /boot/kernel8.img.1
-mv "${IMG}"  /boot/kernel8.img
+PI=5
+case "${PI}" in
+	4)
+		DTBN="bcm2711-rpi-4-b.dtb"
+		SUFFIX="8" # change to 7l if  32 bit, use 8 for 64 bit
+		;;
+	5)
+		DTBN="bcm2712-rpi-5-b.dtb"
+		SUFFIX="_2712"
+		;;
+	3)
+		DBTN="bcm2710-rpi-3-b.dtb"
+		SUFFIX="7"
+		;;
+	1)
+		DBTN="bcm2708-rpi-b.dtb"
+		SUFFIX=""
+		;;
+	*)
+		echo "Unsupported pi variant"
+		echo "Manual kernel install/renaming required"
+		exit 1
+esac
+mv -fv /boot/kernel${SUFFIX}.img.1 /boot/kernel${SUFFIX}.2
+mv -fv /boot/kernel${SUFFIX}.img /boot/kernel${SUFFIX}.img.1
+mv -v "${IMG}"  /boot/kernel${SUFFIX}.img
 echo $1
 echo $2
 rsync --del -vr "/boot/dtbs/${VER}/overlays" /boot/
-rsync -v /boot/dtbs/${VER}/broadcom/bcm2711-rpi-4-b.dtb /boot/
+rsync -v /boot/dtbs/${VER}/broadcom/${DTBN} /boot/
