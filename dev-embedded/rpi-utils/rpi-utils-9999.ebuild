@@ -27,6 +27,7 @@ RESTRICT="mirror" #overlay
 BDEPEND="sys-apps/dtc"
 DEPEND="${PYTHON_DEPS}"
 RDEPEND="${PYTHON_DEPS}
+	app-admin/sudo
 	${DEPEND}"
 src_configure() {
 	filter-lto
