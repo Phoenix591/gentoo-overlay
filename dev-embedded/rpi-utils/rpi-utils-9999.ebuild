@@ -18,8 +18,8 @@ else
 fi
 PATCHES=( "${FILESDIR}/dtovl-install.patch" )
 
-SLOT="0"
 LICENSE="BSD"
+SLOT="0"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RESTRICT="mirror" #overlay
