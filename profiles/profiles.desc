@@ -3,3 +3,4 @@ amd64 amd64/hardened-systemd dev
 amd64 amd64/hardened-plasma-systemd dev
 amd64 amd64/hardened-plasma-systemd-merged-usr dev
 arm64 arm64/hardened-systemd-merged-usr exp
+arm64 arm64/23.0-hardened-systemd-merged-usr exp

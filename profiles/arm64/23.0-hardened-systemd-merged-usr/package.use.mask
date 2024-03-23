@@ -1,0 +1,2 @@
+sys-libs/glibc -cet
+sys-devel/gcc -cet
