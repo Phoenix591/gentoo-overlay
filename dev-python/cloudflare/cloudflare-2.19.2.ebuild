@@ -41,7 +41,7 @@ python_test() {
 			'test_dns_import_export.py' 'test_load_balancers.py' 'test_log_received.py'
 			'test_rulesets.py' 'test_urlscanner.py' 'test_paging_thru_zones.py'
 			'test_purge_cache.py'
-			'test_graphql.py' 'test_waiting_room.py' 'test_workers.py' )
+			'test_graphql.py' 'test_waiting_room.py' 'test_workers.py' 'test_cloudflare_calls.py' )
 		# these test(s) need an api key/token setup
 		# Permissions needed are zone dns edit and user details read, account worker scripts edit,
 			#  zone analytics read, zone load balancer edit, account ruleset edit, zone firewall edit
