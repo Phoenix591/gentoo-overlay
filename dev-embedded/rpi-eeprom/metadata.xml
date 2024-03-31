@@ -8,4 +8,7 @@
 	<upstream>
 		<remote-id type="github">raspberrypi/rpi-eeprom</remote-id>
 	</upstream>
+	<use>
+		<flag name="tools">Install secure boot scripts and vl805 flash tool</flag>
+	</use>
 </pkgmetadata>

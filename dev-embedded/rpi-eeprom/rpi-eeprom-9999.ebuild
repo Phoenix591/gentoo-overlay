@@ -21,6 +21,7 @@ fi
 
 SLOT="0"
 LICENSE="BSD rpi-eeprom"
+IUSE="tools"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RESTRICT="mirror" #overlay
@@ -33,20 +34,34 @@ RDEPEND="${PYTHON_DEPS}
 		>=media-libs/raspberrypi-userland-bin-1.20201022
 		dev-embedded/rpi-utils
 	)
-	dev-libs/openssl"
+	dev-libs/openssl
+	tools? ( dev-python/pycryptodome[${PYTHON_USEDEP}] ) "
+
+QA_PREBUILT="usr/sbin/vl805"
+QA_PRESTRIPPED="usr/sbin/vl805"
 
 src_prepare() {
 	default
+	# Adjust config file path
 	sed -i \
 		-e 's:/etc/default/rpi-eeprom-update:/etc/conf.d/rpi-eeprom-update:' \
 		-e 's:IGNORE_DPKG_CHECKSUMS=${LOCAL_MODE}:IGNORE_DPKG_CHECKSUMS=1:' \
 		rpi-eeprom-update || die "Failed sed on rpi-eeprom-update"
+	# Script is set for pycryptodomex which uses the same code but
+	# different namespace than pycrptodome
+	use tools && sed -i -e \
+		's/Cryptodome./Crypto./' tools/rpi-sign-bootcode || die "Failed sed on rpi-sign-bootcode"
+}
+python_install() {
+	python_scriptinto /usr/sbin
+	python_doscript rpi-eeprom-config
+	use tools && python_doscript tools/{rpi-bootloader-key-convert,rpi-sign-bootcode}
 }
 
 src_install() {
-	python_scriptinto /usr/sbin
-	python_foreach_impl python_newscript rpi-eeprom-config rpi-eeprom-config
+	python_foreach_impl python_install
 
+	use tools && dosbin tools/rpi-otp-private-key tools/vl805
 	dosbin rpi-eeprom-update rpi-eeprom-digest
 	keepdir /var/lib/raspberrypi/bootloader/backup
 
@@ -94,4 +109,6 @@ pkg_postinst() {
 	elog '/etc/conf.d/rpi-eeprom-update contains the configuration.'
 	elog 'FIRMWARE_RELEASE_STATUS="critical|stable" determines'
 	elog 'which release track you get. "critical" is recommended and the default.'
+
+	elog 'The updater script can optionally use sys-apps/flashrom[linux-spi] to flash updates'
 }
