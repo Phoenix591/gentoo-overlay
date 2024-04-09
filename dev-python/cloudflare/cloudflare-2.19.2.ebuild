@@ -1,4 +1,4 @@
-# Copyright 2021-2024 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,23 +12,26 @@ HOMEPAGE="https://pypi.org/project/cloudflare/"
 #SRC_URI="https://files.pythonhosted.org/packages/9b/8c/973e3726c2aa73821bb4272717c6f9f6fc74e69d41ba871bdf97fc671782/${P}.tar.gz"
 #SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 SRC_URI="https://github.com/cloudflare/python-cloudflare/archive/refs/tags/${PV}.tar.gz -> ${P}.gh.tar.gz"
+S="${WORKDIR}/python-${P}"
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~arm64"
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
-S="${WORKDIR}/python-${P}"
-PROPERTIES="test_network" #actually sends a test request
-RESTRICT="test mirror" #mirror restricted only becausw overlay
+PROPERTIES="test_network" #actually sends many test requests
 distutils_enable_tests pytest
+KEYWORDS="~amd64 ~arm64"
+RESTRICT="test mirror" #mirror restricted only because overlay
+
 python_prepare_all() {
 	# don't install tests or examples
 	sed -i -e "s/'cli4', 'examples'/'cli4'/" \
 		-e "s#'CloudFlare/tests',##" \
 		 setup.py || die
-
+	sed -i -e "/def test_ips7_should_fail():/i@pytest.mark.xfail(reason='Now fails upstream')" \
+		-e "2s/^/import pytest/" \
+		CloudFlare/tests/test_cloudflare_calls.py || die
 	distutils-r1_python_prepare_all
 }
 python_test() {
@@ -50,7 +53,8 @@ python_test() {
 	# Not sure what permissions/tokens/whatever this test needs, maybe both a token and old api login
 	# tried several of the ssl related options for the cert test but no luck either
 	# Tried several of the prefex related options to try to get loa docs working but nope
-	local EPYTEST_IGNORE+=('test_images_v2_direct_upload.py' 'test_issue114.py' 'test_certificates.py' 'test_loa_documents.py'
+	local EPYTEST_IGNORE+=('test_images_v2_direct_upload.py' 'test_issue114.py'
+		'test_certificates.py' 'test_loa_documents.py'
 		'test_load_balancers.py' 'test_rulesets.py')
 	# maybe needs a paid plan or just some unknown permission
 	local EPYTEST_DESELECT=(
