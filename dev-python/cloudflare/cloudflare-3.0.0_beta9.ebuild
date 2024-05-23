@@ -16,7 +16,9 @@ if [ "${PV}" == 9999 ]; then
 elif [[ ${PV} == *"beta"* ]]; then
 	MYPV=$(ver_rs 3 -)
 	MYPV=${MYPV/beta/beta.}
-	SRC_URI="https://github.com/cloudflare/cloudflare-python/archive/refs/tags/v${MYPV}.tar.gz -> ${P}.gh.tar.gz"
+	MYPN="cloudflare-python"
+	SRC_URI="https://github.com/cloudflare/cloudflare-python/archive/refs/tags/v${MYPV}.tar.gz -> ${P}.gh.tar.gz
+		test? ( https://github.com/Phoenix591/${MYPN}/releases/download/v${PV}/${MYPN}-v${PV}-prism.tar.gz )"
 	S="${WORKDIR}/${PN}-python-${MYPV}"
 
 else
@@ -24,17 +26,17 @@ else
 	S="${WORKDIR}/python-${P}"
 	KEYWORDS="~amd64 ~arm64"
 fi
-LICENSE="MIT"
+LICENSE="MIT test? ( ISC Apache-2.0 MIT BSD CC0-1.0 0BSD )"
+# nodejs package and deps used to test
 SLOT="0"
 BDEPEND="test? (
-	net-libs/nodejs
+	>=net-libs/nodejs-18.20.1
 	 dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 	 dev-python/time-machine[${PYTHON_USEDEP}]
 	 dev-python/dirty-equals[${PYTHON_USEDEP}]
 	 dev-python/respx[${PYTHON_USEDEP}]
 )"
 
-DEPEND=""
 RDEPEND=" ${DEPEND}
 	>=dev-python/httpx-0.23.0[${PYTHON_USEDEP}]
 	>=dev-python/pydantic-1.9.0[${PYTHON_USEDEP}]
@@ -43,9 +45,14 @@ RDEPEND=" ${DEPEND}
 	>=dev-python/distro-1.7.0[${PYTHON_USEDEP}]
 	>=dev-python/sniffio-1.3.1[${PYTHON_USEDEP}]
 	 "
-PROPERTIES="test_network" #actually sends many test requests
 distutils_enable_tests pytest
-RESTRICT="test mirror" #mirror restricted only because overlay
+RESTRICT="mirror" #mirror restricted only because overlay
+RESTRICT+=" !test? ( test )"
+
+src_unpack() {
+	unpack "${P}.gh.tar.gz"
+	use test && cd "${S}" && unpack "cloudflare-python-v${PV}-prism.tar.gz"
+}
 
 #python_prepare_all() {
 #	# don't install tests or examples
@@ -71,6 +78,16 @@ python_test() {
 
 src_test() {
 	# Run prism mock api server, this is what needs nodejs
-	scripts/mock --daemon || die
+	node --no-warnings node_modules/@stoplight/prism-cli/dist/index.js mock \
+		"cloudflare-spec.yml" >prism.log &
+	# Wait for server to come online
+	echo -n "Waiting for mockserver"
+	while ! grep -q "✖  fatal\|Prism is listening" "prism.log" ; do
+	    echo -n "."
+	    sleep 0.2
+	done
+	if grep -q "✖  fatal" prism.log; then
+		die
+	fi
 	distutils-r1_src_test
 }
