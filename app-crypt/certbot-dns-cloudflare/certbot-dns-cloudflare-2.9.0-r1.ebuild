@@ -1,8 +1,8 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=(python3_{10..11})
+PYTHON_COMPAT=(python3_{10..12})
 #DISTUTILS_USE_SETUPTOOLS=rdepend
 DISTUTILS_USE_PEP517=setuptools
 
@@ -31,6 +31,7 @@ RDEPEND="${CDEPEND}
 	>=app-crypt/acme-${PV}[${PYTHON_USEDEP}]
 	dev-python/zope-interface[${PYTHON_USEDEP}]
 	dev-python/dns-lexicon[${PYTHON_USEDEP}]
+	!>=dev-python/cloudflare-2.21[${PYTHON_USEDEP}]
 	dev-python/cloudflare[${PYTHON_USEDEP}]"
 BDEPEND="test? ( ${RDEPEND} )"
 distutils_enable_tests pytest
