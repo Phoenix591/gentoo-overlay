@@ -6,10 +6,10 @@ EAPI=8
 inherit flag-o-matic systemd toolchain-funcs udev multilib-minimal
 MYPN="e2fsprogs"
 MYP="${MYPN}-${PV}"
-S="${WORKDIR}/${MYP}"
 DESCRIPTION="Standard EXT2/EXT3/EXT4 filesystem utilities"
-HOMEPAGE="http://e2fsprogs.sourceforge.net/"
-SRC_URI="https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v${PV}/${MYP}.tar.xz"
+HOMEPAGE="https://e2fsprogs.sourceforge.net/"
+SRC_URI="https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v${PV}/${MYP}.tar.xz"
+S="${WORKDIR}/${MYP}"
 LICENSE="GPL-2 BSD"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
@@ -18,6 +18,7 @@ IUSE="lto nls +threads"
 RDEPEND="nls? ( virtual/libintl )
 	>=sys-apps/util-linux-2.16"
 DEPEND="${RDEPEND}"
+
 #e2fsprogs has odd issues with bundling its internal libraries or not, depending on the full e2fsprogs
 #to ensure the libraries are  consistent
 BDEPEND="virtual/pkgconfig
