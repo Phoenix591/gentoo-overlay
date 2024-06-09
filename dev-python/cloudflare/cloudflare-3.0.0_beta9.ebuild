@@ -28,7 +28,7 @@ else
 fi
 LICENSE="MIT test? ( ISC Apache-2.0 MIT BSD CC0-1.0 0BSD )"
 # nodejs package and deps used to test
-SLOT="0"
+SLOT="3"
 BDEPEND="test? (
 	>=net-libs/nodejs-18.20.1
 	 dev-python/pytest-asyncio[${PYTHON_USEDEP}]
