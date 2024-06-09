@@ -31,7 +31,6 @@ RDEPEND="${CDEPEND}
 	>=app-crypt/acme-${PV}[${PYTHON_USEDEP}]
 	dev-python/zope-interface[${PYTHON_USEDEP}]
 	dev-python/dns-lexicon[${PYTHON_USEDEP}]
-	!>=dev-python/cloudflare-2.20[${PYTHON_USEDEP}]
 	=dev-python/cloudflare-2.19*[${PYTHON_USEDEP}]"
 BDEPEND="test? ( ${RDEPEND} )"
 distutils_enable_tests pytest
