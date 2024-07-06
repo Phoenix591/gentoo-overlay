@@ -23,20 +23,26 @@ MY_P="${PN}-${MY_PV}"
 RRL_PV="${MY_PV}"
 
 DESCRIPTION="Berkeley Internet Name Domain - Name Server"
-HOMEPAGE="https://www.isc.org/software/bind"
-SRC_URI="https://downloads.isc.org/isc/bind9/${PV}/${P}.tar.xz
-	doc? ( mirror://gentoo/dyndns-samples.tbz2 )"
+HOMEPAGE="https://www.isc.org/bind/"
 
 LICENSE="Apache-2.0 BSD BSD-2 GPL-2 HPND ISC MPL-2.0"
 SLOT="0"
 #KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
-KEYWORDS="~amd64 ~arm ~arm64 ~x86"
-S="${WORKDIR}/${MY_P}"
+if [[ ${PV} == *"9999"* ]]; then
+	if [ "$(ver_cut 3)" == "9999" ]; then
+		EGIT_BRANCH="${PN}-$(ver_cut 1-2)"
+	fi
+	EGIT_REPO_URI="https://gitlab.isc.org/isc-projects/bind9.git"
+	inherit git-r3
+else
+	SRC_URI="https://downloads.isc.org/isc/bind9/${PV}/${P}.tar.xz"
+	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
+	S="${WORKDIR}/${MY_P}"
+fi
 
 # -berkdb by default re bug 602682
 IUSE="+caps dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
-json lmdb selinux static-libs test
- xml +zlib"
+json lmdb selinux static-libs test xml +zlib"
 # no PKCS11 currently as it requires OpenSSL to be patched, also see bug 409687
 
 # Upstream dropped the old geoip library, but the BIND configuration for using
@@ -183,10 +189,6 @@ src_install() {
 		docinto contrib
 		dodoc contrib/scripts/nanny.pl
 
-		# some handy-dandy dynamic dns examples
-		pushd "${ED}"/usr/share/doc/${PF} 1>/dev/null || die
-		tar xf "${DISTDIR}"/dyndns-samples.tbz2 || die
-		popd 1>/dev/null || die
 	fi
 
 	insinto /etc/bind
