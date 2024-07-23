@@ -5,7 +5,7 @@ EAPI=8
 
 PYTHON_COMPAT=( python3_{11..12} )
 
-inherit cmake python-single-r1 flag-o-matic
+inherit cmake python-r1 flag-o-matic
 
 DESCRIPTION="Misc useful commands for Raspberry Pis"
 HOMEPAGE="https://github.com/raspberrypi/utils"
@@ -24,12 +24,20 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RESTRICT="mirror" #overlay
 
-BDEPEND="sys-apps/dtc"
-DEPEND="${PYTHON_DEPS}"
+DEPEND="sys-apps/dtc"
 RDEPEND="${PYTHON_DEPS}
 	app-admin/sudo
+	dev-lang/perl
 	${DEPEND}"
+src_prepare() {
+	sed -i '/otpset/d' CMakeLists.txt || die # python we handle ourselves
+	cmake_src_prepare
+}
 src_configure() {
 	filter-lto
 	cmake_src_configure
+}
+src_install() {
+	cmake_src_install
+	python_foreach_impl python_doscript otpset/otpset
 }
