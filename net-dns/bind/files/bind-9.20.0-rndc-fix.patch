@@ -1,0 +1,120 @@
+From 9db02d89209d89d32842daa1ea401462384d67b8 Mon Sep 17 00:00:00 2001
+From: Evan Hunt <each@isc.org>
+Date: Tue, 2 Jul 2024 23:40:54 -0700
+Subject: [PATCH 1/2] delay release of root privileges until after configuring
+ controls
+
+on systems where root access is needed to configure privileged
+ports, we don't want to fully relinquish root privileges until
+after the control channel (which typically runs on port 953) has
+been established.
+
+the new named_os_tempuser() function allows us to switch the
+effective userid before permanently dropping privileges with
+named_os_changeuser().
+---
+ bin/named/include/named/os.h |  5 ++++-
+ bin/named/os.c               | 16 +++++++++++++++-
+ bin/named/server.c           | 18 +++++++++++++++---
+ 3 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/bin/named/include/named/os.h b/bin/named/include/named/os.h
+index 6066fc391de..aca98827f76 100644
+--- a/bin/named/include/named/os.h
++++ b/bin/named/include/named/os.h
+@@ -41,8 +41,11 @@ named_os_inituserinfo(const char *username);
+ void
+ named_os_changeuser(void);
+ 
++void
++named_os_tempuser(uid_t uid);
++
+ uid_t
+-ns_os_uid(void);
++named_os_uid(void);
+ 
+ void
+ named_os_adjustnofile(void);
+diff --git a/bin/named/os.c b/bin/named/os.c
+index 9efc114479d..3bb73b04933 100644
+--- a/bin/named/os.c
++++ b/bin/named/os.c
+@@ -603,8 +603,22 @@ named_os_changeuser(void) {
+ #endif /* HAVE_LIBCAP */
+ }
+ 
++void
++named_os_tempuser(uid_t uid) {
++	char strbuf[ISC_STRERRORSIZE];
++
++	if (done_setuid) {
++		return;
++	}
++
++	if (seteuid(uid) < 0) {
++		strerror_r(errno, strbuf, sizeof(strbuf));
++		named_main_earlyfatal("setuid(): %s", strbuf);
++	}
++}
++
+ uid_t
+-ns_os_uid(void) {
++named_os_uid(void) {
+ 	if (runas_pw == NULL) {
+ 		return (0);
+ 	}
+diff --git a/bin/named/server.c b/bin/named/server.c
+index a17375dbaaa..555d8da9f40 100644
+--- a/bin/named/server.c
++++ b/bin/named/server.c
+@@ -9230,10 +9230,12 @@ load_configuration(const char *filename, named_server_t *server,
+ #endif /* HAVE_LMDB */
+ 
+ 	/*
+-	 * Relinquish root privileges.
++	 * Switch to the effective UID for setting up files.
++	 * Later, after configuring all the listening ports,
++	 * we'll relinquish root privileges permanently.
+ 	 */
+ 	if (first_time) {
+-		named_os_changeuser();
++		named_os_tempuser(named_os_uid());
+ 	}
+ 
+ 	/*
+@@ -9580,6 +9582,9 @@ load_configuration(const char *filename, named_server_t *server,
+ 	isc_loopmgr_resume(named_g_loopmgr);
+ 	exclusive = false;
+ 
++	/* Take back root privileges temporarily */
++	named_os_tempuser(0);
++
+ 	/* Configure the statistics channel(s) */
+ 	result = named_statschannels_configure(named_g_server, config,
+ 					       named_g_aclconfctx);
+@@ -9606,6 +9611,13 @@ load_configuration(const char *filename, named_server_t *server,
+ 
+ 	(void)ns_interfacemgr_scan(server->interfacemgr, true, true);
+ 
++	/*
++	 * Permanently drop root privileges now.
++	 */
++	if (first_time) {
++		named_os_changeuser();
++	}
++
+ 	/*
+ 	 * These cleans up either the old production view list
+ 	 * or our temporary list depending on whether they
+@@ -12943,7 +12955,7 @@ nzd_env_close(dns_view_t *view) {
+ 	/*
+ 	 * Database files must be owned by the eventual user, not by root.
+ 	 */
+-	ret = chown(dbpath_copy, ns_os_uid(), -1);
++	ret = chown(dbpath_copy, named_os_uid(), -1);
+ 	UNUSED(ret);
+ 
+ 	/*
+-- 
+GitLab
+
