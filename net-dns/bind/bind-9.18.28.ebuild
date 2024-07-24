@@ -251,7 +251,7 @@ src_install() {
 pkg_postinst() {
 	tmpfiles_process named.conf || eerror "Failed to install named.conf"
 
-	if [ ! -f '/etc/bind/rndc.key' && ! -f '/etc/bind/rndc.conf' ]; then
+	if [ ! -f '/etc/bind/rndc.key' ] && [ ! -f '/etc/bind/rndc.conf' ]; then
 		einfo "Generating new rndc.key"
 		/usr/sbin/rndc-confgen  -a
 		echo
