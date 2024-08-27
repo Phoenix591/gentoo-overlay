@@ -23,11 +23,11 @@ fi
 DESCRIPTION="Raspberry Pi userspace tools and libraries"
 HOMEPAGE="https://github.com/raspberrypi/userland"
 
-# can end up in a loop with libcec detecting the old .so but failing to build with the headers gone
-RESTRICT="preserve-libs"
-
 LICENSE="BSD"
 SLOT="0"
+
+# can end up in a loop with libcec detecting the old .so but failing to build with the headers gone
+RESTRICT="preserve-libs"
 
 RDEPEND="acct-group/video
 	!media-libs/raspberrypi-userland-bin
