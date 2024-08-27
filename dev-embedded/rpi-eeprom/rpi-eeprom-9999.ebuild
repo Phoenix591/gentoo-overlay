@@ -19,8 +19,8 @@ else
 	S="${WORKDIR}/${P}-${VL_VER}/"
 fi
 
-SLOT="0"
 LICENSE="BSD rpi-eeprom"
+SLOT="0"
 IUSE="tools"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
