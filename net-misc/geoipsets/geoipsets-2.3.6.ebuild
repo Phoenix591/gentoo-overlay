@@ -1,4 +1,4 @@
-# Copyright 2022-2023 Gentoo Authors
+# Copyright 2022-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -19,6 +19,9 @@ else
 #	SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 	SRC_URI="https://github.com/chr0mag/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz"
 fi
+
+S="${WORKDIR}/${P}/python"
+
 LICENSE="GPL-3"
 SLOT="0"
 IUSE="test"
@@ -36,8 +39,6 @@ BDEPEND="(
 
 distutils_enable_tests pytest
 #RESTRICT="test" # broken/outdated upstream, fails 5 tests
-
-S="${WORKDIR}/${P}/python"
 
 src_install() {
 	distutils-r1_src_install
