@@ -28,14 +28,14 @@ IUSE="test"
 RESTRICT="mirror" #overlay, no real issue
 
 #DEPEND=""
-RDEPEND=( "${DEPEND}"
-	"dev-python/requests[${PYTHON_USEDEP}]"
-	"dev-python/beautifulsoup4[${PYTHON_USEDEP}]"
-)
-BDEPEND="(
+RDEPEND="${DEPEND}
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/beautifulsoup4[${PYTHON_USEDEP}]"
+
+BDEPEND="
 	test? ( "${RDEPEND}"
 		"dev-python/pytest[${PYTHON_USEDEP}]" )
-	)"
+	"
 
 distutils_enable_tests pytest
 #RESTRICT="test" # broken/outdated upstream, fails 5 tests
