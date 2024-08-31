@@ -1,0 +1,164 @@
+diff --git a/bin/named/include/named/os.h b/bin/named/include/named/os.h
+index 6066fc391de8ba3330171d59b48464f0104a64de..a150872f47d6ec8e895bdfef931377a19d941ac2 100644
+--- a/bin/named/include/named/os.h
++++ b/bin/named/include/named/os.h
+@@ -39,10 +39,13 @@ void
+ named_os_inituserinfo(const char *username);
+ 
+ void
+-named_os_changeuser(void);
++named_os_changeuser(bool permanent);
++
++void
++named_os_restoreuser(void);
+ 
+ uid_t
+-ns_os_uid(void);
++named_os_uid(void);
+ 
+ void
+ named_os_adjustnofile(void);
+diff --git a/bin/named/os.c b/bin/named/os.c
+index 8c917e98dd1e8eba44a4dab52e1adada0a875538..160093e7ed575cac4116312777277533337bb3b5 100644
+--- a/bin/named/os.c
++++ b/bin/named/os.c
+@@ -61,6 +61,9 @@ static struct passwd *runas_pw = NULL;
+ static bool done_setuid = false;
+ static int dfd[2] = { -1, -1 };
+ 
++static uid_t saved_uid = (uid_t)-1;
++static gid_t saved_gid = (gid_t)-1;
++
+ #if HAVE_LIBCAP
+ 
+ static bool non_root = false;
+@@ -461,12 +464,33 @@ named_os_inituserinfo(const char *username) {
+ }
+ 
+ void
+-named_os_changeuser(void) {
++named_os_restoreuser(void) {
++	if (runas_pw == NULL || done_setuid) {
++		return;
++	}
++
++	REQUIRE(saved_uid != (uid_t)-1);
++	REQUIRE(saved_gid != (gid_t)-1);
++
++	setperms(saved_uid, saved_gid);
++}
++
++void
++named_os_changeuser(bool permanent) {
+ 	char strbuf[ISC_STRERRORSIZE];
+ 	if (runas_pw == NULL || done_setuid) {
+ 		return;
+ 	}
+ 
++	if (!permanent) {
++		saved_uid = getuid();
++		saved_gid = getgid();
++
++		setperms(runas_pw->pw_uid, runas_pw->pw_gid);
++
++		return;
++	}
++
+ 	done_setuid = true;
+ 
+ 	if (setgid(runas_pw->pw_gid) == -1) {
+@@ -495,7 +519,7 @@ named_os_changeuser(void) {
+ }
+ 
+ uid_t
+-ns_os_uid(void) {
++named_os_uid(void) {
+ 	if (runas_pw == NULL) {
+ 		return (0);
+ 	}
+@@ -551,7 +575,7 @@ void
+ named_os_minprivs(void) {
+ #if HAVE_LIBCAP
+ 	linux_keepcaps();
+-	named_os_changeuser();
++	named_os_changeuser(true);
+ 	linux_minprivs();
+ #endif /* HAVE_LIBCAP */
+ }
+@@ -678,19 +702,16 @@ named_os_openfile(const char *filename, mode_t mode, bool switch_user) {
+ 	free(f);
+ 
+ 	if (switch_user && runas_pw != NULL) {
+-		uid_t olduid = getuid();
+-		gid_t oldgid = getgid();
+-
+ 		/*
+-		 * Set UID/GID to the one we'll be running with
++		 * Temporarily set UID/GID to the one we'll be running with
+ 		 * eventually.
+ 		 */
+-		setperms(runas_pw->pw_uid, runas_pw->pw_gid);
++		named_os_changeuser(false);
+ 
+ 		fd = safe_open(filename, mode, false);
+ 
+ 		/* Restore UID/GID to previous uid/gid */
+-		setperms(olduid, oldgid);
++		named_os_restoreuser();
+ 
+ 		if (fd == -1) {
+ 			fd = safe_open(filename, mode, false);
+diff --git a/bin/named/server.c b/bin/named/server.c
+index 0d052c79af52a1fb863f027875da969f52bf5809..dc6660d625a20262c035a00292362b6d15a98347 100644
+--- a/bin/named/server.c
++++ b/bin/named/server.c
+@@ -9420,10 +9420,12 @@ load_configuration(const char *filename, named_server_t *server,
+ #endif /* HAVE_LMDB */
+ 
+ 	/*
+-	 * Relinquish root privileges.
++	 * Switch to the effective UID for setting up files.
++	 * Later, after configuring all the listening ports,
++	 * we'll relinquish root privileges permanently.
+ 	 */
+ 	if (first_time) {
+-		named_os_changeuser();
++		named_os_changeuser(false);
+ 	}
+ 
+ 	/*
+@@ -9770,6 +9772,11 @@ load_configuration(const char *filename, named_server_t *server,
+ 	isc_loopmgr_resume(named_g_loopmgr);
+ 	exclusive = false;
+ 
++	/* Take back root privileges temporarily */
++	if (first_time) {
++		named_os_restoreuser();
++	}
++
+ 	/* Configure the statistics channel(s) */
+ 	result = named_statschannels_configure(named_g_server, config,
+ 					       named_g_aclconfctx);
+@@ -9796,6 +9803,13 @@ load_configuration(const char *filename, named_server_t *server,
+ 
+ 	(void)ns_interfacemgr_scan(server->interfacemgr, true, true);
+ 
++	/*
++	 * Permanently drop root privileges now.
++	 */
++	if (first_time) {
++		named_os_changeuser(true);
++	}
++
+ 	/*
+ 	 * These cleans up either the old production view list
+ 	 * or our temporary list depending on whether they
+@@ -13315,7 +13329,7 @@ nzd_env_close(dns_view_t *view) {
+ 	/*
+ 	 * Database files must be owned by the eventual user, not by root.
+ 	 */
+-	ret = chown(dbpath_copy, ns_os_uid(), -1);
++	ret = chown(dbpath_copy, named_os_uid(), -1);
+ 	UNUSED(ret);
+ 
+ 	/*
