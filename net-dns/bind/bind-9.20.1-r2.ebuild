@@ -99,6 +99,7 @@ pkg_setup() {
 PATCHES=(
 	"${FILESDIR}/bind-9.20.0-rndc-fix-v2.patch"
 	"${FILESDIR}/malloc_usable_size.patch"
+	"${FILESDIR}/jemalloc-dlz.patch"
 )
 
 # bug 479092, requires networking

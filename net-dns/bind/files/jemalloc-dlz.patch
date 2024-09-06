@@ -1,0 +1,53 @@
+From 6b2ffa8216bcf65f3b20b14171d9732d9583e6f7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ond=C5=99ej=20Sur=C3=BD?= <ondrej@isc.org>
+Date: Sat, 27 Jul 2024 04:57:36 +0200
+Subject: [PATCH] Disable RTLD_DEEPBIND in Samba DLZ module
+
+When RTLD_DEEPBIND is enabled in the LDB modules inside the Samba DLZ
+plugin, and jemalloc is the BIND 9 memory allocator, there's a mismatch
+in the used symbols and the LDB allocates memory using BIND 9
+allocator (jemalloc), but frees the memory using RLTD_DEEPBIND free()
+symbol from libc.  This causes assertion failure on BIND 9 startup.
+---
+ bin/named/dlz_dlopen_driver.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/bin/named/dlz_dlopen_driver.c b/bin/named/dlz_dlopen_driver.c
+index 55c6e1e3b1..3d74ac07dc 100644
+--- a/bin/named/dlz_dlopen_driver.c
++++ b/bin/named/dlz_dlopen_driver.c
+@@ -211,6 +211,7 @@ dlopen_dlz_create(const char *dlzname, unsigned int argc, char *argv[],
+ 	isc_mem_t *mctx = NULL;
+ 	isc_result_t result = ISC_R_FAILURE;
+ 	int r;
++	char buf[1024];
+
+ 	UNUSED(driverarg);
+
+@@ -233,6 +234,24 @@ dlopen_dlz_create(const char *dlzname, unsigned int argc, char *argv[],
+ 	/* Initialize the lock */
+ 	isc_mutex_init(&cd->lock);
+
++#if HAVE_JEMALLOC
++	/*
++	 * Disable RTLD_DEEPBIND in Samba DLZ module,
++	 * see https://bugzilla.samba.org/show_bug.cgi?id=15643
++	 * for more details.
++	 */
++	r = uv_os_getenv("LDB_MODULES_DISABLE_DEEPBIND", buf,
++			 &(size_t){ sizeof(buf) });
++	if (r == UV_ENOENT) {
++		r = uv_os_setenv("LDB_MODULES_DISABLE_DEEPBIND", "1");
++	}
++	if (r != 0) {
++		dlopen_log(ISC_LOG_WARNING,
++			   "setting LDB_MODULES_DISABLE_DEEPBIND failed: %s",
++			   uv_strerror(r));
++	}
++#endif
++
+ 	r = uv_dlopen(cd->dl_path, &cd->dl_handle);
+ 	if (r != 0) {
+ 		const char *errmsg = uv_dlerror(&cd->dl_handle);
+--
+2.39.2
