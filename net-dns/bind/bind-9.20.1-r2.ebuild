@@ -42,7 +42,7 @@ fi
 
 # -berkdb by default re bug 602682
 IUSE="dnstap doc fixed-rrset geoip geoip2 gssapi +jemalloc
-json lmdb selinux static-libs test xml +zlib"
+json lmdb selinux static-libs systemd test xml +zlib"
 # no PKCS11 currently as it requires OpenSSL to be patched, also see bug 409687
 
 # Upstream dropped the old geoip library, but the BIND configuration for using
@@ -63,6 +63,7 @@ DEPEND="
 	json? ( dev-libs/json-c:= )
 	lmdb? ( dev-db/lmdb )
 	zlib? ( sys-libs/zlib )
+	systemd? ( sys-apps/systemd:= )
 	dnstap? ( dev-libs/fstrm dev-libs/protobuf-c:= )
 	>=dev-libs/libuv-1.40.0:=
 "
@@ -97,6 +98,7 @@ pkg_setup() {
 
 PATCHES=(
 	"${FILESDIR}/bind-9.20.0-rndc-fix-v2.patch"
+	"${FILESDIR}/malloc_usable_size.patch"
 )
 
 # bug 479092, requires networking
@@ -138,6 +140,7 @@ src_configure() {
 		$(use_with jemalloc)
 		$(use_with json json-c)
 		$(use_with lmdb)
+		$(use_with systemd libsystemd)
 		$(use_with test cmocka)
 		$(use_with xml libxml2)
 		$(use_with zlib)
