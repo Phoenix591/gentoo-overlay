@@ -31,6 +31,7 @@ RDEPEND="${PYTHON_DEPS}
 	${DEPEND}"
 src_prepare() {
 	sed -i '/otpset/d' CMakeLists.txt || die # python we handle ourselves
+	sed -i 's/dtovl STATIC dtoverlay.c/dtovl SHARED dtoverlay.c/' dtmerge/CMakeLists.txt|| die
 	cmake_src_prepare
 }
 src_configure() {
