@@ -29,5 +29,5 @@ mv -fv /boot/kernel${SUFFIX}.img /boot/kernel${SUFFIX}.img.1
 mv -v "${IMG}"  /boot/kernel${SUFFIX}.img
 echo $1
 echo $2
-rsync --del -vr "/boot/dtbs/${VER}/overlays" /boot/
-rsync -v /boot/dtbs/${VER}/broadcom/${DTBN} /boot/
+rsync --del -vr "/lib/modules/${VER}/dtb/overlays" /boot/
+rsync -v "/lib/modules/${VER}/dtb/broadcom/${DTBN}" /boot/
