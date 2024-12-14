@@ -66,7 +66,7 @@ RDEPEND="${PYTHON_DEPS}
 	)
 	filter? (
 		dev-python/scipy
-		$(python_gen_cond_dep 'dev-python/pyqtgraph[${PYTHON_USEDEP}]')
+		$(python_gen_cond_dep 'dev-python/pyqtgraph[qt5,${PYTHON_USEDEP}]')
 	)
 	grc? (
 		$(python_gen_cond_dep 'dev-python/mako[${PYTHON_USEDEP}]
