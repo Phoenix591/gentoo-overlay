@@ -1,0 +1,2 @@
+slotmove <dev-python/cloudflare-3.0.0 0 2
+slotmove =dev-python/cloudflare-3* 3 0

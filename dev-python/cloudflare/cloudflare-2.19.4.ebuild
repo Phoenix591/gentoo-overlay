@@ -14,7 +14,7 @@ HOMEPAGE="https://pypi.org/project/cloudflare/"
 SRC_URI="https://github.com/cloudflare/python-cloudflare/archive/refs/tags/${PV}.tar.gz -> ${P}.gh.tar.gz"
 S="${WORKDIR}/python-${P}"
 LICENSE="MIT"
-SLOT="0"
+SLOT="2"
 DEPEND="dev-python/jsonlines[${PYTHON_USEDEP}]"
 RDEPEND="( ${DEPEND}
 	dev-python/requests[${PYTHON_USEDEP}]

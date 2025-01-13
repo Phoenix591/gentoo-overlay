@@ -24,7 +24,7 @@ else
 fi
 LICENSE="MIT test? ( ISC Apache-2.0 MIT BSD CC0-1.0 0BSD )"
 # nodejs module and deps used to test
-SLOT="3"
+SLOT="0"
 RDEPEND=" ${DEPEND}
 	>=dev-python/httpx-0.23.0[${PYTHON_USEDEP}]
 	=dev-python/pydantic-2.9*[${PYTHON_USEDEP}]
