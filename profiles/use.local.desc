@@ -1,0 +1,47 @@
+# This file is deprecated as per GLEP 56 in favor of metadata.xml.
+# Please add your descriptions to your package's metadata.xml ONLY.
+# * generated automatically using pmaint *
+
+dev-embedded/rpi-eeprom:tools - Install secure boot scripts and vl805 flash tool
+dev-python/httpx:cli - Install the CLI "httpx" client.
+net-dns/bind:dnstap - Enables dnstap packet logging
+net-dns/bind:fixed-rrset - Enables fixed rrset-order option
+net-dns/bind:gssapi - Enable gssapi support
+net-dns/bind:json - Enable JSON statistics channel
+net-dns/bind:lmdb - Enable LMDB support to store configuration for 'addzone' zones
+net-wireless/gnuradio:analog - enable analog signal processing blocks
+net-wireless/gnuradio:audio - enable blocks to connect to audio sources (mic-in) and sinks (speaker-out) ports on a computer
+net-wireless/gnuradio:channels - enable channel mode blocks
+net-wireless/gnuradio:ctrlport - enable control port interface
+net-wireless/gnuradio:digital - enable digital signal processing blocks
+net-wireless/gnuradio:dtv - enable digital tv signal processing blocks
+net-wireless/gnuradio:fec - enable block for convolutional encoding using the CCSDS standard polynomial ("Voyager")
+net-wireless/gnuradio:filter - enable filter signal processing blocks
+net-wireless/gnuradio:grc - enable GNU Radio Companion graphical tool to design signal processing flow graphs
+net-wireless/gnuradio:iio - enable enable support for IIO devices
+net-wireless/gnuradio:modtool - enable modtool for editing GNU Radio modules and components
+net-wireless/gnuradio:network - enable block for networking support
+net-wireless/gnuradio:performance-counters - enable block performance counters
+net-wireless/gnuradio:soapy - enable support for SoapySDR blocks
+net-wireless/gnuradio:trellis - enable trellis blocks for FSM
+net-wireless/gnuradio:uhd - install UHD source and sink blocks
+net-wireless/gnuradio:utils - install scripts to enable viewing and analysis of files produced by flow graphs
+net-wireless/gnuradio:vocoder - enable blocks for audio voice encoders
+net-wireless/gnuradio:wavelet - enable wavelet signal processing blocks
+net-wireless/gnuradio:zeromq - enable zeromq message passing blocks
+net-wireless/uhd:b100 - support B100 hardware
+net-wireless/uhd:b200 - support B200, B210, B200mini, B205mini hardware
+net-wireless/uhd:e300 - support E300, E310 hardware
+net-wireless/uhd:mpmd - support N300, N310 hardware
+net-wireless/uhd:octoclock - Octoclock Network Support
+net-wireless/uhd:usrp1 - support USRP1 hardware
+net-wireless/uhd:usrp2 - support USRP2, N200, N210 hardware
+net-wireless/uhd:utils - utilities needed to list, query, calibrate, or update FPGA/Firmware
+net-wireless/uhd:x300 - support X300, X310 hardware
+sys-fs/e2fsck-static:lto - Build with link time optimization (LTO)
+sys-kernel/rpi-kernel:initramfs - Builds an initramfs with Dracut. Untested
+sys-kernel/rpi-kernel:pi1 - Builds the kernel for the Original Pi
+sys-kernel/rpi-kernel:pi2 - Builds the kernel for the Pi 2
+sys-kernel/rpi-kernel:pi3 - Builds the kernel for the Pi 3
+sys-kernel/rpi-kernel:pi4 - Builds the kernel for the Pi 4
+sys-kernel/rpi-kernel:pi5 - Builds the kernel for the Pi 5
