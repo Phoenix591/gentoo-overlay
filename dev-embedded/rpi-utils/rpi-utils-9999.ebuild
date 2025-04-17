@@ -21,7 +21,7 @@ PATCHES=( "${FILESDIR}/dtovl-install.patch" )
 LICENSE="BSD"
 SLOT="0"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
-
+IUSE="static-libs"
 RESTRICT="mirror" #overlay
 
 DEPEND="sys-apps/dtc"
@@ -31,12 +31,16 @@ RDEPEND="${PYTHON_DEPS}
 	${DEPEND}"
 src_prepare() {
 	sed -i '/otpset/d' CMakeLists.txt || die # python we handle ourselves
-	sed -i 's/dtovl STATIC dtoverlay.c/dtovl SHARED dtoverlay.c/' dtmerge/CMakeLists.txt|| die
-	sed -i 's/ -Werror//' piolib/examples/CMakeLists.txt
+	#unforce static
+	sed -i -E 's/(add_library *\([^[:space:]]+ +)STATIC( +[^)]*\))/\1\2/' */CMakeLists.txt || die
+	sed -i 's/ -Werror//' */CMakeLists.txt */*/CMakeLists.txt
 	cmake_src_prepare
 }
 src_configure() {
 	filter-lto
+	local mycmakeargs=(
+		-DBUILD_SHARED_LIBS=$(usex static-libs OFF ON)
+	)
 	cmake_src_configure
 }
 src_install() {
