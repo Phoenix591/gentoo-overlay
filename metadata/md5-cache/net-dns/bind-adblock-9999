@@ -1,14 +1,14 @@
-BDEPEND=python_single_target_python3_10? ( dev-lang/python:3.10 ) python_single_target_python3_11? ( dev-lang/python:3.11 ) python_single_target_python3_12? ( dev-lang/python:3.12 ) >=dev-vcs/git-1.8.2.1[curl]
+BDEPEND=python_single_target_python3_11? ( dev-lang/python:3.11 ) python_single_target_python3_12? ( dev-lang/python:3.12 ) python_single_target_python3_13? ( dev-lang/python:3.13 ) >=dev-vcs/git-1.8.2.1[curl]
 DEFINED_PHASES=install postinst prepare setup unpack
 DESCRIPTION=Fetch various blocklists and generate a BIND zone from them.
 EAPI=8
 HOMEPAGE=https://github.com/Trellmor/bind-adblock
 INHERIT=git-r3 python-single-r1
-IUSE=python_single_target_python3_10 python_single_target_python3_11 python_single_target_python3_12
+IUSE=python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13
 LICENSE=MIT
 PROPERTIES=live
-RDEPEND=python_single_target_python3_10? ( dev-lang/python:3.10 ) python_single_target_python3_11? ( dev-lang/python:3.11 ) python_single_target_python3_12? ( dev-lang/python:3.12 ) python_single_target_python3_10? ( dev-python/pycryptodome[python_targets_python3_10(-)] dev-python/dnspython[python_targets_python3_10(-)] dev-python/requests[python_targets_python3_10(-)] dev-python/pyyaml[python_targets_python3_10(-)] dev-python/validators[python_targets_python3_10(-)] ) python_single_target_python3_11? ( dev-python/pycryptodome[python_targets_python3_11(-)] dev-python/dnspython[python_targets_python3_11(-)] dev-python/requests[python_targets_python3_11(-)] dev-python/pyyaml[python_targets_python3_11(-)] dev-python/validators[python_targets_python3_11(-)] ) python_single_target_python3_12? ( dev-python/pycryptodome[python_targets_python3_12(-)] dev-python/dnspython[python_targets_python3_12(-)] dev-python/requests[python_targets_python3_12(-)] dev-python/pyyaml[python_targets_python3_12(-)] dev-python/validators[python_targets_python3_12(-)] )
-REQUIRED_USE=^^ ( python_single_target_python3_10 python_single_target_python3_11 python_single_target_python3_12 )
+RDEPEND=python_single_target_python3_11? ( dev-lang/python:3.11 ) python_single_target_python3_12? ( dev-lang/python:3.12 ) python_single_target_python3_13? ( dev-lang/python:3.13 ) python_single_target_python3_11? ( dev-python/pycryptodome[python_targets_python3_11(-)] dev-python/dnspython[python_targets_python3_11(-)] dev-python/requests[python_targets_python3_11(-)] dev-python/pyyaml[python_targets_python3_11(-)] dev-python/validators[python_targets_python3_11(-)] ) python_single_target_python3_12? ( dev-python/pycryptodome[python_targets_python3_12(-)] dev-python/dnspython[python_targets_python3_12(-)] dev-python/requests[python_targets_python3_12(-)] dev-python/pyyaml[python_targets_python3_12(-)] dev-python/validators[python_targets_python3_12(-)] ) python_single_target_python3_13? ( dev-python/pycryptodome[python_targets_python3_13(-)] dev-python/dnspython[python_targets_python3_13(-)] dev-python/requests[python_targets_python3_13(-)] dev-python/pyyaml[python_targets_python3_13(-)] dev-python/validators[python_targets_python3_13(-)] )
+REQUIRED_USE=^^ ( python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )
 SLOT=0
-_eclasses_=git-r3	875eb471682d3e1f18da124be97dcc81	multiprocessing	1e32df7deee68372153dca65f4a7c21f	toolchain-funcs	f9d71a6efe9d083aec750dd13968e169	python-utils-r1	b7726144f5af59e186d66746d0f513e5	python-single-r1	47d8ac9be330c9366112b78fd4f8ce57
-_md5_=0e2c5db6284f546e34dc1cbf46b3a2bb
+_eclasses_=git-r3	875eb471682d3e1f18da124be97dcc81	multiprocessing	1e32df7deee68372153dca65f4a7c21f	toolchain-funcs	f9d71a6efe9d083aec750dd13968e169	python-utils-r1	d1be7a6de225276141d669742d56f3f3	python-single-r1	47d8ac9be330c9366112b78fd4f8ce57
+_md5_=852951db6b13c3e79347f4620526edc8

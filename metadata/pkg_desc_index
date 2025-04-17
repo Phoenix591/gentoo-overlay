@@ -1,22 +1,22 @@
 acct-group/wsdd 0: Group for net-misc/wsdd
 acct-user/wsdd 0: User for net-misc/wsdd
-app-crypt/certbot-dns-cloudflare 2.11.0-r2 3.1.0 3.2.0: Cloudflare DNS Authenticator plugin for Certbot (Let's Encrypt Client)
+app-crypt/certbot-dns-cloudflare 3.2.0: Cloudflare DNS Authenticator plugin for Certbot (Let's Encrypt Client)
 dev-embedded/rpi-eeprom 9999: Updater for Raspberry Pi 4 bootloader and the VL805 USB controller
 dev-embedded/rpi-utils 9999: Misc useful commands for Raspberry Pis
 dev-python/cloudflare 2.19.4 2.20.0 4.0.0 4.1.0: Python wrapper for the Cloudflare v4 API
 dev-python/httpx 0.27.2: Fully-featured HTTP client which provides sync and async APIs
 dev-python/jsonlines 4.0.0 9999: Library with helpers for the jsonlines file format
-dev-python/msal 1.30.0: Microsoft Authentication Library for Python allows integration with Microsoft
+dev-python/msal 1.32.0: Microsoft Authentication Library for Python allows integration with Microsoft
 dev-vcs/trufflehog 3.86.0 3.88.3 3.88.12 3.88.20: Find credentials all over the place
 games-util/libray 0.0.9 0.0.10: an application for extracting, repackaging, and en/decrypting PS3 ISOs
 media-libs/raspberrypi-userland 9999: Raspberry Pi userspace tools and libraries
-net-dns/bind 9.20.6 9.20.7: Berkeley Internet Name Domain - Name Server
+net-dns/bind 9.20.7 9.20.8: Berkeley Internet Name Domain - Name Server
 net-dns/bind-adblock 9999: Fetch various blocklists and generate a BIND zone from them.
 net-misc/gdrive 3.9.1: Google Drive CLI Client
-net-misc/geoipsets 2.3.6: Utility to generate country-specific network ranges
-net-misc/sasl-xoauth2 0.24-r1 0.25: Sasl plugin to facilitate oauth2, tested with postfix
+net-misc/geoipsets 2.4: Utility to generate country-specific network ranges
+net-misc/sasl-xoauth2 0.26: Sasl plugin to facilitate oauth2, tested with postfix
 net-misc/wsdd 9999: A Web Service Discovery host daemon.
-net-wireless/gnuradio 3.10.11.0 3.10.11.0-r1: Toolkit that provides signal processing blocks to implement software radios
 net-wireless/uhd 4.7.0.0: Universal Software Radio Peripheral (USRP) Hardware Driver
+sci-geosciences/gpsd 3.25-r2: GPS daemon and library for USB/serial GPS devices and GPS/mapping clients
 sys-fs/e2fsck-static 1.47.1 1.47.2: Standard EXT2/EXT3/EXT4 filesystem utilities
 sys-kernel/rpi-kernel 6.6.9999 6.12.9999 6.13.9999 6.14.9999: Linux kernel built with Raspberry Pi patches
