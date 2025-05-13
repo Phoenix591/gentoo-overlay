@@ -21,10 +21,11 @@ fi
 
 LICENSE="BSD rpi-eeprom"
 SLOT="0"
-IUSE="tools"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+IUSE="test tools"
+REQUIRED_USE="${PYTHON_REQUIRED_USE}
+	test? ( tools ) "
 
-RESTRICT="mirror" #overlay
+RESTRICT="mirror !test? ( test )" #overlay
 
 BDEPEND="sys-apps/help2man"
 DEPEND="${PYTHON_DEPS}"
@@ -50,7 +51,8 @@ src_prepare() {
 	# Script is set for pycryptodomex which uses the same code but
 	# different namespace than pycrptodome
 	use tools && sed -i -e \
-		's/Cryptodome./Crypto./' tools/rpi-sign-bootcode || die "Failed sed on rpi-sign-bootcode"
+		's/Cryptodome./Crypto./' tools/rpi-sign-bootcode rpi-eeprom-config tools/rpi-bootloader-key-convert \
+			|| die "Failed sed for cryotodome"
 }
 python_install() {
 	python_scriptinto /usr/sbin
@@ -111,4 +113,11 @@ pkg_postinst() {
 	elog 'which release track you get. "critical" is recommended and the default.'
 
 	elog 'The updater script can optionally use sys-apps/flashrom[linux-spi] to flash updates'
+}
+src_test() {
+	python_test() {
+		cd "${S}/test"
+		./test-rpi-eeprom-config
+	}
+	python_foreach_impl python_test
 }
