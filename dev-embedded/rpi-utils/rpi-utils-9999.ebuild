@@ -31,8 +31,8 @@ RDEPEND="${PYTHON_DEPS}
 	${DEPEND}"
 src_prepare() {
 	sed -i '/otpset/d' CMakeLists.txt || die # python we handle ourselves
-	#unforce static
-	sed -i -E 's/(add_library *\([^[:space:]]+ +)STATIC( +[^)]*\))/\1\2/' */CMakeLists.txt || die
+	#unforce static. no longer needed atm
+#	sed -i -E 's/(add_library *\([^[:space:]]+ +)STATIC( +[^)]*\))/\1\2/' */CMakeLists.txt || die
 	sed -i 's/ -Werror//' */CMakeLists.txt */*/CMakeLists.txt
 	cmake_src_prepare
 }
