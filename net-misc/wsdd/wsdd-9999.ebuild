@@ -55,6 +55,8 @@ src_install() {
 		insinto /etc/default
 		newins etc/systemd/wsdd.defaults wsdd
 		systemd_dounit etc/systemd/wsdd.service
+		systemd_dounit etc/systemd/wsdd-discovery.socket
+		systemd_dounit etc/systemd/wsdd-discovery.service
 	fi
 	dodoc README.md
 	doman man/wsdd.8
