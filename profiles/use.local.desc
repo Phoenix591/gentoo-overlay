@@ -4,11 +4,13 @@
 
 dev-embedded/rpi-eeprom:tools - Install secure boot scripts and vl805 flash tool
 dev-python/httpx:cli - Install the CLI "httpx" client.
+net-dns/bind:dnsrps - Enable the DNS Response Policy Service (DNSRPS) API, a mechanism to allow an external response policy provider
 net-dns/bind:dnstap - Enables dnstap packet logging
+net-dns/bind:doh - Enables dns-over-https
 net-dns/bind:fixed-rrset - Enables fixed rrset-order option
 net-dns/bind:gssapi - Enable gssapi support
-net-dns/bind:json - Enable JSON statistics channel
 net-dns/bind:lmdb - Enable LMDB support to store configuration for 'addzone' zones
+net-dns/bind:systemtap - Build support for profiling and tracing using dev-debug/systemtap
 net-wireless/uhd:b100 - support B100 hardware
 net-wireless/uhd:b200 - support B200, B210, B200mini, B205mini hardware
 net-wireless/uhd:e300 - support E300, E310 hardware
