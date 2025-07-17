@@ -4,7 +4,6 @@
 
 dev-embedded/rpi-eeprom:tools - Install secure boot scripts and vl805 flash tool
 dev-python/httpx:cli - Install the CLI "httpx" client.
-net-dns/bind:dnsrps - Enable the DNS Response Policy Service (DNSRPS) API, a mechanism to allow an external response policy provider
 net-dns/bind:dnstap - Enables dnstap packet logging
 net-dns/bind:doh - Enables dns-over-https
 net-dns/bind:fixed-rrset - Enables fixed rrset-order option
