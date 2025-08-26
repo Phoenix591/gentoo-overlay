@@ -3,6 +3,7 @@
 # * generated automatically using pmaint *
 
 dev-embedded/rpi-eeprom:tools - Install secure boot scripts and vl805 flash tool
+dev-embedded/rpi-utils:gnutls - Build rpifwcrypto which uses GnuTLS
 dev-python/httpx:cli - Install the CLI "httpx" client.
 net-dns/bind:dnstap - Enables dnstap packet logging
 net-dns/bind:doh - Enables dns-over-https
