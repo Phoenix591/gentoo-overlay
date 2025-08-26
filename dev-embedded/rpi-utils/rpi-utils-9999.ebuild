@@ -21,10 +21,13 @@ PATCHES=( "${FILESDIR}/dtovl-install.patch" )
 LICENSE="BSD"
 SLOT="0"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
-IUSE="static-libs"
+IUSE="static-libs gnutls"
 RESTRICT="mirror" #overlay
 
-DEPEND="sys-apps/dtc"
+DEPEND="
+	sys-apps/dtc
+	gnutls? ( >=net-libs/gnutls-3.8.10:= )
+"
 RDEPEND="${PYTHON_DEPS}
 	app-admin/sudo
 	dev-lang/perl
@@ -34,6 +37,9 @@ src_prepare() {
 	#unforce static. no longer needed atm
 #	sed -i -E 's/(add_library *\([^[:space:]]+ +)STATIC( +[^)]*\))/\1\2/' */CMakeLists.txt || die
 	sed -i 's/ -Werror//' */CMakeLists.txt */*/CMakeLists.txt
+	if ! use gnutls; then
+		sed -i '/add_subdirectory(rpifwcrypto)/d' CMakeLists.txt || die
+	fi
 	cmake_src_prepare
 }
 src_configure() {

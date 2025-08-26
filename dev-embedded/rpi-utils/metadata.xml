@@ -4,4 +4,7 @@
 	<upstream>
 		<remote-id type="github">raspberrypi/utils</remote-id>
 	</upstream>
+	<use>
+		<flag name="gnutls">Build rpifwcrypto which uses GnuTLS</flag>
+	</use>
 </pkgmetadata>
