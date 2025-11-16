@@ -14,7 +14,7 @@ net-dns/bind 9.20.13 9.20.15: Berkeley Internet Name Domain - Name Server
 net-dns/bind-adblock 9999: Fetch various blocklists and generate a BIND zone from them.
 net-misc/gdrive 3.9.1: Google Drive CLI Client
 net-misc/geoipsets 2.4: Utility to generate country-specific network ranges
-net-misc/sasl-xoauth2 0.26: Sasl plugin to facilitate oauth2, tested with postfix
+net-misc/sasl-xoauth2 0.26 0.27: Sasl plugin to facilitate oauth2, tested with postfix
 net-misc/wsdd 9999: A Web Service Discovery host daemon.
 net-wireless/uhd 4.7.0.0: Universal Software Radio Peripheral (USRP) Hardware Driver
 sci-geosciences/gpsd 3.25-r2: GPS daemon and library for USB/serial GPS devices and GPS/mapping clients
