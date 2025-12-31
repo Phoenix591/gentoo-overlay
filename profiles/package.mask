@@ -1,0 +1,4 @@
+# Upstream host at notabug.org vanished, still pypy mirrored...
+# If it hasn't setup elsewhere next time I check will remove it
+# 12-31-2025
+games-util/libray
