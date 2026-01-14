@@ -1,4 +1,4 @@
-BDEPEND=test? ( dev-tcltk/expect sys-apps/coreutils sys-kernel/dracut sys-fs/e2fsprogs amd64? ( app-emulation/qemu[qemu_softmmu_targets_x86_64] ) arm64? ( app-emulation/qemu[qemu_softmmu_targets_aarch64] ) ppc? ( app-emulation/qemu[qemu_softmmu_targets_ppc] ) ppc64? ( app-emulation/qemu[qemu_softmmu_targets_ppc64] ) sparc? ( app-emulation/qemu[qemu_softmmu_targets_sparc,qemu_softmmu_targets_sparc64] ) x86? ( app-emulation/qemu[qemu_softmmu_targets_i386] ) ) || ( dev-lang/python:3.14 dev-lang/python:3.13 dev-lang/python:3.12 dev-lang/python:3.11 ) app-alternatives/cpio app-alternatives/bc app-arch/tar dev-lang/perl sys-devel/bison sys-devel/flex virtual/libelf arm? ( sys-apps/dtc ) arm64? ( sys-apps/dtc ) riscv? ( sys-apps/dtc ) >=dev-vcs/git-1.8.2.1[curl]
+BDEPEND=secureboot? ( app-crypt/sbsigntools dev-libs/openssl ) test? ( dev-tcltk/expect sys-apps/coreutils sys-kernel/dracut sys-fs/e2fsprogs amd64? ( app-emulation/qemu[qemu_softmmu_targets_x86_64] ) arm64? ( app-emulation/qemu[qemu_softmmu_targets_aarch64] ) ppc? ( app-emulation/qemu[qemu_softmmu_targets_ppc] ) ppc64? ( app-emulation/qemu[qemu_softmmu_targets_ppc64] ) sparc? ( app-emulation/qemu[qemu_softmmu_targets_sparc,qemu_softmmu_targets_sparc64] ) x86? ( app-emulation/qemu[qemu_softmmu_targets_i386] ) ) || ( dev-lang/python:3.14 dev-lang/python:3.13 dev-lang/python:3.12 dev-lang/python:3.11 ) app-alternatives/cpio app-alternatives/bc app-arch/tar dev-lang/perl sys-devel/bison sys-devel/flex virtual/libelf arm? ( sys-apps/dtc ) arm64? ( sys-apps/dtc ) modules-sign? ( dev-libs/openssl ) riscv? ( sys-apps/dtc ) >=dev-vcs/git-1.8.2.1[curl]
 DEFINED_PHASES=compile config configure install postinst postrm preinst prepare pretend setup test unpack
 DEPEND=initramfs? ( sys-kernel/dracut )
 DESCRIPTION=Linux kernel built with Raspberry Pi patches
@@ -6,12 +6,12 @@ EAPI=8
 HOMEPAGE=https://github.com/raspberrypi/linux https://www.kernel.org/
 IDEPEND=!initramfs? ( >=sys-kernel/installkernel-14 ) initramfs? ( || ( >=sys-kernel/installkernel-14[dracut(-)] >=sys-kernel/installkernel-14[ugrd(-)] ) )
 INHERIT=kernel-build toolchain-funcs git-r3
-IUSE=debug pi1 pi2 pi3 pi4 pi5 savedconfig +initramfs test +strip
+IUSE=debug pi1 pi2 pi3 pi4 pi5 savedconfig secureboot +initramfs test +strip modules-sign
 LICENSE=GPL-2
 PROPERTIES=live
 RDEPEND=virtual/libelf
-REQUIRED_USE=^^ ( pi1 pi2 pi3 pi4 pi5 )
+REQUIRED_USE=^^ ( pi1 pi2 pi3 pi4 pi5 ) secureboot? ( modules-sign )
 RESTRICT=!test? ( test ) test? ( userpriv ) arm? ( test )
 SLOT=6.15.9999
-_eclasses_=multiprocessing	1e32df7deee68372153dca65f4a7c21f	toolchain-funcs	30214924c0c3b92ec7dbf24fc70d60d3	python-utils-r1	dbb8c4d794033ad7e7221eaf567a6c90	python-any-r1	891415dfe39ad9b41b461f2b86354af0	portability	a39e3d646f76cb45d06b44cc1144b8d4	savedconfig	b9131abe556ad2ea96c01b06d658d363	mount-boot-utils	2551bac1a772f4b6beacb494a750ae92	dist-kernel-utils	a40de3638d3f7a89f4c45d1a62b90e20	kernel-install	8be80dd156d8f010297c514716fe1a43	kernel-build	7fe35825724a96e96aedf10c603a5266	git-r3	875eb471682d3e1f18da124be97dcc81
+_eclasses_=branding	7bcece3faa73dd0fc3e597013510d53a	multiprocessing	1e32df7deee68372153dca65f4a7c21f	toolchain-funcs	30214924c0c3b92ec7dbf24fc70d60d3	python-utils-r1	dbb8c4d794033ad7e7221eaf567a6c90	python-any-r1	891415dfe39ad9b41b461f2b86354af0	portability	a39e3d646f76cb45d06b44cc1144b8d4	savedconfig	b9131abe556ad2ea96c01b06d658d363	linux-info	efd923656513c879204fec6638eadee5	secureboot	d98b63e30a9468e1f1c06d3d7c66e760	mount-boot-utils	2551bac1a772f4b6beacb494a750ae92	dist-kernel-utils	a40de3638d3f7a89f4c45d1a62b90e20	kernel-install	6f445382d38596103e8882ee6cb70252	kernel-build	805e1e77eb3b72816e4d3642cfe121aa	git-r3	875eb471682d3e1f18da124be97dcc81
 _md5_=de3179d53b7fc8a7d8928e09779e38de
