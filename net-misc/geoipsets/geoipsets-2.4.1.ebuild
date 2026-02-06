@@ -1,4 +1,4 @@
-# Copyright 2022-2025 Gentoo Authors
+# Copyright 2022-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -36,8 +36,9 @@ BDEPEND="
 	test? ( "${RDEPEND}"
 		"dev-python/pytest[${PYTHON_USEDEP}]" )
 	"
-
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
+
 #RESTRICT="test" # broken/outdated upstream, fails 5 tests
 
 src_install() {
