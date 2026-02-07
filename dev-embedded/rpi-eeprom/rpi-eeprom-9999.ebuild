@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{11..13} )
+PYTHON_COMPAT=( python3_{11..14} )
 
 inherit python-r1 systemd
 
@@ -30,11 +30,7 @@ RESTRICT="mirror !test? ( test )" #overlay
 BDEPEND="sys-apps/help2man"
 DEPEND="${PYTHON_DEPS}"
 RDEPEND="${PYTHON_DEPS}
-	|| (
-		>=media-libs/raspberrypi-userland-0_pre20201022
-		>=media-libs/raspberrypi-userland-bin-1.20201022
-		dev-embedded/rpi-utils
-	)
+	dev-embedded/rpi-utils
 	dev-libs/openssl
 	tools? ( dev-python/pycryptodome[${PYTHON_USEDEP}] ) "
 
