@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} )
+PYTHON_COMPAT=( python3_{11..13} )
 DISTUTILS_USE_PEP517="setuptools"
 inherit distutils-r1
 
@@ -20,6 +20,7 @@ RDEPEND="( ${DEPEND}
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}] )"
 PROPERTIES="test_network" #actually sends many test requests
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 KEYWORDS="~amd64 ~arm64"
 RESTRICT="test mirror" #mirror restricted only because overlay

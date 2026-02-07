@@ -37,14 +37,12 @@ RDEPEND=" ${DEPEND}
 
 BDEPEND="test? (
 	>=net-libs/nodejs-18.20.1
-	 dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 	 dev-python/time-machine[${PYTHON_USEDEP}]
 	 dev-python/dirty-equals[${PYTHON_USEDEP}]
-	 dev-python/respx[${PYTHON_USEDEP}]
 	${RDEPEND}
 )"
 
-EPYTEST_XDIST=1
+EPYTEST_PLUGINS=( pytest-xdist pytest-asyncio respx )
 distutils_enable_tests pytest
 RESTRICT+=" !test? ( test )"
 
