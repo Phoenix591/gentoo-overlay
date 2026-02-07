@@ -5,3 +5,7 @@ app-crypt/certbot-dns-cloudflare
 # Dead upstream, no revdeps, does work and pass tests with 3.14
 # 2-6-26, removal in a month or so
 dev-python/jsonlines
+
+# Only consumer of jsonlines left. move on to new versions
+# 2-6-26 will be removed in a month or so
+<dev-python/cloudflare-3
