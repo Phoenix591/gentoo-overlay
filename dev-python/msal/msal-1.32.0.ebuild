@@ -18,6 +18,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm64"
 #RESTRICT="mirror" #mirror restricted only because overlay
 PROPERTIES="test_network"
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 RDEPEND="
 	dev-python/cryptography[${PYTHON_USEDEP}]
