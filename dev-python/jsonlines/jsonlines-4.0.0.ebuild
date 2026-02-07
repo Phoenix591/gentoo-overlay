@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517="setuptools"
-PYTHON_COMPAT=( python3_{11..13} )
+PYTHON_COMPAT=( python3_{11..14} )
 inherit distutils-r1
 
 DESCRIPTION="Library with helpers for the jsonlines file format"
@@ -26,6 +26,7 @@ RESTRICT="mirror" #overlay, no real issue
 RDEPEND="dev-python/attrs[${PYTHON_USEDEP}]"
 BDEPEND=" test? ( ${RDEPEND} )"
 
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 
 python_prepare_all() {
