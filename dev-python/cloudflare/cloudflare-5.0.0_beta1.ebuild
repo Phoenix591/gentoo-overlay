@@ -37,7 +37,7 @@ RDEPEND=" ${DEPEND}
 	 "
 
 BDEPEND="test? (
-	>=dev-python/aiohttp-0.9.1[${PYTHON_USEDEP}]
+	>=dev-python/httpx-aiohttp-0.1.9[${PYTHON_USEDEP}]
 	>=net-libs/nodejs-18.20.1
 	 dev-python/time-machine[${PYTHON_USEDEP}]
 	 dev-python/dirty-equals[${PYTHON_USEDEP}]
