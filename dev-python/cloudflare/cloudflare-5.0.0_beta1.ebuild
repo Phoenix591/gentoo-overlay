@@ -6,7 +6,7 @@ EAPI=8
 PYTHON_COMPAT=( python3_{11..14} )
 # upstream doesn't yet officially claim 3.13 support but passes tests and works
 DISTUTILS_USE_PEP517="hatchling"
-inherit distutils-r1
+inherit distutils-r1 eapi9-ver
 DESCRIPTION="Python wrapper for the Cloudflare v4 API"
 HOMEPAGE="https://pypi.org/project/cloudflare/"
 if [ "${PV}" == 9999 ]; then
@@ -43,32 +43,22 @@ BDEPEND="test? (
 	 dev-python/dirty-equals[${PYTHON_USEDEP}]
 	${RDEPEND}
 )"
-EPYTEST_PLUGINS=( pytest-xdist pytest-asyncio respx pytest-aiohttp )
+EPYTEST_PLUGINS=( pytest-xdist pytest-asyncio respx )
 distutils_enable_tests pytest
 RESTRICT+=" !test? ( test )"
+DOCS="docs/v5-migration-guide.md"
 
 src_unpack() {
 	unpack "${P}.gh.tar.gz"
 	use test && cd "${S}" && unpack "cloudflare-python-${MYPV}-prism.tar.gz"
 }
 
-#python_prepare_all() {
-#	# don't install tests or examples
-#	sed -i -e "s/'cli4', 'examples'/'cli4'/" \
-#		-e "s#'CloudFlare/tests',##" \
-#		 setup.py || die
-#	sed -i -e "/def test_ips7_should_fail():/i@pytest.mark.xfail(reason='Now fails upstream')" \
-#		-e "2s/^/import pytest/" \
-#		CloudFlare/tests/test_cloudflare_calls.py || die
-#	distutils-r1_python_prepare_all
-#}
-
 python_test() {
 	# these 2 tests fail in an ebuild environment for some reason
 	# help appreciated
-#	local EPYTEST_DESELECT=(
-#	tests/test_client.py::TestCloudflare::test_validate_headers
-#	tests/test_client.py::TestAsyncCloudflare::test_validate_headers )
+	local EPYTEST_DESELECT=(
+	tests/test_client.py::TestCloudflare::test_validate_headers
+	tests/test_client.py::TestAsyncCloudflare::test_validate_headers )
 		#intermittently fail for unknown reasons, passed along to upstream
 #		EPYTEST_DESELECT+=(
 #		tests/test_client.py::TestAsyncCloudflare::test_copy_build_request
@@ -105,4 +95,13 @@ start_mock() {
 }
 stop_mock() {
 	kill $(cat "${T}/mock.pid") || die
+}
+
+pkg_postinst() {
+	if ver_replacing -lt "5.0.0_beta1"; then
+		elog "Cloudflare 5 has several breaking changes"
+		elog "See /usr/share/doc/${P}/docs/v5-migration-guide.md"
+		elog "It also includes a new optional dependency on httpx-aiohttp"
+		elog "Check the README for details"
+	fi
 }
