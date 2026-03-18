@@ -20,7 +20,7 @@ IUSE="ocamlopt test"
 
 RDEPEND="
 	dev-ml/ocurl:=[ocamlopt?]
-	<dev-ml/cryptokit-1.21.0:=[ocamlopt?]
+	>=dev-ml/cryptokit-1.21.1:=[ocamlopt?]
 	dev-ml/yojson:=[ocamlopt?]
 	dev-ml/camlp-streams:=[ocamlopt?]
 "
