@@ -26,6 +26,7 @@ RESTRICT="mirror" #overlay
 
 DEPEND="
 	sys-apps/dtc
+	sys-libs/ncurses:=
 	gnutls? ( >=net-libs/gnutls-3.8.10:= )
 "
 RDEPEND="${PYTHON_DEPS}
