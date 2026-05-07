@@ -5,7 +5,7 @@ app-crypt/certbot-dns-cloudflare4 0.9.1: Port of Cloudflare DNS Authenticator pl
 dev-embedded/rpi-eeprom 9999: Updater for Raspberry Pi 4 bootloader and the VL805 USB controller
 dev-embedded/rpi-utils 9999: Misc useful commands for Raspberry Pis
 dev-ml/gapi-ocaml 0.4.7 0.4.8: A simple OCaml client for Google Services
-dev-python/cloudflare 2.19.4 2.20.0 4.3.1 5.0.0_beta1 5.0.0_beta2: Python wrapper for the Cloudflare v4 API
+dev-python/cloudflare 2.19.4 2.20.0 4.3.1 5.0.0_beta1 5.0.0_beta2 5.1.0: Python wrapper for the Cloudflare v4 API
 dev-python/httpx-aiohttp 0.1.12: aiohttp-powered httpx client
 dev-python/jsonlines 4.0.0 9999: Library with helpers for the jsonlines file format
 dev-python/msal 1.32.0 1.34.0: Microsoft Authentication Library for Python allows integration with Microsoft
