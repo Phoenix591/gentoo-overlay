@@ -87,7 +87,7 @@ stop_mock() {
 pkg_postinst() {
 	if ver_replacing -lt "5.0.0_beta1"; then
 		elog "Cloudflare 5 has several breaking changes"
-		elog "See /usr/share/doc/${P}/docs/v5-migration-guide.md"
+		elog "See /usr/share/doc/${P}/docs/v5.0.0-migration-guide.md"
 		elog "It also includes a new optional dependency on httpx-aiohttp"
 		elog "Check the README for details"
 	fi
