@@ -2,8 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
-PYTHON_COMPAT=(python3_{11..13})
-# certbot ready for 3.13, but not cloudflare
+PYTHON_COMPAT=(python3_{12..14})
 #DISTUTILS_USE_SETUPTOOLS=rdepend
 DISTUTILS_USE_PEP517=setuptools
 
@@ -29,7 +28,7 @@ SLOT="0"
 
 RDEPEND="${CDEPEND}
 	>=app-crypt/certbot-${PV}[${PYTHON_USEDEP}]
-	=dev-python/cloudflare-2.19*[${PYTHON_USEDEP}]"
+	>=dev-python/cloudflare-4[${PYTHON_USEDEP}]"
 BDEPEND="test? ( ${RDEPEND} )"
 distutils_enable_tests pytest
 distutils_enable_sphinx docs dev-python/sphinx-rtd-theme
