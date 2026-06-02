@@ -33,6 +33,11 @@ python_test() {
 	local EPYTEST_IGNORE=(
 		#needs unpackaged perf-baseline module
 		tests/test_benchmark.py
+		#needs unpackaged azure module(s)
+		tests/test_agentic_e2e.py
+		tests/test_e2e.py
+		tests/test_e2e_manual.py
+		tests/test_fmi_e2e.py
 	)
 	local EPYTEST_DESELECT=(
 		#version test is routinely out of date
