@@ -27,6 +27,7 @@ RDEPEND="
 "
 BDEPEND="	test? (
 			dev-python/python-dotenv[${PYTHON_USEDEP}]
+			${RDEPEND}
 		)
 "
 python_test() {
