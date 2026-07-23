@@ -1,0 +1,16 @@
+BDEPEND=dev-lang/ocaml dev-ml/dune
+DEFINED_PHASES=compile install test
+DEPEND=>=dev-ml/gapi-ocaml-0.4.9:= >=dev-ml/ocamlfuse-3.10.0:= >=dev-ml/cryptokit-1.21.0:= dev-ml/extlib:= dev-ml/ocaml-sqlite3:= dev-ml/otoml:= >=dev-ml/tiny_httpd-0.6:= dev-ml/camlidl:= test? ( dev-ml/ounit2 ) dev-lang/ocaml:=[ocamlopt?] dev-ml/dune:= >=dev-ml/findlib-1.0.4-r1[ocamlopt?]
+DESCRIPTION=FUSE filesystem over Google Drive
+EAPI=8
+HOMEPAGE=https://github.com/astrada/google-drive-ocamlfuse https://opam.ocaml.org/packages/google-drive-ocamlfuse/
+INHERIT=dune findlib
+IUSE=ocamlopt test +ocamlopt
+KEYWORDS=~amd64
+LICENSE=MIT
+RDEPEND=>=dev-ml/gapi-ocaml-0.4.9:= >=dev-ml/ocamlfuse-3.10.0:= >=dev-ml/cryptokit-1.21.0:= dev-ml/extlib:= dev-ml/ocaml-sqlite3:= dev-ml/otoml:= >=dev-ml/tiny_httpd-0.6:= dev-lang/ocaml:=[ocamlopt?] dev-ml/dune:= dev-lang/ocaml:=[ocamlopt?]
+RESTRICT=!test? ( test )
+SLOT=0/0.9.0
+SRC_URI=https://github.com/astrada/google-drive-ocamlfuse/archive/v0.9.0.tar.gz -> google-drive-ocamlfuse-0.9.0.gh.tar.gz
+_eclasses_=edo	a5e294016aa84979fcb2459749eb80b2	multiprocessing	45d0620f25c2f063ad6276ecd9ed9399	dune	bca6089ec4118f02802b8cee78a748c5	findlib	37a50ff418bcb640d3c5bc89dcdb8a6b
+_md5_=5f0fb0716471af379bc011448a247054
