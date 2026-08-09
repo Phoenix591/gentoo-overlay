@@ -34,9 +34,12 @@ RDEPEND="${PYTHON_DEPS}
 	dev-lang/perl
 	${DEPEND}"
 src_prepare() {
-	sed -i '/otpset/d' CMakeLists.txt || die # python we handle ourselves
-	#unforce static. no longer needed atm
-#	sed -i -E 's/(add_library *\([^[:space:]]+ +)STATIC( +[^)]*\))/\1\2/' */CMakeLists.txt || die
+	PUREPYD=( otpset ovmerge overlaycheck dtapply otamaker )
+	for dir in ${PUREPYD[@]}; do sed -i "/add_subdirectory.*$dir/d" CMakeLists.txt || die ; done
+	# python we handle ourselves
+	sed -i '/install/d' splashasm/CMakeLists.txt || die # python but with c parser in subdirectory
+	sed -i "s|exclusions_file = .*|exclusions_file = '/usr/share/${PN}/overlaycheck_exclusions.txt'|" \
+		overlaycheck/overlaycheck || die # move exclusions file out of bin
 	sed -i 's/ -Werror//' */CMakeLists.txt */*/CMakeLists.txt
 	if ! use gnutls; then
 		sed -i '/add_subdirectory(rpifwcrypto)/d' CMakeLists.txt || die
@@ -50,7 +53,18 @@ src_configure() {
 	)
 	cmake_src_configure
 }
+python_install() {
+	python_doscript otpset/otpset
+	python_domodule ovmerge/ovmerge_engine.py
+	python_doscript ovmerge/ovmerge
+	python_newscript splashasm/splash_assembler.py splash-assembler
+	python_doscript overlaycheck/overlaycheck
+	python_doscript dtapply/dtapply
+	python_doscript otamaker/otamaker
+}
 src_install() {
 	cmake_src_install
-	python_foreach_impl python_doscript otpset/otpset
+	python_foreach_impl python_install
+	insinto /usr/share/${PN}
+	doins overlaycheck/overlaycheck_exclusions.txt
 }
