@@ -1,4 +1,4 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -14,7 +14,7 @@ if [[ ${PV} == 9999* ]]; then
 	S=${WORKDIR}/${P}/${PN}
 else
 	SRC_URI="https://github.com/certbot/${MYPN}/archive/v${PV}.tar.gz -> ${MYPN}-${PV}.gh.tar.gz"
-	KEYWORDS="~amd64"
+	KEYWORDS="~amd64 ~arm64"
 	S=${WORKDIR}/certbot-${PV}/${PN}
 fi
 
@@ -30,5 +30,6 @@ RDEPEND="${CDEPEND}
 	>=app-crypt/certbot-${PV}[${PYTHON_USEDEP}]
 	>=dev-python/cloudflare-4[${PYTHON_USEDEP}]"
 BDEPEND="test? ( ${RDEPEND} )"
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 distutils_enable_sphinx docs dev-python/sphinx-rtd-theme

@@ -30,5 +30,6 @@ RDEPEND="${CDEPEND}
 	>=app-crypt/certbot-${PV}[${PYTHON_USEDEP}]
 	>=dev-python/cloudflare-4[${PYTHON_USEDEP}]"
 BDEPEND="test? ( ${RDEPEND} )"
+EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 distutils_enable_sphinx docs dev-python/sphinx-rtd-theme
