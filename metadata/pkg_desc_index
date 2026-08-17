@@ -1,6 +1,6 @@
 acct-group/wsdd 0: Group for net-misc/wsdd
 acct-user/wsdd 0: User for net-misc/wsdd
-app-crypt/certbot-dns-cloudflare 9999: Cloudflare DNS Authenticator plugin for Certbot (Let's Encrypt Client)
+app-crypt/certbot-dns-cloudflare 5.6.0 9999: Cloudflare DNS Authenticator plugin for Certbot (Let's Encrypt Client)
 app-crypt/certbot-dns-cloudflare4 0.9.1: Port of Cloudflare DNS Authenticator plugin for Certbot to Cloudflare4
 dev-embedded/rpi-eeprom 9999: Updater for Raspberry Pi 4 bootloader and the VL805 USB controller
 dev-embedded/rpi-utils 9999: Misc useful commands for Raspberry Pis
