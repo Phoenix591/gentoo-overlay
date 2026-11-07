@@ -27,7 +27,14 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}
 
 RESTRICT="mirror !test? ( test )" #overlay
 
-BDEPEND="sys-apps/help2man"
+BDEPEND="
+	sys-apps/help2man
+	test? (
+		app-arch/unzip
+		app-arch/zip
+		sys-fs/dosfstools[compat]
+		sys-fs/mtools )
+	"
 DEPEND="${PYTHON_DEPS}"
 RDEPEND="${PYTHON_DEPS}
 	dev-embedded/rpi-utils
@@ -113,7 +120,8 @@ pkg_postinst() {
 src_test() {
 	python_test() {
 		cd "${S}/test"
-		./test-rpi-eeprom-config
+		./test-make-recovery-images || die
+		./test-rpi-eeprom-config || die
 	}
 	python_foreach_impl python_test
 }
