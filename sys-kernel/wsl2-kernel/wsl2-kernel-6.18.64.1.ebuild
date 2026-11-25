@@ -53,11 +53,11 @@ pkg_postinst(){
 	einfo "[wsl2]"
 	einfo "kernel=..."
 	einfo "kernelModules=...(path to vhd)"
-	einfo "Generate the module vhd with gen_modules_vhd.sh"
+	einfo "Generate the module vhd with gen_artifacts_vhd.sh"
 	einfo "An example script was installed into /etc/kernel/postinst.d"
 }
 src_install(){
-	dobin Microsoft/scripts/gen_modules_vhdx.sh
+	dobin Microsoft/scripts/gen_artifacts_vhdx.sh
 	kernel-build_src_install
 	insinto /etc/kernel/postinst.d
 	newins "${FILESDIR}/gen-module-vhdx.sh" gen-module-vhdx.sh.example
